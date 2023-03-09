@@ -14,8 +14,8 @@ export type QuestionParamsType = {
 
 export type QuestionType = {
   category: string;
-  type: string;
-  difficulty: string;
+  difficulty: "easy" | "medium" | "hard";
+  type: "boolean" | "multiple";
   question: string;
   correct_answer: string;
   incorrect_answers: string[];
