@@ -1,5 +1,5 @@
 import React, { MouseEventHandler, ReactNode, useState } from "react";
-import NewGame from "../views/NewGame";
+import NewGame from "../views/NewSession";
 
 type Props = {
   className?: string | undefined;

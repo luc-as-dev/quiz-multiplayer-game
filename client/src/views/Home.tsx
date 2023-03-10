@@ -3,7 +3,7 @@ import React, { useContext } from "react";
 import Card from "../components/Card";
 import FlipCard from "../components/FlipCard";
 import { SetViewContext } from "../App";
-import NewGame from "./NewGame";
+import NewSession from "./NewSession";
 
 type Props = {};
 
@@ -17,11 +17,11 @@ export default function Home({}: Props) {
         <>
           <h2>Utmana dina vänner i Quiz</h2>
           <p>
-            Tryck "Nytt Spel" för att skapa en ny session som du sedan kan bjuda
-            in vänner till.
+            Tryck "Ny session" för att skapa en ny session som du sedan kan
+            bjuda in vänner till.
           </p>
           <p>
-            Tryck "Gå Med" för att ansluta till din väns spel, du behöver ett
+            Tryck "Gå med" för att ansluta till din väns spel, du behöver ett
             sessions id från din vän.
           </p>
         </>
@@ -29,13 +29,13 @@ export default function Home({}: Props) {
       <Card
         className="big-text grow-1"
         onClick={() => {
-          setView(<Home />);
+          setView(<NewSession />);
         }}
       >
-        <div>Nytt Spel</div>
+        <div>Ny session</div>
       </Card>
       <Card className="big-text grow-1">
-        <div>Gå Med</div>
+        <div>Gå med</div>
       </Card>
     </div>
   );
