@@ -8,10 +8,10 @@ import NewGame from "./NewGame";
 type Props = {};
 
 export default function Home({}: Props) {
-  const setView = useContext(SetViewContext);
+  const setView = useContext<Function>(SetViewContext);
 
   return (
-    <div className="home-container">
+    <div className="view home-container">
       <FlipCard className="logo-flip-card" interactable={true}>
         <img src={logo} />
         <div className="game-info">

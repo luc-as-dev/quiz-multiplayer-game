@@ -30,7 +30,9 @@ export default function App() {
     <SetViewContext.Provider value={setView}>
       <div className="app">
         <div
-          className={`view ${isEntering ? "" : isExiting ? "exit" : "active"}`}
+          className={`views-container ${
+            isEntering ? "" : isExiting ? "exit" : "active"
+          }`}
         >
           {activeView}
         </div>
