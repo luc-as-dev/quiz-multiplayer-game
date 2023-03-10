@@ -3,8 +3,8 @@ import Card from "./Card";
 
 type Props = {
   children: [ReactNode, ReactNode];
-  className?: string;
-  interactable?: boolean;
+  className?: string | undefined;
+  interactable?: boolean | undefined;
 };
 
 export default function FlipCard({
