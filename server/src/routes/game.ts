@@ -42,13 +42,31 @@ router.get("/game/info/questions/:id", async (req: Request, res: Response) => {
   }
 });
 
+// Create a new session.
+// body {id, userName, time}
 router.post("/game", (req: Request, res: Response) => {
-  const { id, userName, time } = req.body;
-  if (id && userName && time) {
-    const user = new User(userName);
-    const game: Game = new Game(id, user, time);
+  console.log(req.body);
+  const { id, username } = req.body;
+  console.log(id && username);
+  if (id && username) {
+    if (GameManager.findGameById(id)) {
+      return res.status(400).send();
+    }
+    const user = new User(username);
+    const game: Game = new Game(id, user);
     GameManager.addGame(game);
-    res.send({ userName, gameId: game.id, updatedAt: game.updatedAt });
+    res.send({ username, gameId: game.id, updatedAt: game.updatedAt });
+  } else {
+    res.status(400).send();
+  }
+});
+
+// Check if session id is available
+// :id - session id
+router.get("/game/checkId/:id", (req: Request, res: Response) => {
+  const game: Game = GameManager.findGameById(req.params.id);
+  if (!game) {
+    res.send();
   } else {
     res.status(400).send();
   }
