@@ -52,11 +52,31 @@
   }
 }
 
-.app-container {
+.app {
   position: fixed;
 
   width: 100vw;
   height: 100vh;
+  
+  .view {
+    display: flex;
+    justify-content: center;
+
+    opacity: 0;
+    transform: translate3d(-500px, 0, 0);
+  }
+  
+  .view.active {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+    transition: 250ms all ease-out;
+  }
+
+  .view.exit {
+    opacity: 0;
+    transform: translate3d(500px, 0, 0);
+    transition: 250ms all ease-in;
+  }
 }
 
 .home-container {
@@ -67,8 +87,7 @@
   width: 100vw;
   height: 100vh;
   max-width: 500px;
-  margin: 0 auto;
-  padding: 60px 20px;
+  margin: 60px 20px;
   gap: 20px;
 
   .logo-flip-card {
@@ -83,8 +102,8 @@
     gap: 20px;
   }
   
-  .join-game-flip-card,
-  .new-game-flip-card {
+  .join-game-card,
+  .new-game-card {
     font-size: 2.25rem;
     font-weight: 300;
 

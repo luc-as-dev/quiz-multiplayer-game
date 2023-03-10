@@ -1,11 +1,15 @@
 import logo from "../assets/logo.png";
-import React from "react";
+import React, { useContext } from "react";
 import Card from "../components/Card";
 import FlipCard from "../components/FlipCard";
+import { SetViewContext } from "../App";
+import NewGame from "./NewGame";
 
 type Props = {};
 
 export default function Home({}: Props) {
+  const setView = useContext(SetViewContext);
+
   return (
     <div className="home-container">
       <FlipCard className="logo-flip-card" interactable={true}>
@@ -22,14 +26,17 @@ export default function Home({}: Props) {
           </p>
         </div>
       </FlipCard>
-      <FlipCard className="new-game-flip-card" interactable={true}>
+      <Card
+        className="new-game-card"
+        onClick={() => {
+          setView(<Home />);
+        }}
+      >
         <div>Nytt Spel</div>
-        <div>Back</div>
-      </FlipCard>
-      <FlipCard className="join-game-flip-card" interactable={true}>
+      </Card>
+      <Card className="join-game-card">
         <div>Gå Med</div>
-        <div>Back</div>
-      </FlipCard>
+      </Card>
     </div>
   );
 }
