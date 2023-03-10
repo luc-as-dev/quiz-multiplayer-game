@@ -1,15 +1,24 @@
 $breakpoint: 400px;
 
-$bg: #1647a3;
-$cardBorderColor: #ddd;
-$cardFrontBg: #f2fcfc;
+$color1: #1647a3;
+$color2: #f2fcfc;
+$color3: #ddd;
+
+$bg: $color1;
+$text: $bg;
+
+$cardBorderColor: $color3;
+$cardFrontBg: $color2;
 $cardBackBg: $cardFrontBg;
-$cardFrontText: $bg;
+$cardFrontText: $text;
 $cardBackText: $cardFrontText;
 
 $cardDropShadow: drop-shadow(0 0 0.25rem #33333366);
 $cardBorder: 15px solid $cardBorderColor;
 $cardBorderRadius: 20px;
+
+$inputBg: $color3;
+$inputText: $color1;
 
 .logo-card {
   aspect-ratio: 6/4;
@@ -22,4 +31,8 @@ $cardBorderRadius: 20px;
 
 .grow-1 {
   flex-grow: 1;
+}
+
+.grow-10 {
+  flex-grow: 10;
 }
