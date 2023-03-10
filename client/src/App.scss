@@ -3,18 +3,20 @@
 .view {
   display: flex;
   flex-direction: column;
-  align-items: stretch;
 
-  width: 100vw;
-  height: 100vh;
-  max-width: 500px;
+  height: 100%;
   gap: 20px;
 }
 
 .card {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
+
+  width: 100%;
+  padding: 20px;
+  gap: 10px;
 
   color: $bg;
   background-color: $cardFrontBg;
@@ -63,6 +65,14 @@
   }
 }
 
+.logo-card {
+  aspect-ratio: 6/4;
+}
+
+.grow-1 {
+  flex-grow: 1;
+}
+
 .app {
   position: fixed;
 
@@ -70,11 +80,11 @@
   height: 100vh;
   
   .views-container {
-    display: flex;
-    justify-content: center;
-
-    padding: 60px 20px;
-
+    max-width: 500px;
+    height: 90vh;
+    margin: 0 auto;
+    padding: 40px 20px;
+    
     opacity: 0;
     transform: translate3d(-500px, 0, 0);
   }
@@ -89,27 +99,5 @@
     opacity: 0;
     transform: translate3d(500px, 0, 0);
     transition: 250ms all ease-in;
-  }
-}
-
-.home-container {
-  .logo-flip-card {
-    width: 100%;
-    aspect-ratio: 6/4;
-  }
-
-  .game-info {
-    display: flex;
-    flex-direction: column;
-    padding: 20px;
-    gap: 20px;
-  }
-  
-  .join-game-card,
-  .new-game-card {
-    font-size: 2.25rem;
-    font-weight: 300;
-
-    height: 20vh;
   }
 }

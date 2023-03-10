@@ -12,9 +12,9 @@ export default function Home({}: Props) {
 
   return (
     <div className="view home-container">
-      <FlipCard className="logo-flip-card" interactable={true}>
+      <FlipCard className="logo-card" interactable={true}>
         <img src={logo} />
-        <div className="game-info">
+        <>
           <h2>Utmana dina vänner i Quiz</h2>
           <p>
             Tryck "Nytt Spel" för att skapa en ny session som du sedan kan bjuda
@@ -24,17 +24,17 @@ export default function Home({}: Props) {
             Tryck "Gå Med" för att ansluta till din väns spel, du behöver ett
             sessions id från din vän.
           </p>
-        </div>
+        </>
       </FlipCard>
       <Card
-        className="new-game-card"
+        className="big-text grow-1"
         onClick={() => {
           setView(<Home />);
         }}
       >
         <div>Nytt Spel</div>
       </Card>
-      <Card className="join-game-card">
+      <Card className="big-text grow-1">
         <div>Gå Med</div>
       </Card>
     </div>
