@@ -1,3 +1,5 @@
+import { createSessionResponseType } from "../@types/QuizAPI";
+
 const SERVER_URL = import.meta.env.VITE_SOME_SERVER_URL;
 
 export async function isSessionIdAvailable(id: string): Promise<boolean> {
@@ -9,12 +11,6 @@ export async function isSessionIdAvailable(id: string): Promise<boolean> {
   } catch (err) {}
   return false;
 }
-
-export type createSessionResponseType = {
-  username: string;
-  gameId: string;
-  updatedAt: number;
-};
 
 export async function createSession(
   id: string,

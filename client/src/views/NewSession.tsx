@@ -1,7 +1,8 @@
 import React, { useState } from "react";
+import { createSessionResponseType } from "../@types/QuizAPI";
 import { SessionContextType } from "../@types/Session";
 import { ViewContextType } from "../@types/View";
-import { createSession, createSessionResponseType } from "../api/api";
+import { createSession } from "../api/QuizAPI";
 import Card from "../components/Card";
 import Input from "../components/Input";
 import { useSessionContext } from "../context/SessionContext";
