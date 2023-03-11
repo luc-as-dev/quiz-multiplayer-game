@@ -11,7 +11,7 @@ export async function isSessionIdAvailable(id: string): Promise<boolean> {
 }
 
 export type createSessionResponseType = {
-  userName: string;
+  username: string;
   gameId: string;
   updatedAt: number;
 };
