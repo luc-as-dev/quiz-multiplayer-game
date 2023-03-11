@@ -2,15 +2,15 @@ import React from "react";
 import { SessionContextType } from "../@types/Session";
 import { ViewContextType } from "../@types/View";
 import Card from "../components/Card";
-import { useSessionContext } from "../context/SessionContext";
 import { useViewContext } from "../context/ViewContext";
+import useSession from "../hooks/useSession";
 import Home from "./Home";
 
 type Props = {};
 
 export default function SessionLobby({}: Props) {
   const { setView }: ViewContextType = useViewContext();
-  const { getSession, getPlayers }: SessionContextType = useSessionContext();
+  const { getSession, getPlayers }: SessionContextType = useSession();
 
   function startGameHandler() {}
 

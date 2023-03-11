@@ -5,8 +5,8 @@ import { ViewContextType } from "../@types/View";
 import { joinSession } from "../api/QuizAPI";
 import Card from "../components/Card";
 import Input from "../components/Input";
-import { useSessionContext } from "../context/SessionContext";
 import { useViewContext } from "../context/ViewContext";
+import useSession from "../hooks/useSession";
 import Home from "./Home";
 import SessionLobby from "./SessionLobby";
 
@@ -14,7 +14,7 @@ type Props = {};
 
 export default function JoinSession({}: Props) {
   const { setView }: ViewContextType = useViewContext();
-  const { setSession }: SessionContextType = useSessionContext();
+  const { setSession }: SessionContextType = useSession();
   const [sessionName, setSessionName] = useState<string>("");
   const [username, setUsername] = useState<string>("");
 

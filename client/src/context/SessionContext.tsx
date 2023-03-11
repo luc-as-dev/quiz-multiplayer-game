@@ -1,23 +1,9 @@
 import React, { createContext, ReactNode, useContext, useState } from "react";
 import { ISession, SessionContextType } from "../@types/Session";
 
-export const SessionContext = createContext<SessionContextType | null>(null);
+export const sessionContext = createContext<SessionContextType | null>(null);
 
-export function useSessionContext() {
-  const sessionContext = useContext(SessionContext);
-  if (!sessionContext) {
-    throw new Error(
-      "useSessionContext has to be used within <SessionProvider>"
-    );
-  }
-  return sessionContext;
-}
-
-type Props = {
-  children: ReactNode;
-};
-
-export default function SessionProvider({ children }: Props) {
+function useProvideSession() {
   const [savedSession, setSavedSession] = useState<ISession | null>(null);
 
   function getPlayers(): string[] {
@@ -43,11 +29,24 @@ export default function SessionProvider({ children }: Props) {
     setSavedSession(null);
   }
 
+  return {
+    getPlayers,
+    hasSession,
+    getSession,
+    setSession,
+    clearSession,
+  };
+}
+
+type Props = {
+  children: ReactNode;
+};
+
+export default function SessionProvider({ children }: Props) {
+  const session: SessionContextType = useProvideSession();
   return (
-    <SessionContext.Provider
-      value={{ getPlayers, hasSession, getSession, setSession, clearSession }}
-    >
+    <sessionContext.Provider value={session}>
       {children}
-    </SessionContext.Provider>
+    </sessionContext.Provider>
   );
 }

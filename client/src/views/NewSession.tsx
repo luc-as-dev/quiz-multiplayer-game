@@ -5,8 +5,8 @@ import { ViewContextType } from "../@types/View";
 import { createSession } from "../api/QuizAPI";
 import Card from "../components/Card";
 import Input from "../components/Input";
-import { useSessionContext } from "../context/SessionContext";
 import { useViewContext } from "../context/ViewContext";
+import useSession from "../hooks/useSession";
 import Home from "./Home";
 import SessionLobby from "./SessionLobby";
 
@@ -18,7 +18,7 @@ function randomName(): string {
 
 export default function NewSession({}: Props) {
   const { setView }: ViewContextType = useViewContext();
-  const { setSession }: SessionContextType = useSessionContext();
+  const { setSession }: SessionContextType = useSession();
   const [sessionName, setSessionName] = useState<string>(randomName());
   const [username, setUsername] = useState<string>("");
 
@@ -32,7 +32,7 @@ export default function NewSession({}: Props) {
         id: session.gameId,
         username: session.username,
         isOwner: true,
-        players: { [session.username]: "" },
+        players: { [session.username]: 0 },
         gameOn: false,
         updatedAt: session.updatedAt,
       });
