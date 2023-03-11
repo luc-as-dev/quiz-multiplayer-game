@@ -12,7 +12,6 @@ export type SessionContextType = {
 
   hasSession: () => boolean;
   getSession: () => ISession | null;
-  setSession: (session: ISession) => void | undefined;
   clearSession: () => void | undefined;
   createSession: (name: string, username: string) => Promise<boolean>;
   joinSession: (name: string, username: string) => Promise<boolean>;

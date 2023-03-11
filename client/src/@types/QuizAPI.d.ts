@@ -1,12 +1,25 @@
 export type createSessionResponseType = {
   username: string;
-  gameId: string;
+  id: string;
   updatedAt: number;
 };
 
 export type joinSessionResponseType = {
   username: string;
-  gameId: string;
+  id: string;
+  players: { [username: string]: number };
+  gameOn: boolean;
+  updatedAt: number;
+};
+
+export type checkSessionResponseType = {
+  updatedAt: number;
+};
+
+export type updateSessionResponseType = {
+  id: string;
+  username: string;
+  isOwner: boolean;
   players: { [username: string]: number };
   gameOn: boolean;
   updatedAt: number;

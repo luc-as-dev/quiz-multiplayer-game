@@ -35,6 +35,10 @@ export class Game {
     this.updatedAt = Date.now();
   }
 
+  public isOwner(user: User): boolean {
+    return this.users[this.owner] === user;
+  }
+
   public getPlayers(): { [username: string]: number } {
     const players: { [username: string]: number } = {};
 

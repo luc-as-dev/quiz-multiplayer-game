@@ -59,7 +59,7 @@ router.post("/game/create", (req: Request, res: Response) => {
 
     res.send({
       username: user.getName(),
-      gameId: game.id,
+      id: game.id,
       updatedAt: game.updatedAt,
     });
   } else {
@@ -82,11 +82,38 @@ router.post("/game/join", (req: Request, res: Response) => {
 
       res.send({
         username: user.getName(),
-        gameId: game.id,
+        id: game.id,
         players: game.getPlayers(),
         gameOn: game.gameOn,
         updatedAt: game.updatedAt,
       });
+    }
+  } else {
+    res.status(400).send();
+  }
+});
+
+// Update session.
+// body {id, username}
+router.post("/game/update", (req: Request, res: Response) => {
+  const { id, username } = req.body;
+
+  if (id && username) {
+    const game: Game = GameManager.findGameById(id);
+
+    if (game) {
+      const user = game.findUserByName(username);
+
+      if (user) {
+        res.send({
+          username: user.getName(),
+          id: game.id,
+          isOwner: game.isOwner(user),
+          players: game.getPlayers(),
+          gameOn: game.gameOn,
+          updatedAt: game.updatedAt,
+        });
+      }
     }
   } else {
     res.status(400).send();
@@ -104,10 +131,12 @@ router.get("/game/checkId/:id", (req: Request, res: Response) => {
   }
 });
 
-router.get("/game/check/:id", (req: Request, res: Response) => {
+// Get updatedAt value of game
+// :id - session id
+router.post("/game/check/:id", (req: Request, res: Response) => {
   const game: Game = GameManager.findGameById(req.params.id);
   if (game) {
-    res.send(game.updatedAt);
+    res.send({ updatedAt: game.updatedAt });
   } else {
     res.status(400).send();
   }
