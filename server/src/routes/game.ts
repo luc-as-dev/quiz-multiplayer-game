@@ -43,7 +43,7 @@ router.get("/game/info/questions/:id", async (req: Request, res: Response) => {
 });
 
 // Create a new session.
-// body {id, userName, time}
+// body {id, username, time}
 router.post("/game", (req: Request, res: Response) => {
   console.log(req.body);
   const { id, username } = req.body;
