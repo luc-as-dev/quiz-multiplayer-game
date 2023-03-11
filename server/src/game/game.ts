@@ -3,7 +3,6 @@ import {
   QuestionParamsType,
   QuestionType,
 } from "../api/triviaAPI";
-import { GameManager } from "./gameManager";
 import { Question } from "./question";
 import { User } from "./user";
 
@@ -18,11 +17,18 @@ export class Game {
   time: number;
   questions: Question[] = null;
   currentQuestion: number = null;
+  stage: "lobby" | number | "end";
 
   constructor(id: string, creator: User, time?: number) {
     this.id = id;
     this.users.push(creator);
     this.time = time || DEFAULT_TIME;
+    this.stage = "lobby";
+    this.updatedAt = Date.now();
+  }
+
+  private setStage(stage: "lobby" | number | "end"): void {
+    this.stage = stage;
     this.updatedAt = Date.now();
   }
 
@@ -49,15 +55,9 @@ export class Game {
     return players;
   }
 
-  public start(): boolean {
-    if (this.questions !== null) {
-      this.gameOn = true;
-      this.currentQuestion = 0;
-      GameManager.startGame(this);
-      this.updatedAt = Date.now();
-      return true;
-    }
-    return false;
+  public start(): void {
+    this.currentQuestion = this.currentQuestion ? this.currentQuestion + 1 : 1;
+    this.setStage(this.currentQuestion);
   }
 
   public update() {}

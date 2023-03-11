@@ -5,9 +5,11 @@ export interface ISession {
   players: { [username: string]: number };
   gameOn: boolean;
   updatedAt: number;
+  stage: "lobby" | number | "end";
 }
 
 export type SessionContextType = {
+  nextQuestion: () => void | undefined;
   getPlayers: () => string[];
 
   hasSession: () => boolean;

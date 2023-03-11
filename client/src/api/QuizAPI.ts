@@ -85,3 +85,19 @@ export async function updateSessionFetch(
   } catch (err) {}
   return undefined;
 }
+
+export async function nextQuestionFetch(id: string, username: string) {
+  console.log(id, username);
+  try {
+    const response: Response = await fetch(`${SERVER_URL}/game/next`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, username }),
+    });
+    if (response.ok) {
+      const data: updateSessionResponseType = await response.json();
+      return data;
+    }
+  } catch (err) {}
+  return undefined;
+}

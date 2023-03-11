@@ -10,9 +10,16 @@ type Props = {};
 
 export default function SessionLobby({}: Props) {
   const { setView }: ViewContextType = useViewContext();
-  const { getSession, getPlayers }: SessionContextType = useSession();
+  const { getSession, nextQuestion, getPlayers }: SessionContextType =
+    useSession();
 
-  function startGameHandler() {}
+  function startGameHandler() {
+    console.log(getSession());
+    if (getSession() && getSession()!.isOwner) {
+      console.log("Inside");
+      nextQuestion();
+    }
+  }
 
   function leaveSessionHandler() {
     setView(<Home />);

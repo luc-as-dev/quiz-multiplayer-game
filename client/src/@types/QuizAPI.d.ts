@@ -2,6 +2,7 @@ export type createSessionResponseType = {
   username: string;
   id: string;
   updatedAt: number;
+  stage: "lobby" | number | "end";
 };
 
 export type joinSessionResponseType = {
@@ -10,6 +11,7 @@ export type joinSessionResponseType = {
   players: { [username: string]: number };
   gameOn: boolean;
   updatedAt: number;
+  stage: "lobby" | number | "end";
 };
 
 export type checkSessionResponseType = {
@@ -23,4 +25,15 @@ export type updateSessionResponseType = {
   players: { [username: string]: number };
   gameOn: boolean;
   updatedAt: number;
+  stage: "lobby" | number | "end";
+};
+
+export type updateSessionResponseType = {
+  id: string;
+  username: string;
+  isOwner: boolean;
+  players: { [username: string]: number };
+  gameOn: boolean;
+  updatedAt: number;
+  stage: "lobby" | number | "end";
 };

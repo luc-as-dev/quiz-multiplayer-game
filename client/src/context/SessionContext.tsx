@@ -9,11 +9,13 @@ import {
   checkSessionFetch,
   createSessionFetch,
   joinSessionFetch,
+  nextQuestionFetch,
   updateSessionFetch,
 } from "../api/QuizAPI";
 import { ISession, SessionContextType } from "../@types/Session";
 
 const UPDATE_INTERVAL = import.meta.env.VITE_SOME_UPDATE_INTERVAL;
+const LOCAL_STORAGE_KEY = "quiz";
 
 export const sessionContext = createContext<SessionContextType | null>(null);
 
@@ -23,12 +25,37 @@ function useProvideSession(): SessionContextType {
   const [updates, setUpdates] = useState<number>(0);
 
   useEffect(() => {
+    localLoad();
+  }, []);
+
+  useEffect(() => {
     if (updates > 0) {
       update();
     }
   }, [updates]);
 
-  function start(session: ISession) {
+  function localClear(): void {
+    localStorage.removeItem(LOCAL_STORAGE_KEY);
+  }
+
+  function localSave(session: ISession): void {
+    localStorage.setItem(
+      LOCAL_STORAGE_KEY,
+      JSON.stringify({
+        id: session.id,
+        username: session.username,
+      })
+    );
+  }
+
+  function localLoad(): void {
+    const local = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (local) {
+    }
+  }
+
+  function startInterval(session: ISession) {
+    localSave(session);
     setSavedSession(session);
     setUpdateInterval(
       setInterval(() => {
@@ -37,9 +64,16 @@ function useProvideSession(): SessionContextType {
     );
   }
 
-  function stop() {
+  function stopInterval() {
     setUpdates(0);
     if (updateInterval) clearInterval(updateInterval);
+  }
+
+  function nextQuestion(): void {
+    console.log(savedSession);
+    if (savedSession) {
+      nextQuestionFetch(savedSession!.id, savedSession!.username);
+    }
   }
 
   async function hasUpdate(): Promise<boolean> {
@@ -52,13 +86,17 @@ function useProvideSession(): SessionContextType {
     return false;
   }
 
+  async function updateSession(id: string, username: string) {
+    const updateResponse: updateSessionResponseType | undefined =
+      await updateSessionFetch(id, username);
+
+    setSavedSession(updateResponse!);
+  }
+
   async function update(): Promise<void> {
     if (savedSession) {
       if (await hasUpdate()) {
-        const updateResponse: updateSessionResponseType | undefined =
-          await updateSessionFetch(savedSession.id, savedSession.username);
-
-        setSavedSession(updateResponse!);
+        updateSession(savedSession.id, savedSession.username);
       }
     }
   }
@@ -97,8 +135,9 @@ function useProvideSession(): SessionContextType {
         players: { [sessionResponse.username]: 0 },
         gameOn: false,
         updatedAt: sessionResponse.updatedAt,
+        stage: "lobby",
       };
-      start(session);
+      startInterval(session);
       return true;
     }
     return false;
@@ -115,14 +154,16 @@ function useProvideSession(): SessionContextType {
         players: sessionResponse.players,
         gameOn: sessionResponse.gameOn,
         updatedAt: sessionResponse.updatedAt,
+        stage: "lobby",
       };
-      start(session);
+      startInterval(session);
       return true;
     }
     return false;
   }
 
   return {
+    nextQuestion,
     getPlayers,
     hasSession,
     getSession,

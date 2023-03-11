@@ -61,6 +61,7 @@ router.post("/game/create", (req: Request, res: Response) => {
       username: user.getName(),
       id: game.id,
       updatedAt: game.updatedAt,
+      stage: game.stage,
     });
   } else {
     res.status(400).send();
@@ -86,6 +87,7 @@ router.post("/game/join", (req: Request, res: Response) => {
         players: game.getPlayers(),
         gameOn: game.gameOn,
         updatedAt: game.updatedAt,
+        stage: game.stage,
       });
     }
   } else {
@@ -112,9 +114,30 @@ router.post("/game/update", (req: Request, res: Response) => {
           players: game.getPlayers(),
           gameOn: game.gameOn,
           updatedAt: game.updatedAt,
+          stage: game.stage,
         });
       }
     }
+  } else {
+    res.status(400).send();
+  }
+});
+
+// Set question to next question
+// body {id, username}
+router.post("/game/next", (req: Request, res: Response) => {
+  const { id, username } = req.body;
+
+  if (id && username) {
+    const game: Game = GameManager.findGameById(id);
+
+    if (game) {
+      const user = game.findUserByName(username);
+      if (user && game.isOwner(user)) {
+        game.start();
+      }
+    }
+    res.send();
   } else {
     res.status(400).send();
   }
