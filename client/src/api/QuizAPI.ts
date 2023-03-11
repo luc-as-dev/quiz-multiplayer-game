@@ -15,7 +15,7 @@ export async function isSessionIdAvailable(id: string): Promise<boolean> {
   return false;
 }
 
-export async function createSession(
+export async function createSessionFetch(
   id: string,
   username: string
 ): Promise<createSessionResponseType | undefined> {
@@ -33,7 +33,7 @@ export async function createSession(
   return undefined;
 }
 
-export async function joinSession(
+export async function joinSessionFetch(
   id: string,
   username: string
 ): Promise<joinSessionResponseType | undefined> {

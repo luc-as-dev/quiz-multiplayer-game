@@ -2,7 +2,6 @@ import React, { useState } from "react";
 import { createSessionResponseType } from "../@types/QuizAPI";
 import { SessionContextType } from "../@types/Session";
 import { ViewContextType } from "../@types/View";
-import { createSession } from "../api/QuizAPI";
 import Card from "../components/Card";
 import Input from "../components/Input";
 import { useViewContext } from "../context/ViewContext";
@@ -18,27 +17,14 @@ function randomName(): string {
 
 export default function NewSession({}: Props) {
   const { setView }: ViewContextType = useViewContext();
-  const { setSession }: SessionContextType = useSession();
+  const { createSession }: SessionContextType = useSession();
   const [sessionName, setSessionName] = useState<string>(randomName());
   const [username, setUsername] = useState<string>("");
 
   async function createSessionHandler(): Promise<void> {
-    const session: createSessionResponseType | undefined = await createSession(
-      sessionName,
-      username
-    );
-    if (session) {
-      setSession({
-        id: session.gameId,
-        username: session.username,
-        isOwner: true,
-        players: { [session.username]: 0 },
-        gameOn: false,
-        updatedAt: session.updatedAt,
-      });
+    if (await createSession(sessionName, username)) {
       setView(<SessionLobby />);
     }
-    console.log(session);
   }
 
   function goBackHandler(): void {
