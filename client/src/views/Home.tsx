@@ -1,14 +1,15 @@
 import logo from "../assets/logo.png";
-import React, { useContext } from "react";
+import React from "react";
 import Card from "../components/Card";
 import FlipCard from "../components/FlipCard";
-import { SetViewContext } from "../App";
 import NewSession from "./NewSession";
+import { useViewContext } from "../context/ViewContext";
+import { ViewContextType } from "../@types/View";
 
 type Props = {};
 
 export default function Home({}: Props) {
-  const setView = useContext<Function>(SetViewContext);
+  const { setView }: ViewContextType = useViewContext();
 
   return (
     <div className="view home-container">

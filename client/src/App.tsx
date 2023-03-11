@@ -1,42 +1,26 @@
-import React, { createContext, ReactNode, useState } from "react";
+import React, { createContext, ReactNode, useEffect, useState } from "react";
+import { ViewContextType } from "./@types/View";
 import "./App.scss";
+import { useViewContext } from "./context/ViewContext";
 import Home from "./views/Home";
 
-export const SetViewContext: React.Context<Function> = createContext<Function>(
-  () => {}
-);
-
-const EXIT_TIME: number = 250;
-const ENTER_TIME: number = 250;
-
 export default function App() {
-  const [activeView, setActiveView] = useState<ReactNode>(<Home />);
-  const [isEntering, setIsEntering] = useState<boolean>(false);
-  const [isExiting, setIsExiting] = useState<boolean>(false);
+  const { view, isEntering, isExiting, setView }: ViewContextType =
+    useViewContext();
 
-  function setView(view: ReactNode) {
-    setIsExiting(true);
-    setTimeout(() => {
-      setIsExiting(false);
-      setActiveView(view);
-      setIsEntering(true);
-      setTimeout(() => {
-        setIsEntering(false);
-      }, ENTER_TIME);
-    }, EXIT_TIME);
-  }
+  useEffect(() => {
+    setView(<Home />);
+  }, []);
 
   return (
-    <SetViewContext.Provider value={setView}>
-      <div className="app">
-        <div
-          className={`views-container ${
-            isEntering ? "" : isExiting ? "exit" : "active"
-          }`}
-        >
-          {activeView}
-        </div>
+    <div className="app">
+      <div
+        className={`views-container ${
+          isEntering ? "" : isExiting ? "exit" : "active"
+        }`}
+      >
+        {view && view}
       </div>
-    </SetViewContext.Provider>
+    </div>
   );
 }
