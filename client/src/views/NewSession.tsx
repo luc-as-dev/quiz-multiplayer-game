@@ -7,6 +7,7 @@ import Input from "../components/Input";
 import { useSessionContext } from "../context/SessionContext";
 import { useViewContext } from "../context/ViewContext";
 import Home from "./Home";
+import SessionLobby from "./SessionLobby";
 
 type Props = {};
 
@@ -18,22 +19,29 @@ export default function NewSession({}: Props) {
   const { setView }: ViewContextType = useViewContext();
   const { setSession }: SessionContextType = useSessionContext();
   const [sessionName, setSessionName] = useState<string>(randomName());
-  const [userName, setUserName] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
 
   async function createSessionHandler(): Promise<void> {
     const session: createSessionResponseType | undefined = await createSession(
       sessionName,
-      userName
+      username
     );
     if (session) {
       setSession({
         id: session.gameId,
         username: session.username,
         isOwner: true,
+        players: { [session.username]: "" },
+        gameOn: false,
         updatedAt: session.updatedAt,
       });
+      setView(<SessionLobby />);
     }
     console.log(session);
+  }
+
+  function goBackHandler(): void {
+    setView(<Home />);
   }
 
   return (
@@ -53,19 +61,14 @@ export default function NewSession({}: Props) {
         <Input
           type="text"
           maxLength={12}
-          value={userName}
-          onChange={(e) => setUserName(e.target.value)}
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
         />
       </Card>
       <Card className="big-text grow-1" onClick={createSessionHandler}>
         Skapa session
       </Card>
-      <Card
-        className="big-text grow-1"
-        onClick={() => {
-          setView(<Home />);
-        }}
-      >
+      <Card className="big-text grow-1" onClick={goBackHandler}>
         Tillbaka
       </Card>
     </div>
