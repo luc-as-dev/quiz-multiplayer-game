@@ -43,19 +43,51 @@ router.get("/game/info/questions/:id", async (req: Request, res: Response) => {
 });
 
 // Create a new session.
-// body {id, username, time}
-router.post("/game", (req: Request, res: Response) => {
-  console.log(req.body);
+// body {id, username}
+router.post("/game/create", (req: Request, res: Response) => {
   const { id, username } = req.body;
-  console.log(id && username);
+
   if (id && username) {
     if (GameManager.findGameById(id)) {
       return res.status(400).send();
     }
-    const user = new User(username);
+
+    const user: User = new User(username);
     const game: Game = new Game(id, user);
+
     GameManager.addGame(game);
-    res.send({ username, gameId: game.id, updatedAt: game.updatedAt });
+
+    res.send({
+      username: user.getName(),
+      gameId: game.id,
+      updatedAt: game.updatedAt,
+    });
+  } else {
+    res.status(400).send();
+  }
+});
+
+// Join session.
+// body {id, username}
+router.post("/game/join", (req: Request, res: Response) => {
+  const { id, username } = req.body;
+
+  if (id && username) {
+    const game: Game = GameManager.findGameById(id);
+
+    if (game && !game.findUserByName(username)) {
+      const user: User = new User(username);
+
+      game.addUser(user);
+
+      res.send({
+        username: user.getName(),
+        gameId: game.id,
+        players: game.getPlayers(),
+        gameOn: game.gameOn,
+        updatedAt: game.updatedAt,
+      });
+    }
   } else {
     res.status(400).send();
   }

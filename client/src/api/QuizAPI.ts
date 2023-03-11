@@ -1,4 +1,7 @@
-import { createSessionResponseType } from "../@types/QuizAPI";
+import {
+  createSessionResponseType,
+  joinSessionResponseType,
+} from "../@types/QuizAPI";
 
 const SERVER_URL = import.meta.env.VITE_SOME_SERVER_URL;
 
@@ -17,13 +20,31 @@ export async function createSession(
   username: string
 ): Promise<createSessionResponseType | undefined> {
   try {
-    const response: Response = await fetch(`${SERVER_URL}/game`, {
+    const response: Response = await fetch(`${SERVER_URL}/game/create`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id, username }),
     });
     if (response.ok) {
       const data: createSessionResponseType = await response.json();
+      return data;
+    }
+  } catch (err) {}
+  return undefined;
+}
+
+export async function joinSession(
+  id: string,
+  username: string
+): Promise<joinSessionResponseType | undefined> {
+  try {
+    const response: Response = await fetch(`${SERVER_URL}/game/join`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, username }),
+    });
+    if (response.ok) {
+      const data: joinSessionResponseType = await response.json();
       return data;
     }
   } catch (err) {}

@@ -5,11 +5,20 @@ import FlipCard from "../components/FlipCard";
 import NewSession from "./NewSession";
 import { useViewContext } from "../context/ViewContext";
 import { ViewContextType } from "../@types/View";
+import JoinSession from "./JoinSession";
 
 type Props = {};
 
 export default function Home({}: Props) {
   const { setView }: ViewContextType = useViewContext();
+
+  function newSessionHandler(): void {
+    setView(<NewSession />);
+  }
+
+  function joinSessionHandler(): void {
+    setView(<JoinSession />);
+  }
 
   return (
     <div className="view home-container">
@@ -27,15 +36,10 @@ export default function Home({}: Props) {
           </p>
         </>
       </FlipCard>
-      <Card
-        className="big-text grow-1"
-        onClick={() => {
-          setView(<NewSession />);
-        }}
-      >
+      <Card className="big-text grow-1" onClick={newSessionHandler}>
         <div>Ny session</div>
       </Card>
-      <Card className="big-text grow-1">
+      <Card className="big-text grow-1" onClick={joinSessionHandler}>
         <div>Gå med</div>
       </Card>
     </div>

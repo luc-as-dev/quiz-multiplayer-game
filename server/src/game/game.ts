@@ -26,7 +26,26 @@ export class Game {
     this.updatedAt = Date.now();
   }
 
-  start(): boolean {
+  public findUserByName(name: string): User | undefined {
+    return this.users.find((user) => user.getName() === name);
+  }
+
+  public addUser(user: User): void {
+    this.users.push(user);
+    this.updatedAt = Date.now();
+  }
+
+  public getPlayers(): { [username: string]: number } {
+    const players: { [username: string]: number } = {};
+
+    this.users.forEach(
+      (user: User) => (players[user.getName()] = user.getScore())
+    );
+
+    return players;
+  }
+
+  public start(): boolean {
     if (this.questions !== null) {
       this.gameOn = true;
       this.currentQuestion = 0;
@@ -37,9 +56,9 @@ export class Game {
     return false;
   }
 
-  update() {}
+  public update() {}
 
-  async fetchTriviaQuestions(questionParams: QuestionParamsType) {
+  public async fetchTriviaQuestions(questionParams: QuestionParamsType) {
     try {
       this.questions = [];
       const questions = await getQuestions(questionParams);

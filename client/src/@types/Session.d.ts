@@ -2,7 +2,7 @@ export interface ISession {
   id: string;
   username: string;
   isOwner: boolean;
-  players: { [username: string]: string };
+  players: { [username: string]: number };
   gameOn: boolean;
   updatedAt: number;
 }
