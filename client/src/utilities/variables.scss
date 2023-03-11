@@ -24,9 +24,20 @@ $inputText: $color1;
   aspect-ratio: 6/4;
 }
 
+.medium-text {
+  font-size: 1.5rem;
+  font-weight: 500;
+}
+
 .big-text {
   font-size: 2.25rem;
   font-weight: 500;
+}
+
+.flex-wrap {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 5px;
 }
 
 .grow-1 {
