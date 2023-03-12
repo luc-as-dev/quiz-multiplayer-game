@@ -10,21 +10,41 @@ import { User } from "./user";
 const DEFAULT_TIME: number = 30;
 const TIMEOUT_TIME: number = 10;
 
+const EXAMPLE_QUESTIONS = [
+  new Question(
+    30,
+    "Exempel frågor",
+    "easy",
+    "boolean",
+    "Tycker du om Quiz?",
+    "Ja",
+    ["Nej"]
+  ),
+  new Question(
+    30,
+    "Exempel frågor",
+    "easy",
+    "boolean",
+    "Fungerar detta?",
+    "Ja",
+    ["Nej"]
+  ),
+];
+
 export class Game {
-  updatedAt: number;
-  gameOn: boolean = false;
   id: string;
   owner: number = 0; // index of user in users
-  users: User[] = [];
+  updatedAt: number;
   time: number;
-  waiting: { ready: boolean; callbacks: Function[] } = {
-    ready: false,
-    callbacks: [],
-  };
-  lastPing: { [username: string]: number } = {};
-  questions: Question[] = null;
-  currentQuestion: number = null;
+  gameOn: boolean = false;
   stage: "lobby" | number | "end";
+
+  users: User[] = [];
+  lastPing: { [username: string]: number } = {};
+  answers: { [username: string]: string } = {};
+
+  currentQuestion: number = null;
+  questions: Question[] = null;
 
   constructor(id: string, creator: User, time?: number) {
     this.id = id;
@@ -34,51 +54,29 @@ export class Game {
     this.updatedAt = Date.now();
   }
 
-  private setStage(stage: "lobby" | number | "end"): void {
-    this.stage = stage;
-    this.updatedAt = Date.now();
-  }
-
   public ping(user: User): number {
     this.lastPing[user.getName()] = Date.now();
     return this.updatedAt;
   }
 
-  public next(): void {
-    if (!this.currentQuestion) {
-      this.fetchTriviaQuestions({
-        amount: 10,
-        category: "any",
-        difficulty: "any",
-        type: "multiple",
-      });
+  public saveAnswer(username: string, answer: string) {
+    this.answers[username] = answer;
+  }
+
+  public getQuestion(): {} | null {
+    if (this.questions) {
+      const question = this.questions[this.currentQuestion];
+
+      return {
+        time: question.time,
+        category: question.category,
+        difficulty: question.difficulty,
+        type: question.type,
+        question: question.question,
+        answers: question.getAnswers(),
+      };
     }
-    this.currentQuestion = this.currentQuestion ? this.currentQuestion + 1 : 0;
-    this.setStage(this.currentQuestion);
-    setTimeout(() => {
-      this.waiting.ready = true;
-    }, 1000);
-  }
-
-  public async waitQuestion(callback: Function) {
-    this.waiting.callbacks.push(callback);
-  }
-
-  public getQuestion() {
-    const question = this.questions[this.currentQuestion];
-
-    return {
-      time: question.time,
-      category: question.category,
-      difficulty: question.difficulty,
-      type: question.type,
-      question: question.question,
-      answers: question.getAnswers(),
-    };
-  }
-
-  public findUserByName(name: string): User | undefined {
-    return this.users.find((user) => user.getName() === name);
+    return null;
   }
 
   public addUser(user: User): void {
@@ -102,6 +100,10 @@ export class Game {
     return this.users[this.owner] === user;
   }
 
+  public findUserByName(name: string): User | undefined {
+    return this.users.find((user) => user.getName() === name);
+  }
+
   public getPlayers(): { [username: string]: number } {
     const players: { [username: string]: number } = {};
 
@@ -112,20 +114,56 @@ export class Game {
     return players;
   }
 
-  public update() {
+  private setStage(stage: "lobby" | number | "end"): void {
+    this.stage = stage;
+    this.updatedAt = Date.now();
+  }
+
+  public start() {
+    this.questions = EXAMPLE_QUESTIONS;
+    this.currentQuestion = 0;
+    this.setStage(this.currentQuestion);
+  }
+
+  private nextQuestion() {
+    this.currentQuestion++;
+    this.setStage(this.currentQuestion);
+  }
+
+  private finnish() {
+    this.setStage("lobby");
+  }
+
+  private updatePing() {
     const now: number = Date.now();
     Object.keys(this.lastPing).forEach((username: string) => {
       if ((now - this.lastPing[username]) / 1000 > TIMEOUT_TIME) {
         this.removeUser(username);
       }
     });
+  }
 
-    if (this.waiting.ready && this.currentQuestion != null) {
-      this.waiting.callbacks.forEach((callback: Function) => {
-        callback(this.getQuestion());
-      });
-      this.waiting.callbacks = [];
-      this.waiting.ready = false;
+  private updateAnswer() {
+    // Check if all players have answered.
+    if (Object.keys(this.answers).length === Object.keys(this.users).length) {
+      if (this.currentQuestion === this.questions.length - 1) {
+        this.finnish();
+      } else {
+        this.nextQuestion();
+      }
+      Object.keys(this.answers).forEach(
+        (username: string) => delete this.answers[username]
+      );
+    }
+  }
+
+  public update() {
+    this.updatePing();
+
+    if (this.stage.toString() === "lobby") {
+    } else if (this.stage.toString() === "end") {
+    } else {
+      this.updateAnswer();
     }
   }
 

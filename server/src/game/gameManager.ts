@@ -36,10 +36,6 @@ export class GameManager {
   }
 
   private static update(): void {
-    if (GameManager.doLog)
-      console.log(
-        `GameManager: Games: ${Object.keys(GameManager.games).length}`
-      );
     Object.values(GameManager.games).forEach((game: Game) => {
       game.update();
     });

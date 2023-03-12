@@ -4,6 +4,7 @@ export interface ISession {
   isOwner: boolean;
   players: { [username: string]: number };
   gameOn: boolean;
+  question: IQuestion | null;
   updatedAt: number;
   stage: "lobby" | number | "end";
 }
@@ -18,10 +19,11 @@ export interface IQuestion {
 }
 
 export type SessionContextType = {
-  nextQuestion: () => void | undefined;
   getPlayers: () => string[];
   getQuestion: () => IQuestion | null;
+  sendAnswer: (answer: string) => void | null;
 
+  startSession: () => void | undefined;
   hasSession: () => boolean;
   getSession: () => ISession | null;
   clearSession: () => void | undefined;

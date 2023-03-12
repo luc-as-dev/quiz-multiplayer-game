@@ -2,7 +2,6 @@ import {
   pingSessionResponseType,
   createSessionResponseType,
   joinSessionResponseType,
-  questionResponseType,
   updateSessionResponseType,
 } from "../@types/QuizAPI";
 
@@ -139,23 +138,42 @@ export async function nextQuestionFetch(
   return false;
 }
 
-export async function getQuestionFetch(
+export async function startSessionFetch(
   id: string,
   username: string
-): Promise<questionResponseType | undefined> {
+): Promise<boolean> {
   try {
-    const response: Response = await fetch(`${SERVER_URL}/game/question`, {
+    const response: Response = await fetch(`${SERVER_URL}/game/start`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ id, username }),
     });
     if (response.ok) {
-      const data: questionResponseType = await response.json();
-      console.log("Data:", data);
-      return data;
+      return true;
+    }
+    return false;
+  } catch (err) {
+    console.log(err);
+  }
+  return false;
+}
+
+export async function sendAnswerFetch(
+  id: string,
+  username: string,
+  answer: string
+): Promise<boolean> {
+  try {
+    const response: Response = await fetch(`${SERVER_URL}/game/answer`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, username, answer }),
+    });
+    if (response.ok) {
+      return true;
     }
   } catch (err) {
     console.log(err);
   }
-  return undefined;
+  return false;
 }

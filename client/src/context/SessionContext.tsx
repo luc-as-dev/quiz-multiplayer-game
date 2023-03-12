@@ -3,17 +3,16 @@ import {
   pingSessionResponseType,
   createSessionResponseType,
   joinSessionResponseType,
-  questionResponseType,
   updateSessionResponseType,
 } from "../@types/QuizAPI";
 import {
   pingSessionFetch,
   createSessionFetch,
-  getQuestionFetch,
   joinSessionFetch,
-  nextQuestionFetch,
   updateSessionFetch,
   leaveSessionFetch,
+  sendAnswerFetch,
+  startSessionFetch,
 } from "../api/QuizAPI";
 import { IQuestion, ISession, SessionContextType } from "../@types/Session";
 
@@ -73,24 +72,9 @@ function useProvideSession(): SessionContextType {
     if (updateInterval) clearInterval(updateInterval);
   }
 
-  function nextQuestion(): void {
+  function sendAnswer(answer: string): void {
     if (savedSession) {
-      nextQuestionFetch(savedSession!.id, savedSession!.username);
-    }
-  }
-
-  async function updateQuestion() {
-    if (savedSession) {
-      const question: IQuestion | undefined = await getQuestionFetch(
-        savedSession.id,
-        savedSession.username
-      );
-
-      if (question) {
-        setQuestion(question);
-      }
-    } else {
-      setQuestion(null);
+      sendAnswerFetch(savedSession.id, savedSession.username, answer);
     }
   }
 
@@ -106,17 +90,21 @@ function useProvideSession(): SessionContextType {
   }
 
   async function updateSession(id: string, username: string) {
-    const updateResponse: updateSessionResponseType | undefined =
+    const session: updateSessionResponseType | undefined =
       await updateSessionFetch(id, username);
 
-    setSavedSession(updateResponse!);
+    if (session) {
+      if (session.question) {
+        setQuestion(session.question);
+      }
+      setSavedSession(session!);
+    }
   }
 
   async function update(): Promise<void> {
     if (savedSession) {
       if (await hasUpdate()) {
         updateSession(savedSession.id, savedSession.username);
-        updateQuestion();
       }
     }
   }
@@ -130,6 +118,12 @@ function useProvideSession(): SessionContextType {
 
   function getQuestion(): IQuestion | null {
     return question;
+  }
+
+  function startSession() {
+    if (savedSession && savedSession.isOwner) {
+      startSessionFetch(savedSession.id, savedSession.username);
+    }
   }
 
   function hasSession(): boolean {
@@ -158,6 +152,7 @@ function useProvideSession(): SessionContextType {
         isOwner: true,
         players: { [sessionResponse.username]: 0 },
         gameOn: false,
+        question: null,
         updatedAt: sessionResponse.updatedAt,
         stage: "lobby",
       };
@@ -177,6 +172,7 @@ function useProvideSession(): SessionContextType {
         isOwner: false,
         players: sessionResponse.players,
         gameOn: sessionResponse.gameOn,
+        question: null,
         updatedAt: sessionResponse.updatedAt,
         stage: "lobby",
       };
@@ -196,9 +192,10 @@ function useProvideSession(): SessionContextType {
   }
 
   return {
-    nextQuestion,
     getPlayers,
     getQuestion,
+    sendAnswer,
+    startSession,
     hasSession,
     getSession,
     clearSession,

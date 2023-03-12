@@ -1,3 +1,5 @@
+import { IQuestion } from "./Session";
+
 export type createSessionResponseType = {
   username: string;
   id: string;
@@ -24,6 +26,7 @@ export type updateSessionResponseType = {
   isOwner: boolean;
   players: { [username: string]: number };
   gameOn: boolean;
+  question: IQuestion;
   updatedAt: number;
   stage: "lobby" | number | "end";
 };
@@ -36,13 +39,4 @@ export type updateSessionResponseType = {
   gameOn: boolean;
   updatedAt: number;
   stage: "lobby" | number | "end";
-};
-
-export type questionResponseType = {
-  time: number;
-  category: string;
-  difficulty: "easy" | "medium" | "hard";
-  type: "boolean" | "multiple";
-  question: string;
-  answers: string[];
 };

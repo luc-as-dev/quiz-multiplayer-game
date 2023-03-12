@@ -94,6 +94,8 @@ router.post("/game/join", (req: Request, res: Response) => {
   }
 });
 
+// Leave session.
+// body {id, username}
 router.post("/game/leave", (req: Request, res: Response) => {
   const { id, username } = req.body;
 
@@ -146,6 +148,7 @@ router.post("/game/update", (req: Request, res: Response) => {
           id: game.id,
           isOwner: game.isOwner(user),
           players: game.getPlayers(),
+          question: game.getQuestion(),
           updatedAt: game.updatedAt,
           stage: game.stage,
         });
@@ -156,21 +159,16 @@ router.post("/game/update", (req: Request, res: Response) => {
   }
 });
 
-// Get current question
-// body {id, username}
-router.post("/game/question", async (req: Request, res: Response) => {
-  const { id, username } = req.body;
+// Send answer to current question
+// body {id, username, answer}
+router.post("/game/answer", async (req: Request, res: Response) => {
+  const { id, username, answer } = req.body;
 
   if (id && username) {
     const game: Game = GameManager.findGameById(id);
-    if (game) {
-      const user = game.findUserByName(username);
-      if (user) {
-        await game.waitQuestion((question: any) => {
-          res.send(question);
-        });
-        return;
-      }
+    if (game && game.findUserByName(username)) {
+      game.saveAnswer(username, answer);
+      return res.send();
     }
     res.status(400).send();
   } else {
@@ -178,9 +176,9 @@ router.post("/game/question", async (req: Request, res: Response) => {
   }
 });
 
-// Set question to next question
+// Start game
 // body {id, username}
-router.post("/game/next", (req: Request, res: Response) => {
+router.post("/game/start", (req: Request, res: Response) => {
   const { id, username } = req.body;
 
   if (id && username) {
@@ -189,7 +187,7 @@ router.post("/game/next", (req: Request, res: Response) => {
     if (game) {
       const user = game.findUserByName(username);
       if (user && game.isOwner(user)) {
-        game.next();
+        game.start();
       }
     }
     res.send();
