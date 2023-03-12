@@ -10,8 +10,12 @@ type Props = {};
 
 export default function SessionLobby({}: Props) {
   const { setView }: ViewContextType = useViewContext();
-  const { getSession, nextQuestion, getPlayers }: SessionContextType =
-    useSession();
+  const {
+    getSession,
+    nextQuestion,
+    leaveSession,
+    getPlayers,
+  }: SessionContextType = useSession();
 
   function startGameHandler() {
     if (getSession() && getSession()!.isOwner) {
@@ -20,16 +24,16 @@ export default function SessionLobby({}: Props) {
   }
 
   function leaveSessionHandler() {
-    setView(<Home />);
+    leaveSession();
   }
 
   return (
     <div className="view">
       <Card className="grow-10">
-        <p className="medium-text">Session {getSession()!.id}</p>
+        <p className="medium-text">Session {getSession()?.id}</p>
         <div className="flex-wrap">
           <p>Deltagare:</p>
-          {getPlayers().map((player) => (
+          {getPlayers()?.map((player) => (
             <p key={player}>{player}</p>
           ))}
         </div>

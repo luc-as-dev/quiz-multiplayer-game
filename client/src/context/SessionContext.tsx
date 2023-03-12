@@ -1,18 +1,19 @@
 import React, { createContext, ReactNode, useEffect, useState } from "react";
 import {
-  checkSessionResponseType,
+  pingSessionResponseType,
   createSessionResponseType,
   joinSessionResponseType,
   questionResponseType,
   updateSessionResponseType,
 } from "../@types/QuizAPI";
 import {
-  checkSessionFetch,
+  pingSessionFetch,
   createSessionFetch,
   getQuestionFetch,
   joinSessionFetch,
   nextQuestionFetch,
   updateSessionFetch,
+  leaveSessionFetch,
 } from "../api/QuizAPI";
 import { IQuestion, ISession, SessionContextType } from "../@types/Session";
 
@@ -95,8 +96,9 @@ function useProvideSession(): SessionContextType {
 
   async function hasUpdate(): Promise<boolean> {
     if (savedSession) {
-      const checkResponse: checkSessionResponseType = await checkSessionFetch(
-        savedSession.id
+      const checkResponse: pingSessionResponseType = await pingSessionFetch(
+        savedSession.id,
+        savedSession.username
       );
       return checkResponse.updatedAt > savedSession.updatedAt;
     }
@@ -184,6 +186,15 @@ function useProvideSession(): SessionContextType {
     return false;
   }
 
+  async function leaveSession(): Promise<boolean> {
+    if (savedSession) {
+      stopInterval();
+      setSavedSession(null);
+      return await leaveSessionFetch(savedSession.id, savedSession.username);
+    }
+    return false;
+  }
+
   return {
     nextQuestion,
     getPlayers,
@@ -193,6 +204,7 @@ function useProvideSession(): SessionContextType {
     clearSession,
     createSession,
     joinSession,
+    leaveSession,
   };
 }
 

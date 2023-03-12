@@ -14,7 +14,7 @@ export type joinSessionResponseType = {
   stage: "lobby" | number | "end";
 };
 
-export type checkSessionResponseType = {
+export type pingSessionResponseType = {
   updatedAt: number;
 };
 

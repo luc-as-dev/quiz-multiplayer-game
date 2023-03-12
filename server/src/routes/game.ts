@@ -11,8 +11,6 @@ import {
 import { GameManager } from "../game/gameManager";
 import { Game } from "../game/game";
 import { User } from "../game/user";
-import { Question } from "../game/question";
-
 export const router = Router();
 
 router.get("/game/info/categories", async (_, res: Response) => {
@@ -96,6 +94,41 @@ router.post("/game/join", (req: Request, res: Response) => {
   }
 });
 
+router.post("/game/leave", (req: Request, res: Response) => {
+  const { id, username } = req.body;
+
+  if (id && username) {
+    const game: Game = GameManager.findGameById(id);
+
+    if (game && game.findUserByName(username)) {
+      game.removeUser(username);
+
+      res.send();
+    }
+  } else {
+    res.status(400).send();
+  }
+});
+
+// Ping game, get updatedAt
+// body {id, username}
+router.post("/game/ping", (req: Request, res: Response) => {
+  const { id, username } = req.body;
+  if (id && username) {
+    const game: Game = GameManager.findGameById(id);
+    if (game) {
+      const user = game.findUserByName(username);
+
+      if (user) {
+        const updatedAt = game.ping(user);
+        res.send({ updatedAt });
+      }
+    } else {
+      res.status(400).send();
+    }
+  }
+});
+
 // Update session.
 // body {id, username}
 router.post("/game/update", (req: Request, res: Response) => {
@@ -113,7 +146,6 @@ router.post("/game/update", (req: Request, res: Response) => {
           id: game.id,
           isOwner: game.isOwner(user),
           players: game.getPlayers(),
-          gameOn: game.gameOn,
           updatedAt: game.updatedAt,
           stage: game.stage,
         });
@@ -172,17 +204,6 @@ router.get("/game/checkId/:id", (req: Request, res: Response) => {
   const game: Game = GameManager.findGameById(req.params.id);
   if (!game) {
     res.send();
-  } else {
-    res.status(400).send();
-  }
-});
-
-// Get updatedAt value of game
-// :id - session id
-router.post("/game/check/:id", (req: Request, res: Response) => {
-  const game: Game = GameManager.findGameById(req.params.id);
-  if (game) {
-    res.send({ updatedAt: game.updatedAt });
   } else {
     res.status(400).send();
   }

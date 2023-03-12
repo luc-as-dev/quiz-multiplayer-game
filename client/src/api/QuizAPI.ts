@@ -1,5 +1,5 @@
 import {
-  checkSessionResponseType,
+  pingSessionResponseType,
   createSessionResponseType,
   joinSessionResponseType,
   questionResponseType,
@@ -60,15 +60,37 @@ export async function joinSessionFetch(
   return undefined;
 }
 
-export async function checkSessionFetch(
-  id: string
-): Promise<checkSessionResponseType> {
+export async function leaveSessionFetch(
+  id: string,
+  username: string
+): Promise<boolean> {
   try {
-    const response: Response = await fetch(`${SERVER_URL}/game/check/${id}`, {
+    const response: Response = await fetch(`${SERVER_URL}/game/leave`, {
       method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, username }),
     });
     if (response.ok) {
-      const data: checkSessionResponseType = await response.json();
+      return true;
+    }
+  } catch (err) {
+    console.log(err);
+  }
+  return false;
+}
+
+export async function pingSessionFetch(
+  id: string,
+  username: string
+): Promise<pingSessionResponseType> {
+  try {
+    const response: Response = await fetch(`${SERVER_URL}/game/ping`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ id, username }),
+    });
+    if (response.ok) {
+      const data: pingSessionResponseType = await response.json();
       return data;
     }
   } catch (err) {

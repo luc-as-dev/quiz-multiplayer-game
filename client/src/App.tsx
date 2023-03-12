@@ -14,10 +14,6 @@ export default function App() {
   const { getSession }: SessionContextType = useSession();
 
   useEffect(() => {
-    setView(<Home />);
-  }, []);
-
-  useEffect(() => {
     if (getSession()) {
       const stage = getSession()!.stage;
       console.log("Set view:", stage);
@@ -27,6 +23,8 @@ export default function App() {
       } else {
         setView(<Question />);
       }
+    } else {
+      setView(<Home />);
     }
   }, [getSession()?.stage]);
 

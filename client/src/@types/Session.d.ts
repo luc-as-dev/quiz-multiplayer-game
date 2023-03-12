@@ -27,4 +27,5 @@ export type SessionContextType = {
   clearSession: () => void | undefined;
   createSession: (name: string, username: string) => Promise<boolean>;
   joinSession: (name: string, username: string) => Promise<boolean>;
+  leaveSession: () => Promise<boolean>;
 };

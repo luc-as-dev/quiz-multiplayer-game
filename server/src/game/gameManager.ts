@@ -5,39 +5,30 @@ export class GameManager {
   private static loop: NodeJS.Timer = null;
   private static games: { [key: string]: Game } = {};
   private static activeGames: Game[] = [];
+  public static doLog: boolean = true;
 
   public static addGame(game: Game): boolean {
     if (!GameManager.games[game.id]) {
-      console.log(`Added game: ${game.id}`);
+      console.log(`GameManager: Added game ${game.id}`);
       GameManager.games[game.id] = game;
+      if (GameManager.loop === null) {
+        GameManager.start();
+      }
       return true;
     }
     return false;
   }
 
   public static removeGame(game: Game): boolean {
-    console.log(`Removing game: ${game.id}`);
+    if (GameManager.doLog) console.log(`GameManager: Removing game ${game.id}`);
     if (!game.gameOn && GameManager.games[game.id]) {
       delete GameManager.games[game.id];
+      if (Object.keys(GameManager.games).length === 0) {
+        GameManager.stop();
+      }
       return true;
     }
     return false;
-  }
-
-  public static startGame(game: Game): void {
-    console.log(`Starting game: ${game.id}`);
-    GameManager.activeGames.push(game);
-    if (GameManager.loop === null) {
-      GameManager.start();
-    }
-  }
-
-  public static stopGame(game: Game): void {
-    console.log(`Stopping game: ${game.id}`);
-    GameManager.activeGames.splice(GameManager.activeGames.indexOf(game));
-    if (GameManager.activeGames.length === 0) {
-      GameManager.stop();
-    }
   }
 
   public static findGameById(id: string): Game | undefined {
@@ -45,12 +36,17 @@ export class GameManager {
   }
 
   private static update(): void {
-    GameManager.activeGames.forEach((game: Game) => {
+    if (GameManager.doLog)
+      console.log(
+        `GameManager: Games: ${Object.keys(GameManager.games).length}`
+      );
+    Object.values(GameManager.games).forEach((game: Game) => {
       game.update();
     });
   }
 
   private static start(): void {
+    if (GameManager.doLog) console.log("GameManager: Starting interval");
     GameManager.loop = setInterval(
       GameManager.update,
       GameManager.updateInterval
@@ -58,6 +54,7 @@ export class GameManager {
   }
 
   private static stop(): void {
+    if (GameManager.doLog) console.log("GameManager: Stopping interval");
     clearInterval(GameManager.loop);
     GameManager.loop = null;
   }
