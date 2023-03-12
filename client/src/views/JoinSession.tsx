@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { joinSessionResponseType } from "../@types/QuizAPI";
 import { SessionContextType } from "../@types/Session";
 import { ViewContextType } from "../@types/View";
 import Card from "../components/Card";
@@ -7,7 +6,6 @@ import Input from "../components/Input";
 import { useViewContext } from "../context/ViewContext";
 import useSession from "../hooks/useSession";
 import Home from "./Home";
-import SessionLobby from "./SessionLobby";
 
 type Props = {};
 
@@ -17,10 +15,8 @@ export default function JoinSession({}: Props) {
   const [sessionName, setSessionName] = useState<string>("");
   const [username, setUsername] = useState<string>("");
 
-  async function joinSessionHandler(): Promise<void> {
-    if (await joinSession(sessionName, username)) {
-      setView(<SessionLobby />);
-    }
+  function joinSessionHandler(): void {
+    joinSession(sessionName, username);
   }
 
   function goBackHandler(): void {

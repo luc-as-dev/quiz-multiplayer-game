@@ -25,11 +25,9 @@ export class Question {
     this.incorrect_answers = incorrect_answers;
   }
 
-  answers(): string[] {
+  getAnswers(): string[] {
     const answers = [this.correct_answer, ...this.incorrect_answers];
-    console.log(answers);
     answers.sort(() => (Math.random() > 0.5 ? 1 : -1));
-    console.log(answers);
-    return [];
+    return answers;
   }
 }

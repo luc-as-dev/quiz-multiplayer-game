@@ -7,7 +7,6 @@ import Input from "../components/Input";
 import { useViewContext } from "../context/ViewContext";
 import useSession from "../hooks/useSession";
 import Home from "./Home";
-import SessionLobby from "./SessionLobby";
 
 type Props = {};
 
@@ -21,10 +20,8 @@ export default function NewSession({}: Props) {
   const [sessionName, setSessionName] = useState<string>(randomName());
   const [username, setUsername] = useState<string>("");
 
-  async function createSessionHandler(): Promise<void> {
-    if (await createSession(sessionName, username)) {
-      setView(<SessionLobby />);
-    }
+  function createSessionHandler(): void {
+    createSession(sessionName, username);
   }
 
   function goBackHandler(): void {

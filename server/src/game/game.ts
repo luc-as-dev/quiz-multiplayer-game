@@ -3,6 +3,7 @@ import {
   QuestionParamsType,
   QuestionType,
 } from "../api/triviaAPI";
+import { GameManager } from "./gameManager";
 import { Question } from "./question";
 import { User } from "./user";
 
@@ -15,6 +16,10 @@ export class Game {
   owner: number = 0; // index of user in users
   users: User[] = [];
   time: number;
+  waiting: { ready: boolean; callbacks: Function[] } = {
+    ready: false,
+    callbacks: [],
+  };
   questions: Question[] = null;
   currentQuestion: number = null;
   stage: "lobby" | number | "end";
@@ -30,6 +35,41 @@ export class Game {
   private setStage(stage: "lobby" | number | "end"): void {
     this.stage = stage;
     this.updatedAt = Date.now();
+  }
+
+  public next(): void {
+    if (!this.currentQuestion) {
+      this.fetchTriviaQuestions({
+        amount: 10,
+        category: "any",
+        difficulty: "any",
+        type: "multiple",
+      }).then(() => {
+        GameManager.startGame(this);
+      });
+    }
+    this.currentQuestion = this.currentQuestion ? this.currentQuestion + 1 : 0;
+    this.setStage(this.currentQuestion);
+    setTimeout(() => {
+      this.waiting.ready = true;
+    }, 1000);
+  }
+
+  public async waitQuestion(callback: Function) {
+    this.waiting.callbacks.push(callback);
+  }
+
+  public getQuestion() {
+    const question = this.questions[this.currentQuestion];
+
+    return {
+      time: question.time,
+      category: question.category,
+      difficulty: question.difficulty,
+      type: question.type,
+      question: question.question,
+      answers: question.getAnswers(),
+    };
   }
 
   public findUserByName(name: string): User | undefined {
@@ -55,12 +95,15 @@ export class Game {
     return players;
   }
 
-  public start(): void {
-    this.currentQuestion = this.currentQuestion ? this.currentQuestion + 1 : 1;
-    this.setStage(this.currentQuestion);
+  public update() {
+    if (this.waiting.ready && this.currentQuestion != null) {
+      this.waiting.callbacks.forEach((callback: Function) => {
+        callback(this.getQuestion());
+      });
+      this.waiting.callbacks = [];
+      this.waiting.ready = false;
+    }
   }
-
-  public update() {}
 
   public async fetchTriviaQuestions(questionParams: QuestionParamsType) {
     try {
@@ -79,9 +122,6 @@ export class Game {
           )
         )
       );
-      this.questions.forEach((question: Question) => {
-        console.log(question.answers());
-      });
       this.updatedAt = Date.now();
       return true;
     } catch (e) {

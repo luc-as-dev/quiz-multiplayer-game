@@ -7,8 +7,8 @@ export class GameManager {
   private static activeGames: Game[] = [];
 
   public static addGame(game: Game): boolean {
-    console.log(`Added game: ${game.id}`);
     if (!GameManager.games[game.id]) {
+      console.log(`Added game: ${game.id}`);
       GameManager.games[game.id] = game;
       return true;
     }

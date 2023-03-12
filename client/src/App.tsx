@@ -6,20 +6,25 @@ import { useViewContext } from "./context/ViewContext";
 import useSession from "./hooks/useSession";
 import Home from "./views/Home";
 import Question from "./views/Question";
+import SessionLobby from "./views/SessionLobby";
 
 export default function App() {
   const { view, isEntering, isExiting, setView }: ViewContextType =
     useViewContext();
-  const { getSession, hasSession }: SessionContextType = useSession();
+  const { getSession }: SessionContextType = useSession();
 
   useEffect(() => {
     setView(<Home />);
   }, []);
 
   useEffect(() => {
-    console.log(getSession());
     if (getSession()) {
-      if (getSession()!.stage.toString() === "1") {
+      const stage = getSession()!.stage;
+      console.log("Set view:", stage);
+      if (stage.toString() === "lobby") {
+        setView(<SessionLobby />);
+      } else if (stage.toString() === "end") {
+      } else {
         setView(<Question />);
       }
     }

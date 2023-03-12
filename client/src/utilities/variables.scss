@@ -34,6 +34,12 @@ $inputText: $color1;
   font-weight: 500;
 }
 
+.two-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px
+}
+
 .flex-wrap {
   display: flex;
   flex-wrap: wrap;

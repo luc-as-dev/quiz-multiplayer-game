@@ -37,3 +37,12 @@ export type updateSessionResponseType = {
   updatedAt: number;
   stage: "lobby" | number | "end";
 };
+
+export type questionResponseType = {
+  time: number;
+  category: string;
+  difficulty: "easy" | "medium" | "hard";
+  type: "boolean" | "multiple";
+  question: string;
+  answers: string[];
+};

@@ -8,9 +8,19 @@ export interface ISession {
   stage: "lobby" | number | "end";
 }
 
+export interface IQuestion {
+  time: number;
+  category: string;
+  difficulty: "easy" | "medium" | "hard";
+  type: "boolean" | "multiple";
+  question: string;
+  answers: string[];
+}
+
 export type SessionContextType = {
   nextQuestion: () => void | undefined;
   getPlayers: () => string[];
+  getQuestion: () => IQuestion | null;
 
   hasSession: () => boolean;
   getSession: () => ISession | null;

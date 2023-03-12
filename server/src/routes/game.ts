@@ -11,6 +11,7 @@ import {
 import { GameManager } from "../game/gameManager";
 import { Game } from "../game/game";
 import { User } from "../game/user";
+import { Question } from "../game/question";
 
 export const router = Router();
 
@@ -123,6 +124,28 @@ router.post("/game/update", (req: Request, res: Response) => {
   }
 });
 
+// Get current question
+// body {id, username}
+router.post("/game/question", async (req: Request, res: Response) => {
+  const { id, username } = req.body;
+
+  if (id && username) {
+    const game: Game = GameManager.findGameById(id);
+    if (game) {
+      const user = game.findUserByName(username);
+      if (user) {
+        await game.waitQuestion((question: any) => {
+          res.send(question);
+        });
+        return;
+      }
+    }
+    res.status(400).send();
+  } else {
+    res.status(400).send();
+  }
+});
+
 // Set question to next question
 // body {id, username}
 router.post("/game/next", (req: Request, res: Response) => {
@@ -134,7 +157,7 @@ router.post("/game/next", (req: Request, res: Response) => {
     if (game) {
       const user = game.findUserByName(username);
       if (user && game.isOwner(user)) {
-        game.start();
+        game.next();
       }
     }
     res.send();

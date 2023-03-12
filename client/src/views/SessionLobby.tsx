@@ -14,9 +14,7 @@ export default function SessionLobby({}: Props) {
     useSession();
 
   function startGameHandler() {
-    console.log(getSession());
     if (getSession() && getSession()!.isOwner) {
-      console.log("Inside");
       nextQuestion();
     }
   }

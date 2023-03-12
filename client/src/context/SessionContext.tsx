@@ -3,16 +3,18 @@ import {
   checkSessionResponseType,
   createSessionResponseType,
   joinSessionResponseType,
+  questionResponseType,
   updateSessionResponseType,
 } from "../@types/QuizAPI";
 import {
   checkSessionFetch,
   createSessionFetch,
+  getQuestionFetch,
   joinSessionFetch,
   nextQuestionFetch,
   updateSessionFetch,
 } from "../api/QuizAPI";
-import { ISession, SessionContextType } from "../@types/Session";
+import { IQuestion, ISession, SessionContextType } from "../@types/Session";
 
 const UPDATE_INTERVAL = import.meta.env.VITE_SOME_UPDATE_INTERVAL;
 const LOCAL_STORAGE_KEY = "quiz";
@@ -23,6 +25,7 @@ function useProvideSession(): SessionContextType {
   const [savedSession, setSavedSession] = useState<ISession | null>(null);
   const [updateInterval, setUpdateInterval] = useState<number | null>(null);
   const [updates, setUpdates] = useState<number>(0);
+  const [question, setQuestion] = useState<IQuestion | null>(null);
 
   useEffect(() => {
     localLoad();
@@ -70,9 +73,23 @@ function useProvideSession(): SessionContextType {
   }
 
   function nextQuestion(): void {
-    console.log(savedSession);
     if (savedSession) {
       nextQuestionFetch(savedSession!.id, savedSession!.username);
+    }
+  }
+
+  async function updateQuestion() {
+    if (savedSession) {
+      const question: IQuestion | undefined = await getQuestionFetch(
+        savedSession.id,
+        savedSession.username
+      );
+
+      if (question) {
+        setQuestion(question);
+      }
+    } else {
+      setQuestion(null);
     }
   }
 
@@ -97,6 +114,7 @@ function useProvideSession(): SessionContextType {
     if (savedSession) {
       if (await hasUpdate()) {
         updateSession(savedSession.id, savedSession.username);
+        updateQuestion();
       }
     }
   }
@@ -106,6 +124,10 @@ function useProvideSession(): SessionContextType {
       return Object.keys(savedSession.players);
     }
     return [];
+  }
+
+  function getQuestion(): IQuestion | null {
+    return question;
   }
 
   function hasSession(): boolean {
@@ -165,6 +187,7 @@ function useProvideSession(): SessionContextType {
   return {
     nextQuestion,
     getPlayers,
+    getQuestion,
     hasSession,
     getSession,
     clearSession,
