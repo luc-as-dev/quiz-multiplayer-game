@@ -34,9 +34,11 @@ export default function SessionLobby({}: Props) {
           ))}
         </div>
       </Card>
-      <Card className="big-text grow-1" onClick={startGameHandler}>
-        Starta
-      </Card>
+      {getSession()?.isOwner && (
+        <Card className="big-text grow-1" onClick={startGameHandler}>
+          Starta
+        </Card>
+      )}
       <Card className="big-text grow-1" onClick={leaveSessionHandler}>
         Tillbaka
       </Card>

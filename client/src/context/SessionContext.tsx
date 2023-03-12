@@ -51,9 +51,16 @@ function useProvideSession(): SessionContextType {
     );
   }
 
-  function localLoad(): void {
-    const local = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (local) {
+  async function localLoad(): Promise<void> {
+    const localStr = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (localStr) {
+      const data: { id: string; username: string } = JSON.parse(localStr);
+      const session = await updateSession(data.id, data.username);
+      if (session) {
+        startInterval(session);
+      } else {
+        localClear();
+      }
     }
   }
 
@@ -70,6 +77,7 @@ function useProvideSession(): SessionContextType {
   function stopInterval() {
     setUpdates(0);
     if (updateInterval) clearInterval(updateInterval);
+    localClear();
   }
 
   function sendAnswer(answer: string): void {
@@ -89,7 +97,10 @@ function useProvideSession(): SessionContextType {
     return false;
   }
 
-  async function updateSession(id: string, username: string) {
+  async function updateSession(
+    id: string,
+    username: string
+  ): Promise<ISession | null> {
     const session: updateSessionResponseType | undefined =
       await updateSessionFetch(id, username);
 
@@ -98,7 +109,9 @@ function useProvideSession(): SessionContextType {
         setQuestion(session.question);
       }
       setSavedSession(session!);
+      return session;
     }
+    return null;
   }
 
   async function update(): Promise<void> {
