@@ -83,6 +83,7 @@ export class Game {
 
   public addUser(user: User): void {
     this.users.push(user);
+    this.ping(user);
     this.updatedAt = Date.now();
   }
 
@@ -147,7 +148,20 @@ export class Game {
       );
       this.updatedAt = Date.now();
       return true;
-    } catch (e) {
+    } catch (err) {
+      console.log(err);
+      this.questions = [];
+      this.questions.push(
+        new Question(
+          30,
+          "Backup-frågor",
+          "easy",
+          "boolean",
+          "Tycker du om Quiz?",
+          "Ja",
+          ["Nej"]
+        )
+      );
       return false;
     }
   }
