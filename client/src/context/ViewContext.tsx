@@ -1,8 +1,8 @@
 import React, { createContext, ReactNode, useContext, useState } from "react";
 import { ViewContextType } from "../@types/View";
 
-const EXIT_TIME: number = 250;
-const ENTER_TIME: number = 250;
+const EXIT_TIME: number = 125;
+const ENTER_TIME: number = 125;
 
 const ViewContext = createContext<ViewContextType>({
   view: undefined,

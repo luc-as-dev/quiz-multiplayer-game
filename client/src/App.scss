@@ -19,13 +19,13 @@
   .views-container.active {
     opacity: 1;
     transform: translate3d(0, 0, 0);
-    transition: 250ms all ease-out;
+    transition: 125ms all ease-out;
   }
 
   .views-container.exit {
     opacity: 0;
     transform: translate3d(500px, 0, 0);
-    transition: 250ms all ease-in;
+    transition: 125ms all ease-in;
   }
 }
 
