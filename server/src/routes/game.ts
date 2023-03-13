@@ -1,4 +1,4 @@
-import { Router, Request, Response, response } from "express";
+import { Router, Request, Response } from "express";
 
 import {
   getCategories,
@@ -16,6 +16,7 @@ export const router = Router();
 router.get("/game/info/categories", async (_, res: Response) => {
   try {
     const categories: CategoryType[] = await getCategories();
+
     res.send(categories);
   } catch {
     res.status(500).send();
@@ -25,6 +26,7 @@ router.get("/game/info/categories", async (_, res: Response) => {
 router.get("/game/info/questions", async (_, res: Response) => {
   try {
     const count: QuestionsCountGlobalType = await getQuestionsCountGlobal();
+
     res.send(count);
   } catch {
     res.status(500).send();
@@ -35,6 +37,7 @@ router.get("/game/info/questions/:id", async (req: Request, res: Response) => {
   try {
     const id: number = +req.params.id;
     const count: QuestionsCountType = await getQuestionsCountByCategory(id);
+
     res.send(count);
   } catch {
     res.status(400).send();
@@ -59,6 +62,9 @@ router.post("/game/create", (req: Request, res: Response) => {
     res.send({
       username: user.getName(),
       id: game.id,
+      isOwner: game.isOwner(user),
+      players: game.getPlayers(),
+      question: game.getQuestion(),
       updatedAt: game.updatedAt,
       stage: game.stage,
     });
@@ -83,8 +89,9 @@ router.post("/game/join", (req: Request, res: Response) => {
       res.send({
         username: user.getName(),
         id: game.id,
+        isOwner: game.isOwner(user),
         players: game.getPlayers(),
-        gameOn: game.gameOn,
+        question: game.getQuestion(),
         updatedAt: game.updatedAt,
         stage: game.stage,
       });
@@ -116,13 +123,16 @@ router.post("/game/leave", (req: Request, res: Response) => {
 // body {id, username}
 router.post("/game/ping", (req: Request, res: Response) => {
   const { id, username } = req.body;
+
   if (id && username) {
     const game: Game = GameManager.findGameById(id);
+
     if (game) {
       const user = game.findUserByName(username);
 
       if (user) {
         const updatedAt = game.ping(user);
+
         res.send({ updatedAt });
       }
     } else {
@@ -166,6 +176,7 @@ router.post("/game/answer", async (req: Request, res: Response) => {
 
   if (id && username) {
     const game: Game = GameManager.findGameById(id);
+
     if (game && game.findUserByName(username)) {
       game.saveAnswer(username, answer);
       return res.send();
@@ -186,6 +197,7 @@ router.post("/game/start", (req: Request, res: Response) => {
 
     if (game) {
       const user = game.findUserByName(username);
+
       if (user && game.isOwner(user)) {
         game.start();
       }
@@ -200,6 +212,20 @@ router.post("/game/start", (req: Request, res: Response) => {
 // :id - session id
 router.get("/game/checkId/:id", (req: Request, res: Response) => {
   const game: Game = GameManager.findGameById(req.params.id);
+
+  if (!game) {
+    res.send();
+  } else {
+    res.status(400).send();
+  }
+});
+
+// Check if session id is available
+// body {id}
+router.post("/game/checkId", (req: Request, res: Response) => {
+  const { id } = req.body;
+  const game: Game = GameManager.findGameById(id);
+
   if (!game) {
     res.send();
   } else {

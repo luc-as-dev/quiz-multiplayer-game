@@ -29,7 +29,7 @@ export type SessionContextType = {
   sendAnswer: (answer: string) => void | null;
 
   hasSession: () => boolean;
-  startSession: () => void | undefined;
+  startSession: () => Promise<boolean> | undefined;
   createSession: (name: string, username: string) => Promise<boolean>;
   joinSession: (name: string, username: string) => Promise<boolean>;
   leaveSession: () => Promise<boolean>;
