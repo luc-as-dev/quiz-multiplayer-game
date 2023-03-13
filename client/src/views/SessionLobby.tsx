@@ -6,35 +6,30 @@ import useSession from "../hooks/useSession";
 type Props = {};
 
 export default function SessionLobby({}: Props) {
-  const {
-    getSession,
-    startSession,
-    leaveSession,
-    getPlayers,
-  }: SessionContextType = useSession();
+  const session: SessionContextType = useSession();
 
   function startGameHandler() {
-    if (getSession() && getSession()!.isOwner) {
-      startSession();
+    if (session.hasSession() && session.getIsOwner()) {
+      session.startSession();
     }
   }
 
   function leaveSessionHandler() {
-    leaveSession();
+    session.leaveSession();
   }
 
   return (
     <div className="view">
       <Card className="grow-10">
-        <p className="medium-text">Session {getSession()?.id}</p>
+        <p className="medium-text">Session {session.getId()}</p>
         <div className="flex-wrap">
           <p>Deltagare:</p>
-          {getPlayers()?.map((player) => (
+          {session.getPlayers()?.map((player) => (
             <p key={player}>{player}</p>
           ))}
         </div>
       </Card>
-      {getSession()?.isOwner && (
+      {session.getIsOwner() && (
         <Card className="big-text grow-1" onClick={startGameHandler}>
           Starta
         </Card>

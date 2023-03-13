@@ -11,11 +11,11 @@ import SessionLobby from "./views/SessionLobby";
 export default function App() {
   const { view, isEntering, isExiting, setView }: ViewContextType =
     useViewContext();
-  const { getSession }: SessionContextType = useSession();
+  const session: SessionContextType = useSession();
 
   useEffect(() => {
-    if (getSession()) {
-      const stage = getSession()!.stage;
+    if (session.hasSession()) {
+      const stage = session.getStage()!;
       console.log("Set view:", stage);
       if (stage.toString() === "lobby") {
         setView(<SessionLobby />);
@@ -26,7 +26,7 @@ export default function App() {
     } else {
       setView(<Home />);
     }
-  }, [getSession()?.stage]);
+  }, [session.getStage()]);
 
   return (
     <div className="app">

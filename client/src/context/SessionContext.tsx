@@ -22,7 +22,7 @@ const LOCAL_STORAGE_KEY = "quiz";
 export const sessionContext = createContext<SessionContextType | null>(null);
 
 function useProvideSession(): SessionContextType {
-  const [savedSession, setSavedSession] = useState<ISession | null>(null);
+  const [currentSession, setCurrentSession] = useState<ISession | null>(null);
   const [updateInterval, setUpdateInterval] = useState<number | null>(null);
   const [updates, setUpdates] = useState<number>(0);
   const [question, setQuestion] = useState<IQuestion | null>(null);
@@ -66,7 +66,7 @@ function useProvideSession(): SessionContextType {
 
   function startInterval(session: ISession) {
     localSave(session);
-    setSavedSession(session);
+    setCurrentSession(session);
     setUpdateInterval(
       setInterval(() => {
         setUpdates((current) => current + 1);
@@ -80,19 +80,13 @@ function useProvideSession(): SessionContextType {
     localClear();
   }
 
-  function sendAnswer(answer: string): void {
-    if (savedSession) {
-      sendAnswerFetch(savedSession.id, savedSession.username, answer);
-    }
-  }
-
   async function hasUpdate(): Promise<boolean> {
-    if (savedSession) {
+    if (currentSession) {
       const checkResponse: pingSessionResponseType = await pingSessionFetch(
-        savedSession.id,
-        savedSession.username
+        currentSession.id,
+        currentSession.username
       );
-      return checkResponse.updatedAt > savedSession.updatedAt;
+      return checkResponse.updatedAt > currentSession.updatedAt;
     }
     return false;
   }
@@ -108,47 +102,64 @@ function useProvideSession(): SessionContextType {
       if (session.question) {
         setQuestion(session.question);
       }
-      setSavedSession(session!);
+      setCurrentSession(session!);
       return session;
     }
     return null;
   }
 
   async function update(): Promise<void> {
-    if (savedSession) {
+    if (currentSession) {
       if (await hasUpdate()) {
-        updateSession(savedSession.id, savedSession.username);
+        updateSession(currentSession.id, currentSession.username);
       }
     }
   }
 
-  function getPlayers(): string[] {
-    if (savedSession) {
-      return Object.keys(savedSession.players);
-    }
-    return [];
+  function getId(): string | undefined {
+    if (currentSession) return currentSession.id;
+    return undefined;
   }
 
-  function getQuestion(): IQuestion | null {
-    return question;
+  function getUsername(): string | undefined {
+    if (currentSession) return currentSession.username;
+    return undefined;
   }
 
-  function startSession() {
-    if (savedSession && savedSession.isOwner) {
-      startSessionFetch(savedSession.id, savedSession.username);
+  function getIsOwner(): boolean | undefined {
+    if (currentSession) return currentSession.isOwner;
+    return undefined;
+  }
+
+  function getPlayers(): string[] | undefined {
+    if (currentSession) return Object.keys(currentSession.players);
+    return undefined;
+  }
+
+  function getQuestion(): IQuestion | null | undefined {
+    if (currentSession) return question;
+    return undefined;
+  }
+
+  function getStage(): string | number | undefined {
+    if (currentSession) return currentSession.stage;
+    return undefined;
+  }
+
+  function sendAnswer(answer: string): void {
+    if (currentSession) {
+      sendAnswerFetch(currentSession.id, currentSession.username, answer);
     }
   }
 
   function hasSession(): boolean {
-    return savedSession !== null;
+    return currentSession !== null;
   }
 
-  function getSession(): ISession | null {
-    return savedSession;
-  }
-
-  function clearSession(): void {
-    setSavedSession(null);
+  function startSession() {
+    if (currentSession && currentSession.isOwner) {
+      startSessionFetch(currentSession.id, currentSession.username);
+    }
   }
 
   async function createSession(
@@ -164,7 +175,6 @@ function useProvideSession(): SessionContextType {
         username: sessionResponse.username,
         isOwner: true,
         players: { [sessionResponse.username]: 0 },
-        gameOn: false,
         question: null,
         updatedAt: sessionResponse.updatedAt,
         stage: "lobby",
@@ -184,7 +194,6 @@ function useProvideSession(): SessionContextType {
         username: sessionResponse.username,
         isOwner: false,
         players: sessionResponse.players,
-        gameOn: sessionResponse.gameOn,
         question: null,
         updatedAt: sessionResponse.updatedAt,
         stage: "lobby",
@@ -196,22 +205,27 @@ function useProvideSession(): SessionContextType {
   }
 
   async function leaveSession(): Promise<boolean> {
-    if (savedSession) {
+    if (currentSession) {
       stopInterval();
-      setSavedSession(null);
-      return await leaveSessionFetch(savedSession.id, savedSession.username);
+      setCurrentSession(null);
+      return await leaveSessionFetch(
+        currentSession.id,
+        currentSession.username
+      );
     }
     return false;
   }
 
   return {
+    getId,
+    getUsername,
+    getIsOwner,
     getPlayers,
     getQuestion,
+    getStage,
     sendAnswer,
     startSession,
     hasSession,
-    getSession,
-    clearSession,
     createSession,
     joinSession,
     leaveSession,

@@ -3,7 +3,6 @@ export interface ISession {
   username: string;
   isOwner: boolean;
   players: { [username: string]: number };
-  gameOn: boolean;
   question: IQuestion | null;
   updatedAt: number;
   stage: "lobby" | number | "end";
@@ -19,14 +18,17 @@ export interface IQuestion {
 }
 
 export type SessionContextType = {
-  getPlayers: () => string[];
-  getQuestion: () => IQuestion | null;
+  getId: () => string | undefined;
+  getUsername: () => string | undefined;
+  getIsOwner: () => boolean | undefined;
+  getPlayers: () => string[] | undefined;
+  getQuestion: () => IQuestion | null | undefined;
+  getStage: () => string | number | undefined;
+
   sendAnswer: (answer: string) => void | null;
 
-  startSession: () => void | undefined;
   hasSession: () => boolean;
-  getSession: () => ISession | null;
-  clearSession: () => void | undefined;
+  startSession: () => void | undefined;
   createSession: (name: string, username: string) => Promise<boolean>;
   joinSession: (name: string, username: string) => Promise<boolean>;
   leaveSession: () => Promise<boolean>;
