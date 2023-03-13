@@ -22,6 +22,7 @@ export type SessionContextType = {
   getUsername: () => string | undefined;
   getIsOwner: () => boolean | undefined;
   getPlayers: () => string[] | undefined;
+  getScores: () => { [username: string]: number } | undefined;
   getQuestion: () => IQuestion | null | undefined;
   getStage: () => string | number | undefined;
 

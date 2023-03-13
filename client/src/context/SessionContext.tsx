@@ -136,6 +136,11 @@ function useProvideSession(): SessionContextType {
     return undefined;
   }
 
+  function getScores(): { [username: string]: number } | undefined {
+    if (currentSession) return currentSession.players;
+    return undefined;
+  }
+
   function getQuestion(): IQuestion | null | undefined {
     if (currentSession) return question;
     return undefined;
@@ -221,6 +226,7 @@ function useProvideSession(): SessionContextType {
     getUsername,
     getIsOwner,
     getPlayers,
+    getScores,
     getQuestion,
     getStage,
     sendAnswer,

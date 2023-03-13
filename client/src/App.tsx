@@ -1,11 +1,12 @@
-import React, { createContext, ReactNode, useEffect, useState } from "react";
+import React, { ReactNode, useEffect } from "react";
+import "./App.scss";
 import { SessionContextType } from "./@types/Session";
 import { ViewContextType } from "./@types/View";
-import "./App.scss";
 import { useViewContext } from "./context/ViewContext";
 import useSession from "./hooks/useSession";
 import Home from "./views/Home";
 import Question from "./views/Question";
+import SessionEnd from "./views/SessionEnd";
 import SessionLobby from "./views/SessionLobby";
 
 export default function App() {
@@ -20,6 +21,7 @@ export default function App() {
       if (stage.toString() === "lobby") {
         setView(<SessionLobby />);
       } else if (stage.toString() === "end") {
+        setView(<SessionEnd />);
       } else {
         setView(<Question />);
       }

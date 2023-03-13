@@ -132,7 +132,7 @@ export class Game {
   }
 
   private finnish() {
-    this.setStage("lobby");
+    this.setStage("end");
   }
 
   private updatePing() {
