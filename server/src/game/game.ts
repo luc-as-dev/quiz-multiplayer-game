@@ -89,6 +89,7 @@ export class Game {
     console.log(`Game[${this.id}]: Removing ${username}`);
     this.users = this.users.filter((user: User) => user.getName() !== username);
     delete this.lastPing[username];
+    delete this.answers[username];
     this.updatedAt = Date.now();
 
     if (this.users.length === 0) {
