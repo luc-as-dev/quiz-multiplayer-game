@@ -18,7 +18,7 @@ const EXAMPLE_QUESTIONS = [
     "boolean",
     "Tycker du om Quiz?",
     "Ja",
-    ["Nej"]
+    ["Nej", "Oklart", "Vet inte"]
   ),
   new Question(
     30,
@@ -27,7 +27,7 @@ const EXAMPLE_QUESTIONS = [
     "boolean",
     "Fungerar detta?",
     "Ja",
-    ["Nej"]
+    ["Nej", "Oklart", "Vet inte"]
   ),
 ];
 
@@ -147,14 +147,20 @@ export class Game {
   private updateAnswer() {
     // Check if all players have answered.
     if (Object.keys(this.answers).length === Object.keys(this.users).length) {
+      Object.keys(this.answers).forEach((username: string) => {
+        if (
+          this.answers[username] ===
+          this.questions[this.currentQuestion].correct_answer
+        ) {
+          // Add points
+        }
+        delete this.answers[username];
+      });
       if (this.currentQuestion === this.questions.length - 1) {
         this.finnish();
       } else {
         this.nextQuestion();
       }
-      Object.keys(this.answers).forEach(
-        (username: string) => delete this.answers[username]
-      );
     }
   }
 

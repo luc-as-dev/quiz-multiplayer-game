@@ -5,7 +5,7 @@ import Answers from "../components/Answers";
 import FlipCard from "../components/FlipCard";
 import useSession from "../hooks/useSession";
 
-const QUESTION_WAIT = 3;
+const QUESTION_WAIT = 500;
 
 type Props = {
   children?: ReactNode;
@@ -18,7 +18,7 @@ export default function Question({}: Props) {
   useEffect(() => {
     setTimeout(() => {
       setShowQuestion(true);
-    }, QUESTION_WAIT * 1000);
+    }, QUESTION_WAIT);
   }, [getQuestion()]);
 
   function onAnswerHandler(answer: string) {
