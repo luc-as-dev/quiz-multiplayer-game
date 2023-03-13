@@ -1,6 +1,6 @@
 import React, { createContext, ReactNode, useState } from "react";
-import { ISession } from "../@types/QuizClient";
-import { IQuestion, SessionContextType } from "../@types/Session";
+import { IQuestion, ISession } from "../@types/QuizClient";
+import { SessionContextType } from "../@types/Session";
 import { QuizClient } from "../api/QuizClient";
 
 export const sessionContext = createContext<SessionContextType | null>(null);

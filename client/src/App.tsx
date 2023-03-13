@@ -1,4 +1,4 @@
-import React, { ReactNode, useEffect } from "react";
+import React, { useEffect } from "react";
 import "./App.scss";
 import { SessionContextType } from "./@types/Session";
 import { ViewContextType } from "./@types/View";

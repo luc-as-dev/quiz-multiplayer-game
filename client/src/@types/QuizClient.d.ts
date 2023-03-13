@@ -1,5 +1,3 @@
-import { IQuestion } from "./Session";
-
 export interface IQuestion {
   time: number;
   category: string;

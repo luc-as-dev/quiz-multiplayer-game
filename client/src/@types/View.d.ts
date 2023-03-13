@@ -1,5 +1,3 @@
-import { ReactNode } from "react";
-
 export type ViewContextType = {
   view: ReactNode | undefined;
   isEntering: boolean;
