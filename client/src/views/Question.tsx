@@ -1,9 +1,11 @@
-import React, { ReactNode } from "react";
+import React, { ReactNode, useEffect, useState } from "react";
+import logo from "../assets/logo.png";
 import { SessionContextType } from "../@types/Session";
 import Answers from "../components/Answers";
-import Card from "../components/Card";
 import FlipCard from "../components/FlipCard";
 import useSession from "../hooks/useSession";
+
+const QUESTION_WAIT = 3;
 
 type Props = {
   children?: ReactNode;
@@ -11,14 +13,27 @@ type Props = {
 
 export default function Question({}: Props) {
   const { getQuestion }: SessionContextType = useSession();
+  const [showQuestion, setShowQuestion] = useState<boolean>(false);
+
+  useEffect(() => {
+    setTimeout(() => {
+      setShowQuestion(true);
+    }, QUESTION_WAIT * 1000);
+  }, [getQuestion()]);
+
+  function onAnswerHandler(answer: string) {
+    setShowQuestion(false);
+  }
 
   return (
     <div className="view">
-      <FlipCard className="medium-text grow-10" interactable={true}>
+      <FlipCard className="medium-text logo-card" flipped={showQuestion}>
+        <img src={logo}></img>
         <>{getQuestion()?.question}</>
-        <>{getQuestion()?.answers}</>
       </FlipCard>
-      {getQuestion() && <Answers answers={getQuestion()!.answers} />}
+      {getQuestion() && (
+        <Answers onAnswer={onAnswerHandler} answers={getQuestion()!.answers} />
+      )}
     </div>
   );
 }
