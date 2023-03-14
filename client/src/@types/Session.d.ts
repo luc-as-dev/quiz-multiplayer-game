@@ -1,3 +1,5 @@
+import { IGameInfo } from "./QuizClient";
+
 export type SessionContextType = {
   getId: () => string | undefined;
   getUsername: () => string | undefined;
@@ -6,8 +8,12 @@ export type SessionContextType = {
   getScores: () => { [username: string]: number } | undefined;
   getQuestion: () => IQuestion | null | undefined;
   getStage: () => string | number | undefined;
+  getSearchSessions: () => IGameInfo[];
 
   sendAnswer: (answer: string) => void | null;
+
+  startSessionSearch: () => boolean;
+  stopSessionSearch: () => boolean;
 
   hasSession: () => boolean;
   startSession: () => Promise<boolean> | undefined;

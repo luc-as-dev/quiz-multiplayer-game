@@ -44,6 +44,13 @@ router.get("/game/info/questions/:id", async (req: Request, res: Response) => {
   }
 });
 
+// Find available session.
+// body {id, username}
+router.post("/game/sessions", (req: Request, res: Response) => {
+  const gamesIds: GameInfoType[] = GameManager.getGamesInfo();
+  res.send(gamesIds);
+});
+
 // Create a new session.
 // body {id, username}
 router.post("/game/create", (req: Request, res: Response) => {

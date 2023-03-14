@@ -1,5 +1,5 @@
 import React, { createContext, ReactNode, useState } from "react";
-import { IQuestion, ISession } from "../@types/QuizClient";
+import { IGameInfo, IQuestion, ISession } from "../@types/QuizClient";
 import { SessionContextType } from "../@types/Session";
 import { QuizClient } from "../api/QuizClient";
 
@@ -10,8 +10,9 @@ function useProvideSession(
   updateMS: number | undefined
 ): SessionContextType {
   const [session, setSession] = useState<ISession | null>(null);
+  const [searchSessions, setSearchSessions] = useState<IGameInfo[]>([]);
   const [quizClient] = useState<QuizClient>(
-    new QuizClient(serverURL, setSession, updateMS)
+    new QuizClient(serverURL, setSession, setSearchSessions, updateMS)
   );
 
   function getId(): string | undefined {
@@ -49,10 +50,22 @@ function useProvideSession(
     return undefined;
   }
 
+  function getSearchSessions(): IGameInfo[] {
+    return searchSessions;
+  }
+
   function sendAnswer(answer: string): void {
     if (session) {
       quizClient.sendAnswer(answer);
     }
+  }
+
+  function startSessionSearch(): boolean {
+    return quizClient.startSessionSearch();
+  }
+
+  function stopSessionSearch(): boolean {
+    return quizClient.stopSessionSearch();
   }
 
   function hasSession(): boolean {
@@ -93,7 +106,10 @@ function useProvideSession(
     getScores,
     getQuestion,
     getStage,
+    getSearchSessions,
     sendAnswer,
+    startSessionSearch,
+    stopSessionSearch,
     startSession,
     hasSession,
     createSession,

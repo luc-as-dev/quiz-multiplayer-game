@@ -35,6 +35,19 @@ export class GameManager {
     return GameManager.games[id];
   }
 
+  public static getGamesInfo(): GameInfoType[] {
+    const gameInfos: GameInfoType[] = [];
+    Object.keys(GameManager.games).forEach((gameId: string) => {
+      const game: Game = GameManager.games[gameId];
+      gameInfos.push({
+        gameId: game.id,
+        players: Object.keys(game.getPlayers()),
+        owner: game.getOwner().getName(),
+      });
+    });
+    return gameInfos;
+  }
+
   private static update(): void {
     Object.values(GameManager.games).forEach((game: Game) => {
       game.update();

@@ -3,6 +3,7 @@ $breakpoint: 400px;
 $color1: #1647a3;
 $color2: #f2fcfc;
 $color3: #ddd;
+$color4: #eaeaea;
 
 $bg: $color1;
 $text: $bg;
@@ -16,6 +17,10 @@ $cardBackText: $cardFrontText;
 $cardDropShadow: drop-shadow(0 0 0.25rem #33333366);
 $cardBorder: 15px solid $cardBorderColor;
 $cardBorderRadius: 20px;
+
+$buttonBg: $color4;
+$buttonText: $color1;
+$buttonBorder: 5px solid $color3;
 
 $inputBg: $color3;
 $inputText: $color1;

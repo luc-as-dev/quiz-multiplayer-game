@@ -16,3 +16,9 @@ export interface ISession {
   updatedAt: number;
   stage: "lobby" | number | "end";
 }
+
+interface IGameInfo {
+  gameId: string;
+  players: string[];
+  owner: string;
+}

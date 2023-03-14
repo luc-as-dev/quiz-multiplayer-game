@@ -98,7 +98,7 @@ export class Game {
   }
 
   public isOwner(user: User): boolean {
-    return this.users[this.owner] === user;
+    return this.getOwner() === user;
   }
 
   public findUserByName(name: string): User | undefined {
@@ -113,6 +113,10 @@ export class Game {
     );
 
     return players;
+  }
+
+  public getOwner(): User {
+    return this.users[this.owner];
   }
 
   private setStage(stage: "lobby" | number | "end"): void {

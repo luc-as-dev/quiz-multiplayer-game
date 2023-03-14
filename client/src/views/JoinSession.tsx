@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { SessionContextType } from "../@types/Session";
 import { ViewContextType } from "../@types/View";
+import Button from "../components/Button";
 import Card from "../components/Card";
 import Input from "../components/Input";
 import { useViewContext } from "../context/ViewContext";
 import useSession from "../hooks/useSession";
 import Home from "./Home";
+import SearchSession from "./SearchSession";
 
 type Props = {};
 
@@ -14,6 +16,10 @@ export default function JoinSession({}: Props) {
   const { joinSession }: SessionContextType = useSession();
   const [sessionName, setSessionName] = useState<string>("");
   const [username, setUsername] = useState<string>("");
+
+  function searchSessionsHandler(): void {
+    setView(<SearchSession />);
+  }
 
   function joinSessionHandler(): void {
     joinSession(sessionName, username);
@@ -33,7 +39,7 @@ export default function JoinSession({}: Props) {
           value={sessionName}
           onChange={(e) => setSessionName(e.target.value)}
         />
-        <p>Om din vän inte har en öppen session behöver någon av er skapa en</p>
+        <p>Be din vän dela sitt sessions namn</p>
         <h3>Välj ditt visningsnamn</h3>
         <Input
           type="text"
@@ -41,6 +47,7 @@ export default function JoinSession({}: Props) {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
+        <Button onClick={searchSessionsHandler}>Sök öppna sessioner</Button>
       </Card>
       <Card className="big-text grow-1" onClick={joinSessionHandler}>
         Gå med

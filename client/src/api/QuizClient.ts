@@ -1,4 +1,4 @@
-import { ISession } from "../@types/QuizClient";
+import { IGameInfo, ISession } from "../@types/QuizClient";
 
 const DEFAULT_UPDATE_TIME = 1000;
 const LOCAL_STORAGE_KEY = "quiz";
@@ -8,17 +8,26 @@ export class QuizClient {
   private session: ISession | null = null;
   private serverURL: string;
   private setSessionCallback: Function | null;
-
   private updateInterval: number | null = null;
   private updateTime: number;
 
-  constructor(serverURL: string, setSession: Function, updateMS?: number) {
+  private setAvailableSessionCallback: Function | null;
+  private availableSessions: IGameInfo[] = [];
+  private searchUpdateInterval: number | null = null;
+
+  constructor(
+    serverURL: string,
+    setSession: Function,
+    setAvailableSessions: Function,
+    updateMS?: number
+  ) {
     this.serverURL = serverURL;
     this.updateTime = updateMS || DEFAULT_UPDATE_TIME;
     this.setSessionCallback = setSession || null;
+    this.setAvailableSessionCallback = setAvailableSessions;
   }
 
-  private setSession(session: ISession | null) {
+  private setSession(session: ISession | null): void {
     this.session = session;
     if (this.setSessionCallback) {
       this.setSessionCallback(session);
@@ -27,6 +36,13 @@ export class QuizClient {
       this.start();
     } else if (this.updateInterval && !session) {
       this.stop();
+    }
+  }
+
+  private setAvailableSessions(gameInfos: IGameInfo[]): void {
+    this.availableSessions = gameInfos;
+    if (this.setAvailableSessionCallback) {
+      this.setAvailableSessionCallback(this.availableSessions);
     }
   }
 
@@ -67,13 +83,46 @@ export class QuizClient {
 
   private start() {
     this.localSave();
-    this.updateInterval = setInterval(() => {
-      this.update();
-    }, this.updateTime);
+    if (!this.updateInterval) {
+      this.updateInterval = setInterval(() => {
+        this.update();
+      }, this.updateTime);
+    }
   }
 
   public getSession(): ISession | null {
     return this.session;
+  }
+
+  public getSessionSearch(): IGameInfo[] {
+    return this.availableSessions;
+  }
+
+  public isSearchingSessions(): boolean {
+    return this.searchUpdateInterval !== null;
+  }
+
+  public stopSessionSearch(): boolean {
+    if (this.searchUpdateInterval) {
+      clearInterval(this.searchUpdateInterval);
+      this.searchUpdateInterval = null;
+      return true;
+    }
+    return false;
+  }
+
+  private async updateSessionSearch(): Promise<void> {
+    this.setAvailableSessions(await this.getSessions());
+  }
+
+  public startSessionSearch(): boolean {
+    if (!this.searchUpdateInterval) {
+      this.searchUpdateInterval = setInterval(() => {
+        this.updateSessionSearch();
+      }, this.updateTime);
+      return true;
+    }
+    return false;
   }
 
   private async fetch(path: string, body?: {}): Promise<Response | null> {
@@ -97,6 +146,14 @@ export class QuizClient {
     const response: Response | null = await this.fetch("/game/checkId", body);
     if (response) return true;
     return false;
+  }
+
+  public async getSessions(): Promise<IGameInfo[]> {
+    const response: Response | null = await this.fetch("/game/sessions");
+    if (response) {
+      return await response.json();
+    }
+    return [];
   }
 
   public async createSession(id: string, username: string) {
