@@ -1,6 +1,6 @@
 import React from "react";
 import { SessionContextType } from "../@types/Session";
-import Card from "../components/Card";
+import Card from "../components/UI/Card";
 import useSession from "../hooks/useSession";
 
 type Props = {};

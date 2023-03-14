@@ -2,7 +2,7 @@ import React, { ReactNode, useEffect, useState } from "react";
 import logo from "../assets/logo.png";
 import { SessionContextType } from "../@types/Session";
 import Answers from "../components/Answers";
-import FlipCard from "../components/FlipCard";
+import FlipCard from "../components/UI/FlipCard";
 import useSession from "../hooks/useSession";
 
 const QUESTION_WAIT = 500;

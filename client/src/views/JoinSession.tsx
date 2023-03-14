@@ -1,20 +1,23 @@
 import React, { useState } from "react";
 import { SessionContextType } from "../@types/Session";
 import { ViewContextType } from "../@types/View";
-import Button from "../components/Button";
-import Card from "../components/Card";
-import Input from "../components/Input";
+import Button from "../components/UI/Button";
+import Card from "../components/UI/Card";
+import Input from "../components/UI/Input";
+import Divider from "../components/UI/Divider";
 import { useViewContext } from "../context/ViewContext";
 import useSession from "../hooks/useSession";
 import Home from "./Home";
 import SearchSession from "./SearchSession";
 
-type Props = {};
+type Props = {
+  sessionId?: string | undefined;
+};
 
-export default function JoinSession({}: Props) {
+export default function JoinSession({ sessionId }: Props) {
   const { setView }: ViewContextType = useViewContext();
   const { joinSession }: SessionContextType = useSession();
-  const [sessionName, setSessionName] = useState<string>("");
+  const [sessionName, setSessionName] = useState<string>(sessionId || "");
   const [username, setUsername] = useState<string>("");
 
   function searchSessionsHandler(): void {
@@ -47,6 +50,7 @@ export default function JoinSession({}: Props) {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
+        <Divider />
         <Button onClick={searchSessionsHandler}>Sök öppna sessioner</Button>
       </Card>
       <Card className="big-text grow-1" onClick={joinSessionHandler}>

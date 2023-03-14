@@ -61,8 +61,10 @@
     height: 100%;
   }
 
-  .input,
   .button,
+  .divider,
+  .input,
+  .list,
   p {
     max-width: 300px;
   }
@@ -105,11 +107,17 @@
   color: $buttonText;
   border: $buttonBorder;
 
-  font-size: 1.25rem;
+  font-size: 1.1rem;
   border-radius: 5px;
 
   width: 100%;
   padding: 8px 16px;
+}
+
+.divider {
+  background-color:  $borderColor;
+  width: 100%;
+  height: 1px;
 }
 
 .input {
@@ -119,9 +127,51 @@
   border: none;
   outline: none;
 
-  font-size: 1.5rem;
+  font-size: 1.25rem;
   border-radius: 5px;
 
   width: 100%;
   padding: 8px 16px;
+}
+
+.list {
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+
+  background-color: $listBg;
+  color: $listText;
+  border: $listBorder;
+
+  width: 100%;
+  max-height: 200px;
+  border-radius: 10px;
+  
+  gap: 8px;
+
+  .item {
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    
+    background-color: $listItemBg;
+    color: $listItemText;
+    border: $listItemBorder;
+
+    padding: 4px 10px;
+    border-radius: 5px;
+  }
+
+  .item.selected {
+    background-color: $listItemSelectedBg;
+    color: $listItemSelectedText;
+    border: $listItemSelectedBorder;
+  }
+}
+
+.list::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
 }

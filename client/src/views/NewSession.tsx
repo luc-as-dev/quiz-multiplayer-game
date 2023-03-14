@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { SessionContextType } from "../@types/Session";
 import { ViewContextType } from "../@types/View";
-import Card from "../components/Card";
-import Input from "../components/Input";
+import Card from "../components/UI/Card";
+import Input from "../components/UI/Input";
 import { useViewContext } from "../context/ViewContext";
 import useSession from "../hooks/useSession";
 import Home from "./Home";
