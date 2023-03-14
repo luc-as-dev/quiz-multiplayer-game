@@ -1,4 +1,4 @@
-import React, { createContext, ReactNode, useState } from "react";
+import React, { createContext, ReactNode, useEffect, useState } from "react";
 import { IGameInfo, IQuestion, ISession } from "../@types/QuizClient";
 import { SessionContextType } from "../@types/Session";
 import { QuizClient } from "../api/QuizClient";
@@ -14,6 +14,10 @@ function useProvideSession(
   const [quizClient] = useState<QuizClient>(
     new QuizClient(serverURL, setSession, setSearchSessions, updateMS)
   );
+
+  useEffect(() => {
+    quizClient.localLoad();
+  }, []);
 
   function getId(): string | undefined {
     if (session) return session.id;

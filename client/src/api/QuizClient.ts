@@ -25,6 +25,8 @@ export class QuizClient {
     this.updateTime = updateMS || DEFAULT_UPDATE_TIME;
     this.setSessionCallback = setSession || null;
     this.setAvailableSessionCallback = setAvailableSessions;
+
+    //this.localLoad();
   }
 
   private setSession(session: ISession | null): void {
@@ -57,10 +59,10 @@ export class QuizClient {
     }
   }
 
-  private async localLoad(): Promise<void> {
-    const localStr = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (localStr) {
-      const { id, username }: LOCAL_STORAGE_TYPE = JSON.parse(localStr);
+  public async localLoad(): Promise<void> {
+    const localItem = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (localItem) {
+      const { id, username }: LOCAL_STORAGE_TYPE = JSON.parse(localItem);
       if (await this.updateSession(id, username)) {
         this.start();
       } else {
