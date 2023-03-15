@@ -1,4 +1,4 @@
-import QuestionLibrary from "../question-libraries/questionLibrary";
+import QuestionLibrary from "../questionLibraries/questionLibrary";
 import { IGameInfo } from "../@types/QuizServer";
 import Game from "./game";
 import User from "./user";
