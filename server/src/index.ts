@@ -5,7 +5,7 @@ import cors from "cors";
 import { router as gameRouter } from "./routes/game";
 import { router as librariesRouter } from "./routes/libraries";
 import QuizServer from "./quiz/QuizServer";
-import MemoryLibrary from "./question-libraries/MemoryLibrary";
+import MemoryLibrary from "./question-libraries/memoryLibrary";
 import { ICategory, IDifficulty, IQuestion } from "./@types/QuizServer";
 
 config();
