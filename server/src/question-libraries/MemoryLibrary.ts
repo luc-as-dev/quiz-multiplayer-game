@@ -61,8 +61,13 @@ export default class MemoryLibrary extends QuestionLibrary {
     difficulty?: string
   ): Promise<IQuestion[]> {
     if (!limit) return this.questions;
-    if (this.questions.length < limit) limit = this.questions.length;
     let questionsCopy = [...this.questions];
+    if (category)
+      questionsCopy = questionsCopy.filter((q) => q.category === category);
+    if (difficulty)
+      questionsCopy = questionsCopy.filter((q) => q.difficulty === difficulty);
+    if (questionsCopy.length < limit) limit = questionsCopy.length;
+
     const questions = [];
     for (let i = 0; i < limit; i++) {
       const index = Math.floor(Math.random() * (limit - i));

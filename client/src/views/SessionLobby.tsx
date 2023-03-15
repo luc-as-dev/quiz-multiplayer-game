@@ -39,7 +39,11 @@ export default function SessionLobby({}: Props) {
 
   function startGameHandler() {
     if (session.hasSession() && session.getIsOwner()) {
-      session.startSession();
+      session.startSession(
+        selectedLibrary,
+        selectedCategory,
+        selectedDifficulty
+      );
     }
   }
 

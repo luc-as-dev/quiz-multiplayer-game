@@ -95,13 +95,22 @@ export default class Game {
     this.updatedAt = Date.now();
   }
 
-  public async start() {
-    const { questions, correctAnswers } =
-      await this.manager.libraries[0].getSafeQuestions(5);
+  public async start(
+    libraryName: string,
+    category: string,
+    difficulty: string
+  ): Promise<boolean> {
+    const library = this.manager.findLibraryByName(libraryName);
+    const { questions, correctAnswers } = await library.getSafeQuestions(
+      10,
+      category,
+      difficulty
+    );
     this.questions = questions;
     this.correctAnswers = correctAnswers;
     this.currentQuestion = 0;
     this.setStage(this.currentQuestion);
+    return false;
   }
 
   private nextQuestion() {

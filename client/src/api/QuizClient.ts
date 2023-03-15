@@ -233,9 +233,19 @@ export class QuizClient {
     return false;
   }
 
-  public async startSession(): Promise<boolean> {
+  public async startSession(
+    library: string,
+    category: string,
+    difficulty: string
+  ): Promise<boolean> {
     if (!this.session) return false;
-    const body = { id: this.session.id, username: this.session.username };
+    const body = {
+      id: this.session.id,
+      username: this.session.username,
+      library,
+      category,
+      difficulty,
+    };
     const response: Response | null = await this.post("/game/start", body);
     if (response) {
       return true;

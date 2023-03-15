@@ -162,7 +162,7 @@ router.post("/game/answer", async (req: Request, res: Response) => {
 // Start game
 // body {id, username}
 router.post("/game/start", (req: Request, res: Response) => {
-  const { id, username } = req.body;
+  const { id, username, library, category, difficulty } = req.body;
 
   if (id && username) {
     const game: Game = quizServer.manager.findGameById(id);
@@ -171,7 +171,7 @@ router.post("/game/start", (req: Request, res: Response) => {
       const user = game.findUserByName(username);
 
       if (user && game.isOwner(user)) {
-        game.start();
+        game.start(library, category, difficulty);
       }
     }
     res.send();

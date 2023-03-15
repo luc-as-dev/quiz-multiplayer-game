@@ -76,10 +76,14 @@ function useProvideSession(
     return quizClient.getSession() !== null;
   }
 
-  async function startSession(): Promise<boolean> {
+  async function startSession(
+    library: string,
+    category: string,
+    difficulty: string
+  ): Promise<boolean> {
     const session = quizClient.getSession();
     if (session && session.isOwner) {
-      return await quizClient.startSession();
+      return await quizClient.startSession(library, category, difficulty);
     }
     return false;
   }

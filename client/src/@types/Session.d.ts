@@ -16,7 +16,11 @@ export type SessionContextType = {
   stopSessionSearch: () => boolean;
 
   hasSession: () => boolean;
-  startSession: () => Promise<boolean> | undefined;
+  startSession: (
+    library: string,
+    category: string,
+    difficulty: string
+  ) => Promise<boolean> | undefined;
   createSession: (name: string, username: string) => Promise<boolean>;
   joinSession: (name: string, username: string) => Promise<boolean>;
   leaveSession: () => Promise<boolean>;

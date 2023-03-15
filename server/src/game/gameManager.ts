@@ -1,5 +1,5 @@
 import QuestionLibrary from "../question-libraries/QuestionLibrary";
-import { IGameInfo } from "../@types/QuizServer";
+import { IGameInfo, ILibrary } from "../@types/QuizServer";
 import Game from "./Game";
 import User from "./User";
 
@@ -42,6 +42,11 @@ export default class GameManager {
 
   public findGameById(id: string): Game | undefined {
     return this.games[id];
+  }
+
+  public findLibraryByName(name: string): QuestionLibrary | null {
+    const library = this.libraries.find((l) => l.name === name);
+    return library || null;
   }
 
   public getGamesInfo(): IGameInfo[] {
