@@ -1,4 +1,9 @@
-import { ICategory, IDifficulty, IQuestion } from "../@types/QuizServer";
+import {
+  ICategory,
+  IDifficulty,
+  ILibrary,
+  IQuestion,
+} from "../@types/QuizServer";
 import QuestionLibrary from "./QuestionLibrary";
 
 export default class MemoryLibrary extends QuestionLibrary {
@@ -65,5 +70,13 @@ export default class MemoryLibrary extends QuestionLibrary {
       questions.push(question);
     }
     return questions;
+  }
+
+  public async info(): Promise<ILibrary> {
+    return {
+      categories: this.categories.map((c) => c.name),
+      difficulties: this.difficulties.map((d) => d.name),
+      questions: this.questions.length,
+    };
   }
 }

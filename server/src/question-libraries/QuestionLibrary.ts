@@ -1,6 +1,7 @@
 import {
   ICategory,
   IDifficulty,
+  ILibrary,
   IQuestion,
   ISafeQuestion,
 } from "../@types/QuizServer";
@@ -59,5 +60,9 @@ export default class QuestionLibrary {
       correctAnswers.push(correctAnswer);
     });
     return { questions: safeQuestions, correctAnswers };
+  }
+
+  public async info(): Promise<ILibrary> {
+    return { categories: [], difficulties: [], questions: 0 };
   }
 }

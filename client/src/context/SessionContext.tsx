@@ -102,6 +102,10 @@ function useProvideSession(
     return await quizClient.leaveSession();
   }
 
+  async function getLibraries() {
+    return await quizClient.getLibraries();
+  }
+
   return {
     getId,
     getUsername,
@@ -119,6 +123,7 @@ function useProvideSession(
     createSession,
     joinSession,
     leaveSession,
+    getLibraries,
   };
 }
 

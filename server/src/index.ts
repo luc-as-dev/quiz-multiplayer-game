@@ -3,6 +3,7 @@ import { config } from "dotenv";
 import cors from "cors";
 
 import { router as gameRouter } from "./routes/game";
+import { router as librariesRouter } from "./routes/libraries";
 import QuizServer from "./quiz/QuizServer";
 import MemoryLibrary from "./question-libraries/MemoryLibrary";
 import { ICategory, IDifficulty, IQuestion } from "./@types/QuizServer";
@@ -55,6 +56,7 @@ app.use(cors({ origin: ORIGIN }));
 app.use(express.json());
 
 app.use(gameRouter);
+app.use(librariesRouter);
 
 app.listen(PORT, () => {
   console.log(`Started server on port ${PORT}`);

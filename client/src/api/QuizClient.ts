@@ -1,4 +1,4 @@
-import { IGameInfo, ISession } from "../@types/QuizClient";
+import { IGameInfo, ILibrary, ISession } from "../@types/QuizClient";
 
 const DEFAULT_UPDATE_TIME = 1000;
 const LOCAL_STORAGE_KEY = "quiz";
@@ -127,7 +127,19 @@ export class QuizClient {
     return false;
   }
 
-  private async fetch(path: string, body?: {}): Promise<Response | null> {
+  private async get(path: string, body?: {}): Promise<Response | null> {
+    try {
+      const response: Response = await fetch(`${this.serverURL}${path}`);
+      if (response.ok) {
+        return response;
+      }
+    } catch (err) {
+      console.log(err);
+    }
+    return null;
+  }
+
+  private async post(path: string, body?: {}): Promise<Response | null> {
     try {
       const response: Response = await fetch(`${this.serverURL}${path}`, {
         method: "POST",
@@ -145,13 +157,13 @@ export class QuizClient {
 
   public async isSessionIdAvailable(id: string) {
     const body = { id };
-    const response: Response | null = await this.fetch("/game/checkId", body);
+    const response: Response | null = await this.post("/game/checkId", body);
     if (response) return true;
     return false;
   }
 
   public async getSessions(): Promise<IGameInfo[]> {
-    const response: Response | null = await this.fetch("/game/sessions");
+    const response: Response | null = await this.post("/game/sessions");
     if (response) {
       return await response.json();
     }
@@ -160,7 +172,7 @@ export class QuizClient {
 
   public async createSession(id: string, username: string) {
     const body = { id, username };
-    const response: Response | null = await this.fetch("/game/create", body);
+    const response: Response | null = await this.post("/game/create", body);
     if (response) {
       this.setSession(await response.json());
       return true;
@@ -170,7 +182,7 @@ export class QuizClient {
 
   public async joinSession(id: string, username: string): Promise<boolean> {
     const body = { id, username };
-    const response: Response | null = await this.fetch("/game/join", body);
+    const response: Response | null = await this.post("/game/join", body);
     if (response) {
       this.setSession(await response.json());
       return true;
@@ -181,7 +193,7 @@ export class QuizClient {
   public async leaveSession(force?: boolean): Promise<boolean> {
     if (!this.session) return false;
     const body = { id: this.session.id, username: this.session.username };
-    const response: Response | null = await this.fetch("/game/leave", body);
+    const response: Response | null = await this.post("/game/leave", body);
     if (response) {
       this.setSession(null);
       return true;
@@ -197,7 +209,7 @@ export class QuizClient {
       id: id || this.session?.id,
       username: username || this.session?.username,
     };
-    const response: Response | null = await this.fetch("/game/update", body);
+    const response: Response | null = await this.post("/game/update", body);
     if (response) {
       this.setSession(await response.json());
       return true;
@@ -208,7 +220,7 @@ export class QuizClient {
   public async pingSession(): Promise<boolean> {
     if (!this.session) return false;
     const body = { id: this.session.id, username: this.session.username };
-    const response: Response | null = await this.fetch("/game/ping", body);
+    const response: Response | null = await this.post("/game/ping", body);
     if (response) {
       const { updatedAt } = await response.json();
       if ((updatedAt - this.session!.updatedAt) / 1000 > 0) {
@@ -224,7 +236,7 @@ export class QuizClient {
   public async startSession(): Promise<boolean> {
     if (!this.session) return false;
     const body = { id: this.session.id, username: this.session.username };
-    const response: Response | null = await this.fetch("/game/start", body);
+    const response: Response | null = await this.post("/game/start", body);
     if (response) {
       return true;
     }
@@ -239,10 +251,16 @@ export class QuizClient {
       username: this.session.username,
       answer,
     };
-    const response: Response | null = await this.fetch("/game/answer", body);
+    const response: Response | null = await this.post("/game/answer", body);
     if (response) {
       return true;
     }
     return false;
+  }
+
+  public async getLibraries(): Promise<ILibrary[]> {
+    const response: Response | null = await this.get("/libraries");
+    if (response) return response.json();
+    return [];
   }
 }

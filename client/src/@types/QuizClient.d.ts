@@ -20,3 +20,9 @@ interface IGameInfo {
   players: string[];
   owner: string;
 }
+
+interface ILibrary {
+  categories: string[];
+  difficulties: string[];
+  questions: number;
+}

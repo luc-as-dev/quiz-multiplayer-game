@@ -1,4 +1,4 @@
-import { IGameInfo } from "./QuizClient";
+import { IGameInfo, ILibrary } from "./QuizClient";
 
 export type SessionContextType = {
   getId: () => string | undefined;
@@ -20,4 +20,6 @@ export type SessionContextType = {
   createSession: (name: string, username: string) => Promise<boolean>;
   joinSession: (name: string, username: string) => Promise<boolean>;
   leaveSession: () => Promise<boolean>;
+
+  getLibraries: () => Promise<ILibrary[]>;
 };
