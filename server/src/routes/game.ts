@@ -1,53 +1,15 @@
 import { Router, Request, Response } from "express";
 
-import {
-  getCategories,
-  CategoryType,
-  getQuestionsCountByCategory,
-  QuestionsCountType,
-  QuestionsCountGlobalType,
-  getQuestionsCountGlobal,
-} from "../api/triviaAPI";
-import { GameManager } from "../game/gameManager";
-import { Game } from "../game/game";
-import { User } from "../game/user";
+import { Game } from "../game/Game";
+import { User } from "../game/User";
+import { IGameInfo } from "../@types/QuizServer";
+import { quizServer } from "../index";
 export const router = Router();
-
-router.get("/game/info/categories", async (_, res: Response) => {
-  try {
-    const categories: CategoryType[] = await getCategories();
-
-    res.send(categories);
-  } catch {
-    res.status(500).send();
-  }
-});
-
-router.get("/game/info/questions", async (_, res: Response) => {
-  try {
-    const count: QuestionsCountGlobalType = await getQuestionsCountGlobal();
-
-    res.send(count);
-  } catch {
-    res.status(500).send();
-  }
-});
-
-router.get("/game/info/questions/:id", async (req: Request, res: Response) => {
-  try {
-    const id: number = +req.params.id;
-    const count: QuestionsCountType = await getQuestionsCountByCategory(id);
-
-    res.send(count);
-  } catch {
-    res.status(400).send();
-  }
-});
 
 // Find available session.
 // body {id, username}
-router.post("/game/sessions", (req: Request, res: Response) => {
-  const gamesIds: GameInfoType[] = GameManager.getGamesInfo();
+router.post("/game/sessions", (_, res: Response) => {
+  const gamesIds: IGameInfo[] = quizServer.manager.getGamesInfo();
   res.send(gamesIds);
 });
 
@@ -57,24 +19,22 @@ router.post("/game/create", (req: Request, res: Response) => {
   const { id, username } = req.body;
 
   if (id && username) {
-    if (GameManager.findGameById(id)) {
-      return res.status(400).send();
-    }
-
     const user: User = new User(username);
-    const game: Game = new Game(id, user);
+    const game: Game = quizServer.manager.addGame(id, user);
 
-    GameManager.addGame(game);
-
-    res.send({
-      username: user.getName(),
-      id: game.id,
-      isOwner: game.isOwner(user),
-      players: game.getPlayers(),
-      question: game.getQuestion(),
-      updatedAt: game.updatedAt,
-      stage: game.stage,
-    });
+    if (game) {
+      res.send({
+        username: user.getName(),
+        id: game.id,
+        isOwner: game.isOwner(user),
+        players: game.getPlayers(),
+        question: game.getQuestion(),
+        updatedAt: game.updatedAt,
+        stage: game.stage,
+      });
+    } else {
+      res.status(400).send();
+    }
   } else {
     res.status(400).send();
   }
@@ -86,7 +46,7 @@ router.post("/game/join", (req: Request, res: Response) => {
   const { id, username } = req.body;
 
   if (id && username) {
-    const game: Game = GameManager.findGameById(id);
+    const game: Game = quizServer.manager.findGameById(id);
 
     if (game && !game.findUserByName(username)) {
       const user: User = new User(username);
@@ -114,7 +74,7 @@ router.post("/game/leave", (req: Request, res: Response) => {
   const { id, username } = req.body;
 
   if (id && username) {
-    const game: Game = GameManager.findGameById(id);
+    const game: Game = quizServer.manager.findGameById(id);
 
     if (game && game.findUserByName(username)) {
       game.removeUser(username);
@@ -132,7 +92,7 @@ router.post("/game/ping", (req: Request, res: Response) => {
   const { id, username } = req.body;
 
   if (id && username) {
-    const game: Game = GameManager.findGameById(id);
+    const game: Game = quizServer.manager.findGameById(id);
 
     if (game) {
       const user = game.findUserByName(username);
@@ -154,7 +114,7 @@ router.post("/game/update", (req: Request, res: Response) => {
   const { id, username } = req.body;
 
   if (id && username) {
-    const game: Game = GameManager.findGameById(id);
+    const game: Game = quizServer.manager.findGameById(id);
 
     if (game) {
       const user = game.findUserByName(username);
@@ -182,7 +142,7 @@ router.post("/game/answer", async (req: Request, res: Response) => {
   const { id, username, answer } = req.body;
 
   if (id && username) {
-    const game: Game = GameManager.findGameById(id);
+    const game: Game = quizServer.manager.findGameById(id);
 
     if (game && game.findUserByName(username)) {
       game.saveAnswer(username, answer);
@@ -200,7 +160,7 @@ router.post("/game/start", (req: Request, res: Response) => {
   const { id, username } = req.body;
 
   if (id && username) {
-    const game: Game = GameManager.findGameById(id);
+    const game: Game = quizServer.manager.findGameById(id);
 
     if (game) {
       const user = game.findUserByName(username);
@@ -218,7 +178,7 @@ router.post("/game/start", (req: Request, res: Response) => {
 // Check if session id is available
 // :id - session id
 router.get("/game/checkId/:id", (req: Request, res: Response) => {
-  const game: Game = GameManager.findGameById(req.params.id);
+  const game: Game = quizServer.manager.findGameById(req.params.id);
 
   if (!game) {
     res.send();
@@ -231,7 +191,7 @@ router.get("/game/checkId/:id", (req: Request, res: Response) => {
 // body {id}
 router.post("/game/checkId", (req: Request, res: Response) => {
   const { id } = req.body;
-  const game: Game = GameManager.findGameById(id);
+  const game: Game = quizServer.manager.findGameById(id);
 
   if (!game) {
     res.send();

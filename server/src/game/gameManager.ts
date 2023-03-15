@@ -1,44 +1,50 @@
-import { Game } from "./game";
+import { IGameInfo } from "../@types/QuizServer";
+import { Game } from "./Game";
+import { User } from "./User";
 
 export class GameManager {
-  public static updateInterval: number = 1000;
-  private static loop: NodeJS.Timer = null;
-  private static games: { [key: string]: Game } = {};
-  private static activeGames: Game[] = [];
-  public static doLog: boolean = true;
+  private updateTime: number;
+  private updateInterval: NodeJS.Timer = null;
+  private games: { [gameId: string]: Game } = {};
+  private doLog: boolean = true;
 
-  public static addGame(game: Game): boolean {
-    if (!GameManager.games[game.id]) {
+  constructor(updateMS: number) {
+    this.updateTime = updateMS;
+  }
+
+  public addGame(gameId: string, creator: User, time?: number): Game | null {
+    if (!this.games[gameId]) {
+      const game = new Game(this, gameId, creator, time);
       console.log(`GameManager: Added game ${game.id}`);
-      GameManager.games[game.id] = game;
-      if (GameManager.loop === null) {
-        GameManager.start();
+
+      this.games[game.id] = game;
+      this.start();
+
+      return game;
+    }
+    return null;
+  }
+
+  public removeGame(game: Game): boolean {
+    if (this.doLog) console.log(`GameManager: Removing game ${game.id}`);
+    if (this.games[game.id]) {
+      delete this.games[game.id];
+      if (Object.keys(this.games).length === 0) {
+        this.stop();
       }
       return true;
     }
     return false;
   }
 
-  public static removeGame(game: Game): boolean {
-    if (GameManager.doLog) console.log(`GameManager: Removing game ${game.id}`);
-    if (!game.gameOn && GameManager.games[game.id]) {
-      delete GameManager.games[game.id];
-      if (Object.keys(GameManager.games).length === 0) {
-        GameManager.stop();
-      }
-      return true;
-    }
-    return false;
+  public findGameById(id: string): Game | undefined {
+    return this.games[id];
   }
 
-  public static findGameById(id: string): Game | undefined {
-    return GameManager.games[id];
-  }
-
-  public static getGamesInfo(): GameInfoType[] {
-    const gameInfos: GameInfoType[] = [];
-    Object.keys(GameManager.games).forEach((gameId: string) => {
-      const game: Game = GameManager.games[gameId];
+  public getGamesInfo(): IGameInfo[] {
+    const gameInfos: IGameInfo[] = [];
+    Object.keys(this.games).forEach((gameId: string) => {
+      const game: Game = this.games[gameId];
       gameInfos.push({
         gameId: game.id,
         players: Object.keys(game.getPlayers()),
@@ -48,23 +54,23 @@ export class GameManager {
     return gameInfos;
   }
 
-  private static update(): void {
-    Object.values(GameManager.games).forEach((game: Game) => {
+  private update(): void {
+    Object.values(this.games).forEach((game: Game) => {
       game.update();
     });
   }
 
-  private static start(): void {
-    if (GameManager.doLog) console.log("GameManager: Starting interval");
-    GameManager.loop = setInterval(
-      GameManager.update,
-      GameManager.updateInterval
-    );
+  private start(): void {
+    if (this.doLog) console.log("GameManager: Starting interval");
+    if (!this.updateInterval) {
+      this.updateInterval = setInterval(() => this.update(), this.updateTime);
+    }
   }
 
-  private static stop(): void {
-    if (GameManager.doLog) console.log("GameManager: Stopping interval");
-    clearInterval(GameManager.loop);
-    GameManager.loop = null;
+  private stop(): void {
+    if (this.doLog) console.log("GameManager: Stopping interval");
+    if (this.updateInterval) clearInterval(this.updateInterval);
+
+    this.updateInterval = null;
   }
 }

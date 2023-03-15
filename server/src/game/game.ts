@@ -1,11 +1,7 @@
-import {
-  getQuestions,
-  QuestionParamsType,
-  QuestionType,
-} from "../api/triviaAPI";
-import { GameManager } from "./gameManager";
-import { Question } from "./question";
-import { User } from "./user";
+import { StageType } from "../@types/QuizServer";
+import { GameManager } from "./GameManager";
+import { Question } from "./Question";
+import { User } from "./User";
 
 const DEFAULT_TIME: number = 30;
 const TIMEOUT_TIME: number = 10;
@@ -32,21 +28,26 @@ const EXAMPLE_QUESTIONS = [
 ];
 
 export class Game {
+  manager: GameManager;
+
   id: string;
   owner: number = 0; // index of user in users
   updatedAt: number;
   time: number;
   gameOn: boolean = false;
-  stage: "lobby" | number | "end";
+  stage: StageType;
 
   users: User[] = [];
   lastPing: { [username: string]: number } = {};
   answers: { [username: string]: string } = {};
 
-  currentQuestion: number = null;
+  currentTime: number | null = null;
+  currentQuestion: number | null = null;
   questions: Question[] = null;
 
-  constructor(id: string, creator: User, time?: number) {
+  constructor(manager: GameManager, id: string, creator: User, time?: number) {
+    this.manager = manager;
+
     this.id = id;
     this.users.push(creator);
     this.time = time || DEFAULT_TIME;
@@ -93,7 +94,7 @@ export class Game {
     this.updatedAt = Date.now();
 
     if (this.users.length === 0) {
-      GameManager.removeGame(this);
+      this.manager.removeGame(this);
     }
   }
 
@@ -119,7 +120,7 @@ export class Game {
     return this.users[this.owner];
   }
 
-  private setStage(stage: "lobby" | number | "end"): void {
+  private setStage(stage: StageType): void {
     this.stage = stage;
     this.updatedAt = Date.now();
   }
@@ -175,43 +176,6 @@ export class Game {
     } else if (this.stage.toString() === "end") {
     } else {
       this.updateAnswer();
-    }
-  }
-
-  public async fetchTriviaQuestions(questionParams: QuestionParamsType) {
-    try {
-      this.questions = [];
-      const questions = await getQuestions(questionParams);
-      questions.forEach((question: QuestionType) =>
-        this.questions.push(
-          new Question(
-            this.time,
-            question.category,
-            question.difficulty,
-            question.type,
-            question.question,
-            question.correct_answer,
-            question.incorrect_answers
-          )
-        )
-      );
-      this.updatedAt = Date.now();
-      return true;
-    } catch (err) {
-      console.log(err);
-      this.questions = [];
-      this.questions.push(
-        new Question(
-          30,
-          "Backup-frågor",
-          "easy",
-          "boolean",
-          "Tycker du om Quiz?",
-          "Ja",
-          ["Nej"]
-        )
-      );
-      return false;
     }
   }
 }
