@@ -1,8 +1,6 @@
 export interface IQuestion {
-  time: number;
   category: string;
-  difficulty: "easy" | "medium" | "hard";
-  type: "boolean" | "multiple";
+  difficulty: string;
   question: string;
   answers: string[];
 }

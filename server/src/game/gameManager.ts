@@ -1,14 +1,17 @@
+import QuestionLibrary from "../question-libraries/QuestionLibrary";
 import { IGameInfo } from "../@types/QuizServer";
-import { Game } from "./Game";
-import { User } from "./User";
+import Game from "./Game";
+import User from "./User";
 
-export class GameManager {
+export default class GameManager {
+  public libraries: QuestionLibrary[];
   private updateTime: number;
   private updateInterval: NodeJS.Timer = null;
   private games: { [gameId: string]: Game } = {};
   private doLog: boolean = true;
 
-  constructor(updateMS: number) {
+  constructor(libraries: QuestionLibrary[], updateMS: number) {
+    this.libraries = libraries;
     this.updateTime = updateMS;
   }
 

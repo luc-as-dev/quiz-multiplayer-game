@@ -1,8 +1,8 @@
 import { Router, Request, Response } from "express";
 
-import { Game } from "../game/Game";
-import { User } from "../game/User";
-import { IGameInfo } from "../@types/QuizServer";
+import Game from "../game/Game";
+import User from "../game/User";
+import { IGameInfo, ISession } from "../@types/QuizServer";
 import { quizServer } from "../index";
 export const router = Router();
 
@@ -21,17 +21,18 @@ router.post("/game/create", (req: Request, res: Response) => {
   if (id && username) {
     const user: User = new User(username);
     const game: Game = quizServer.manager.addGame(id, user);
+    const session: ISession = {
+      id: game.id,
+      username: user.getName(),
+      isOwner: game.isOwner(user),
+      players: game.getPlayers(),
+      question: game.getQuestion(),
+      updatedAt: game.updatedAt,
+      stage: game.stage,
+    };
 
     if (game) {
-      res.send({
-        username: user.getName(),
-        id: game.id,
-        isOwner: game.isOwner(user),
-        players: game.getPlayers(),
-        question: game.getQuestion(),
-        updatedAt: game.updatedAt,
-        stage: game.stage,
-      });
+      res.send(session);
     } else {
       res.status(400).send();
     }
@@ -53,15 +54,17 @@ router.post("/game/join", (req: Request, res: Response) => {
 
       game.addUser(user);
 
-      res.send({
-        username: user.getName(),
+      const session: ISession = {
         id: game.id,
+        username: user.getName(),
         isOwner: game.isOwner(user),
         players: game.getPlayers(),
         question: game.getQuestion(),
         updatedAt: game.updatedAt,
         stage: game.stage,
-      });
+      };
+
+      res.send(session);
     }
   } else {
     res.status(400).send();
@@ -119,16 +122,18 @@ router.post("/game/update", (req: Request, res: Response) => {
     if (game) {
       const user = game.findUserByName(username);
 
+      const session: ISession = {
+        id: game.id,
+        username: user.getName(),
+        isOwner: game.isOwner(user),
+        players: game.getPlayers(),
+        question: game.getQuestion(),
+        updatedAt: game.updatedAt,
+        stage: game.stage,
+      };
+
       if (user) {
-        res.send({
-          username: user.getName(),
-          id: game.id,
-          isOwner: game.isOwner(user),
-          players: game.getPlayers(),
-          question: game.getQuestion(),
-          updatedAt: game.updatedAt,
-          stage: game.stage,
-        });
+        res.send(session);
       }
     }
   } else {
@@ -169,18 +174,6 @@ router.post("/game/start", (req: Request, res: Response) => {
         game.start();
       }
     }
-    res.send();
-  } else {
-    res.status(400).send();
-  }
-});
-
-// Check if session id is available
-// :id - session id
-router.get("/game/checkId/:id", (req: Request, res: Response) => {
-  const game: Game = quizServer.manager.findGameById(req.params.id);
-
-  if (!game) {
     res.send();
   } else {
     res.status(400).send();

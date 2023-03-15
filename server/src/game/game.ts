@@ -1,33 +1,11 @@
-import { StageType } from "../@types/QuizServer";
-import { GameManager } from "./GameManager";
-import { Question } from "./Question";
-import { User } from "./User";
+import { ISafeQuestion, StageType } from "../@types/QuizServer";
+import GameManager from "./GameManager";
+import User from "./User";
 
 const DEFAULT_TIME: number = 30;
 const TIMEOUT_TIME: number = 10;
 
-const EXAMPLE_QUESTIONS = [
-  new Question(
-    30,
-    "Exempel frågor",
-    "easy",
-    "boolean",
-    "Tycker du om Quiz?",
-    "Ja",
-    ["Nej", "Oklart", "Vet inte"]
-  ),
-  new Question(
-    30,
-    "Exempel frågor",
-    "easy",
-    "boolean",
-    "Fungerar detta?",
-    "Ja",
-    ["Nej", "Oklart", "Vet inte"]
-  ),
-];
-
-export class Game {
+export default class Game {
   manager: GameManager;
 
   id: string;
@@ -43,7 +21,8 @@ export class Game {
 
   currentTime: number | null = null;
   currentQuestion: number | null = null;
-  questions: Question[] = null;
+  questions: ISafeQuestion[] = null;
+  correctAnswers: string[] = null;
 
   constructor(manager: GameManager, id: string, creator: User, time?: number) {
     this.manager = manager;
@@ -64,18 +43,9 @@ export class Game {
     this.answers[username] = answer;
   }
 
-  public getQuestion(): {} | null {
+  public getQuestion(): ISafeQuestion | null {
     if (this.questions) {
-      const question = this.questions[this.currentQuestion];
-
-      return {
-        time: question.time,
-        category: question.category,
-        difficulty: question.difficulty,
-        type: question.type,
-        question: question.question,
-        answers: question.getAnswers(),
-      };
+      return this.questions[this.currentQuestion];
     }
     return null;
   }
@@ -125,8 +95,11 @@ export class Game {
     this.updatedAt = Date.now();
   }
 
-  public start() {
-    this.questions = EXAMPLE_QUESTIONS;
+  public async start() {
+    const { questions, correctAnswers } =
+      await this.manager.libraries[0].getSafeQuestions(5);
+    this.questions = questions;
+    this.correctAnswers = correctAnswers;
     this.currentQuestion = 0;
     this.setStage(this.currentQuestion);
   }
@@ -154,8 +127,7 @@ export class Game {
     if (Object.keys(this.answers).length === Object.keys(this.users).length) {
       Object.keys(this.answers).forEach((username: string) => {
         if (
-          this.answers[username] ===
-          this.questions[this.currentQuestion].correct_answer
+          this.answers[username] === this.correctAnswers[this.currentQuestion]
         ) {
           // Add points
         }

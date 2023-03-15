@@ -1,11 +1,23 @@
-export type QuestionDifficultyType = "easy" | "medium" | "hard";
-export type QuestionTypeType = "boolean" | "multiple";
+export interface ICategory {
+  name: string;
+}
+
+export interface IDifficulty {
+  name: string;
+  multiplier: number;
+}
 
 export interface IQuestion {
-  time: number;
-  category: string;
-  difficulty: QuestionDifficultyType;
-  type: QuestionTypeType;
+  category: ICategory["name"];
+  difficulty: IDifficulty["name"];
+  question: string;
+  correctAnswer: string;
+  incorrectAnswers: string[];
+}
+
+export interface ISafeQuestion {
+  category: ICategory["name"];
+  difficulty: IDifficulty["name"];
   question: string;
   answers: string[];
 }
@@ -17,7 +29,7 @@ export interface ISession {
   username: string;
   isOwner: boolean;
   players: { [username: string]: number };
-  question: IQuestion | null;
+  question: ISafeQuestion | null;
   updatedAt: number;
   stage: StageType;
 }
