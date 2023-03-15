@@ -21,5 +21,6 @@ export type SessionContextType = {
   joinSession: (name: string, username: string) => Promise<boolean>;
   leaveSession: () => Promise<boolean>;
 
-  getLibraries: () => Promise<ILibrary[]>;
+  getLibraries: () => Promise<string[]>;
+  getLibrary: (name: string) => Promise<ILibrary | null>;
 };

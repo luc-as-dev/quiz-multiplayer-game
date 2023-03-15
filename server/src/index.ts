@@ -18,6 +18,8 @@ const app: Express = express();
 
 const EXAMPLE_CATEGORY: ICategory = { name: "Exempel Frågor" };
 const EXAMPLE_DIFFICULTY: IDifficulty = { name: "Lätt", multiplier: 1 };
+const EXAMPLE_DIFFICULTY_2: IDifficulty = { name: "Mellan", multiplier: 2 };
+const EXAMPLE_DIFFICULTY_3: IDifficulty = { name: "Svår", multiplier: 3 };
 const EXAMPLE_QUESTION: IQuestion[] = [
   {
     category: EXAMPLE_CATEGORY.name,
@@ -45,6 +47,8 @@ const EXAMPLE_QUESTION: IQuestion[] = [
 const memoryLibrary = new MemoryLibrary("Example Library");
 memoryLibrary.addCategory(EXAMPLE_CATEGORY);
 memoryLibrary.addDifficulty(EXAMPLE_DIFFICULTY);
+memoryLibrary.addDifficulty(EXAMPLE_DIFFICULTY_2);
+memoryLibrary.addDifficulty(EXAMPLE_DIFFICULTY_3);
 memoryLibrary.addQuestion(EXAMPLE_QUESTION[0]);
 memoryLibrary.addQuestion(EXAMPLE_QUESTION[1]);
 memoryLibrary.addQuestion(EXAMPLE_QUESTION[2]);

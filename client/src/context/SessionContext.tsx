@@ -1,5 +1,5 @@
 import React, { createContext, ReactNode, useEffect, useState } from "react";
-import { IGameInfo, IQuestion, ISession } from "../@types/QuizClient";
+import { IGameInfo, ILibrary, IQuestion, ISession } from "../@types/QuizClient";
 import { SessionContextType } from "../@types/Session";
 import { QuizClient } from "../api/QuizClient";
 
@@ -102,8 +102,12 @@ function useProvideSession(
     return await quizClient.leaveSession();
   }
 
-  async function getLibraries() {
+  async function getLibraries(): Promise<string[]> {
     return await quizClient.getLibraries();
+  }
+
+  async function getLibrary(name: string): Promise<ILibrary | null> {
+    return await quizClient.getLibrary(name);
   }
 
   return {
@@ -124,6 +128,7 @@ function useProvideSession(
     joinSession,
     leaveSession,
     getLibraries,
+    getLibrary,
   };
 }
 

@@ -258,9 +258,15 @@ export class QuizClient {
     return false;
   }
 
-  public async getLibraries(): Promise<ILibrary[]> {
+  public async getLibraries(): Promise<string[]> {
     const response: Response | null = await this.get("/libraries");
     if (response) return response.json();
     return [];
+  }
+
+  public async getLibrary(name: string): Promise<ILibrary | null> {
+    const response: Response | null = await this.get(`/libraries/${name}`);
+    if (response) return response.json();
+    return null;
   }
 }
