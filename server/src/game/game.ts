@@ -106,10 +106,14 @@ export default class Game {
       category,
       difficulty
     );
-    this.questions = questions;
-    this.correctAnswers = correctAnswers;
-    this.currentQuestion = 0;
-    this.setStage(this.currentQuestion);
+    if (this.questions && this.questions.length > 0) {
+      this.questions = questions;
+      this.correctAnswers = correctAnswers;
+      this.currentQuestion = 0;
+      this.setStage(this.currentQuestion);
+      return true;
+    }
+    this.setStage("end");
     return false;
   }
 
