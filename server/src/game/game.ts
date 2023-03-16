@@ -4,6 +4,7 @@ import User from "./user";
 
 const DEFAULT_TIME: number = 30;
 const TIMEOUT_TIME: number = 10;
+const BASE_SCORE = 100;
 
 export default class Game {
   manager: GameManager;
@@ -106,7 +107,7 @@ export default class Game {
       category,
       difficulty
     );
-    if (this.questions && this.questions.length > 0) {
+    if (questions && questions.length > 0) {
       this.questions = questions;
       this.correctAnswers = correctAnswers;
       this.currentQuestion = 0;
@@ -142,7 +143,7 @@ export default class Game {
         if (
           this.answers[username] === this.correctAnswers[this.currentQuestion]
         ) {
-          // Add points
+          this.findUserByName(username).addScore(BASE_SCORE);
         }
         delete this.answers[username];
       });
