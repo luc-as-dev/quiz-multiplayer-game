@@ -6,6 +6,23 @@ import {
 } from "../@types/QuizServer";
 import QuestionLibrary from "./questionLibrary";
 
+type LibraryType = {
+  categories: ICategory[];
+  difficulties: IDifficulty[];
+  questions: IQuestion[];
+};
+
+export function memoryLibraryFromJSON(
+  name: string,
+  library: LibraryType
+): MemoryLibrary {
+  const lib = new MemoryLibrary(name);
+  library.categories.forEach((c) => lib.addCategory(c));
+  library.difficulties.forEach((d) => lib.addDifficulty(d));
+  library.questions.forEach((q) => lib.addQuestion(q));
+  return lib;
+}
+
 export default class MemoryLibrary extends QuestionLibrary {
   protected categories: ICategory[] = [];
   protected difficulties: IDifficulty[] = [];

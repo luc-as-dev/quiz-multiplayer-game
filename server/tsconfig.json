@@ -5,6 +5,7 @@
  "target": "es2022",
  "noImplicitAny": true,
  "moduleResolution": "node",
+ "resolveJsonModule": true,
  "sourceMap": true,
  "outDir": "dist",
  "baseUrl": ".",

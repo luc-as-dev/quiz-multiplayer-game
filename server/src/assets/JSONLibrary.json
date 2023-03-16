@@ -1,0 +1,31 @@
+{
+  "categories": [{ "name": "Exempel Kategori" }],
+  "difficulties": [
+    { "name": "Lätt", "multiplier": 1 },
+    { "name": "Medel", "multiplier": 1 },
+    { "name": "Svår", "multiplier": 1 }
+  ],
+  "questions": [
+    {
+      "category": "Exempel Kategori",
+      "difficulty": "Lätt",
+      "question": "Tycker du om Quiz?",
+      "correctAnswer": "Ja",
+      "incorrectAnswers": ["Nej", "Kanske", "Ibland"]
+    },
+    {
+      "category": "Exempel Kategori",
+      "difficulty": "Lätt",
+      "question": "Tycker du att det behövs fler frågor?",
+      "correctAnswer": "Nej",
+      "incorrectAnswers": ["Ja", "Kanske", "Ibland"]
+    },
+    {
+      "category": "Exempel Kategori",
+      "difficulty": "Lätt",
+      "question": "Vilken kategori av frågor vill du ha?",
+      "correctAnswer": "Bilar",
+      "incorrectAnswers": ["Hästar", "Vetenskap", "Natur"]
+    }
+  ]
+}
