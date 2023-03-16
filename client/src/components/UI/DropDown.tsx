@@ -4,17 +4,19 @@ type Props = {
   selected: string;
   alternatives: string[];
   setSelected: (name: string) => void;
+  readonly?: boolean;
 };
 
 export default function DropDown({
   selected,
   alternatives,
   setSelected,
+  readonly = false,
 }: Props) {
   const [isOpen, setIsOpen] = useState<boolean>(false);
 
   function openHandler() {
-    setIsOpen((isOpen) => !isOpen);
+    if (!readonly) setIsOpen((isOpen) => !isOpen);
   }
 
   function selectHandler(name: string) {
@@ -22,7 +24,10 @@ export default function DropDown({
   }
 
   return (
-    <div className={`drop-down ${isOpen ? "open" : ""}`} onClick={openHandler}>
+    <div
+      className={`drop-down ${isOpen ? "open" : readonly ? "readonly" : ""}`}
+      onClick={openHandler}
+    >
       <div className="d-head">{selected}</div>
       <div className={"d-list"}>
         {alternatives.map((name) => (

@@ -180,8 +180,13 @@
   display: none; /* Safari and Chrome */
 }
 
+.drop-down.readonly {
+  .d-head{
+    background-color: $dropDownReadonlyBg;
+  }
+}
+
 .drop-down.open{
-  
   .d-head {
     border: $dropDownOpenBorder;
     border-bottom: $dropDownBorder;

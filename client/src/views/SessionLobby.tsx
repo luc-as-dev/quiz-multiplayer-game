@@ -66,6 +66,7 @@ export default function SessionLobby({}: Props) {
           selected={selectedLibrary || ""}
           alternatives={libraries}
           setSelected={setSelectedLibrary}
+          readonly={!session.getIsOwner()}
         />
 
         {library && (
@@ -73,6 +74,7 @@ export default function SessionLobby({}: Props) {
             selected={selectedCategory}
             alternatives={library?.categories}
             setSelected={setSelectedCategory}
+            readonly={!session.getIsOwner()}
           />
         )}
         {library && (
@@ -80,6 +82,7 @@ export default function SessionLobby({}: Props) {
             selected={selectedDifficulty}
             alternatives={library?.difficulties}
             setSelected={setSelectedDifficulty}
+            readonly={!session.getIsOwner()}
           />
         )}
       </Card>
