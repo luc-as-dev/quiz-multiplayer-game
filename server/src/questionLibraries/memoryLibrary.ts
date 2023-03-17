@@ -96,11 +96,7 @@ export default class MemoryLibrary extends QuestionLibrary {
     return questions;
   }
 
-  public async info(): Promise<ILibrary> {
-    return {
-      categories: this.categories.map((c) => c.name),
-      difficulties: this.difficulties.map((d) => d.name),
-      questions: this.questions.length,
-    };
+  public async getQuestionsLength(): Promise<number> {
+    return this.questions.length;
   }
 }

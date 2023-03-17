@@ -41,6 +41,10 @@ export default class QuestionLibrary {
     return [];
   }
 
+  public async getQuestionsLength(): Promise<number> {
+    return 0;
+  }
+
   public async getSafeQuestions(
     limit: number,
     category?: ICategory["name"],
@@ -69,6 +73,10 @@ export default class QuestionLibrary {
   }
 
   public async info(): Promise<ILibrary> {
-    return { categories: [], difficulties: [], questions: 0 };
+    return {
+      categories: (await this.getCategories()).map((c) => c.name),
+      difficulties: (await this.getDifficulties()).map((d) => d.name),
+      questions: await this.getQuestionsLength(),
+    };
   }
 }
