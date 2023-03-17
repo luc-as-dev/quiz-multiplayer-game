@@ -6,6 +6,8 @@ import { router as gameRouter } from "./routes/game";
 import { router as librariesRouter } from "./routes/libraries";
 import QuizServer from "./quiz/QuizServer";
 import { memoryLibraryFromJSON } from "./questionLibraries/MemoryLibrary";
+import MongoDBLibrary from "./questionLibraries/MongoDBLibrary";
+
 import JSONLibrary from "./assets/JSONLibrary.json";
 
 config();
@@ -19,6 +21,14 @@ const app: Express = express();
 export const quizServer: QuizServer = new QuizServer(UPDATE_INTERVAL);
 quizServer.addLibrary(memoryLibraryFromJSON("JSONLibrary", JSONLibrary));
 
+if (process.env.MONGO_URI) {
+  const mongoDBLibrary = new MongoDBLibrary(
+    "MongoDBLibrary",
+    process.env.MONGO_URI
+  );
+  quizServer.addLibrary(mongoDBLibrary);
+}
+
 app.use(cors({ origin: ORIGIN }));
 app.use(express.json());
 
@@ -26,5 +36,5 @@ app.use(gameRouter);
 app.use(librariesRouter);
 
 app.listen(PORT, () => {
-  console.log(`Started server on port ${PORT}`);
+  console.log(`Express: Started server on port ${PORT}`);
 });
