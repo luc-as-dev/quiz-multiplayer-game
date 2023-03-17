@@ -46,13 +46,13 @@ export default class MemoryLibrary extends QuestionLibrary {
 
   public async addQuestion(question: IQuestion): Promise<boolean> {
     if (!this.questions.find((q) => q.question === question.question)) {
-      if (!this.categories.find((c) => c.name === question.category)) {
+      if (!this.categories.find((c) => c.name === question.category.name)) {
         console.log(
           `Category "${question.category}" does not exist in ${this.name}`
         );
         return false;
       }
-      if (!this.difficulties.find((d) => d.name === question.difficulty)) {
+      if (!this.difficulties.find((d) => d.name === question.difficulty.name)) {
         console.log(
           `Difficulty "${question.difficulty}" does not exist in ${this.name}`
         );
@@ -80,9 +80,11 @@ export default class MemoryLibrary extends QuestionLibrary {
     if (!limit) return this.questions;
     let questionsCopy = [...this.questions];
     if (category)
-      questionsCopy = questionsCopy.filter((q) => q.category === category);
+      questionsCopy = questionsCopy.filter((q) => q.category.name === category);
     if (difficulty)
-      questionsCopy = questionsCopy.filter((q) => q.difficulty === difficulty);
+      questionsCopy = questionsCopy.filter(
+        (q) => q.difficulty.name === difficulty
+      );
     if (questionsCopy.length < limit) limit = questionsCopy.length;
 
     const questions = [];

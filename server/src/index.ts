@@ -5,7 +5,7 @@ import cors from "cors";
 import { router as gameRouter } from "./routes/game";
 import { router as librariesRouter } from "./routes/libraries";
 import QuizServer from "./quiz/QuizServer";
-import { memoryLibraryFromJSON } from "./questionLibraries/memoryLibrary";
+import { memoryLibraryFromJSON } from "./questionLibraries/MemoryLibrary";
 import JSONLibrary from "./assets/JSONLibrary.json";
 
 config();

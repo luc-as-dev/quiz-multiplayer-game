@@ -8,8 +8,8 @@ export interface IDifficulty {
 }
 
 export interface IQuestion {
-  category: ICategory["name"];
-  difficulty: IDifficulty["name"];
+  category: ICategory;
+  difficulty: IDifficulty;
   question: string;
   correctAnswer: string;
   incorrectAnswers: string[];

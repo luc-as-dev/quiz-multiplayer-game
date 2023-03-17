@@ -7,169 +7,169 @@
   ],
   "questions": [
     {
-      "category": "Geografi",
-      "difficulty": "Lätt",
+      "category": { "name": "Geografi" },
+      "difficulty": { "name": "Lätt", "multiplier": 1 },
       "question": "Vad heter världens högsta berg?",
       "correctAnswer": "Mount Everest",
       "incorrectAnswers": ["K2", "Kilimanjaro", "Mont Blanc"]
     },
     {
-      "category": "Geografi",
-      "difficulty": "Lätt",
+      "category": { "name": "Geografi" },
+      "difficulty": { "name": "Lätt", "multiplier": 1 },
       "question": "Vilket hav ligger mellan Europa och Afrika?",
       "correctAnswer": "Medelhavet",
       "incorrectAnswers": ["Atlanten", "Indiska oceanen", "Stilla havet"]
     },
     {
-      "category": "Geografi",
-      "difficulty": "Lätt",
+      "category": { "name": "Geografi" },
+      "difficulty": { "name": "Lätt", "multiplier": 1 },
       "question": "Vilket land har flest invånare i världen?",
       "correctAnswer": "Kina",
       "incorrectAnswers": ["Indien", "USA", "Ryssland"]
     },
     {
-      "category": "Geografi",
-      "difficulty": "Lätt",
+      "category": { "name": "Geografi" },
+      "difficulty": { "name": "Lätt", "multiplier": 1 },
       "question": "Vilket land är världens minsta till ytan?",
       "correctAnswer": "Vatikanstaten",
       "incorrectAnswers": ["Monaco", "Nauru", "Tuvalu"]
     },
     {
-      "category": "Geografi",
-      "difficulty": "Lätt",
+      "category": { "name": "Geografi" },
+      "difficulty": { "name": "Lätt", "multiplier": 1 },
       "question": "Vilken kanal förbinder Atlanten med Stilla havet?",
       "correctAnswer": "Panamakanalen",
       "incorrectAnswers": ["Suezkanalen", "Kielkanalen", "Korintkanalen"]
     },
     {
-      "category": "Geografi",
-      "difficulty": "Lätt",
+      "category": { "name": "Geografi" },
+      "difficulty": { "name": "Lätt", "multiplier": 1 },
       "question": "Vilket land är känd som 'solens rike'?",
       "correctAnswer": "Japan",
       "incorrectAnswers": ["Kina", "Indien", "Thailand"]
     },
     {
-      "category": "Geografi",
-      "difficulty": "Lätt",
+      "category": { "name": "Geografi" },
+      "difficulty": { "name": "Lätt", "multiplier": 1 },
       "question": "Vilken stad är huvudstad i Tyskland?",
       "correctAnswer": "Berlin",
       "incorrectAnswers": ["München", "Hamburg", "Köln"]
     },
     {
-      "category": "Geografi",
-      "difficulty": "Lätt",
+      "category": { "name": "Geografi" },
+      "difficulty": { "name": "Lätt", "multiplier": 1 },
       "question": "Vad heter den största ön i Medelhavet?",
       "correctAnswer": "Sicilien",
       "incorrectAnswers": ["Korsika", "Sardinien", "Kreta"]
     },
     {
-      "category": "Geografi",
-      "difficulty": "Lätt",
+      "category": { "name": "Geografi" },
+      "difficulty": { "name": "Lätt", "multiplier": 1 },
       "question": "Vilken flod flyter genom Paris?",
       "correctAnswer": "Seine",
       "incorrectAnswers": ["Rhen", "Donau", "Volga"]
     },
     {
-      "category": "Geografi",
-      "difficulty": "Medel",
+      "category": { "name": "Geografi" },
+      "difficulty": { "name": "Medel", "multiplier": 1 },
       "question": "Vad är det största landet i Afrika?",
       "correctAnswer": "Algeriet",
       "incorrectAnswers": ["Kongo", "Nigeria", "Sudan"]
     },
     {
-      "category": "Geografi",
-      "difficulty": "Medel",
+      "category": { "name": "Geografi" },
+      "difficulty": { "name": "Medel", "multiplier": 1 },
       "question": "Vilken flod rinner genom Paris?",
       "correctAnswer": "Seine",
       "incorrectAnswers": ["Rhen", "Donau", "Thames"]
     },
     {
-      "category": "Geografi",
-      "difficulty": "Medel",
+      "category": { "name": "Geografi" },
+      "difficulty": { "name": "Medel", "multiplier": 1 },
       "question": "Vilket land har flest invånare i Europa?",
       "correctAnswer": "Ryssland",
       "incorrectAnswers": ["Tyskland", "Frankrike", "Storbritannien"]
     },
     {
-      "category": "Geografi",
-      "difficulty": "Medel",
+      "category": { "name": "Geografi" },
+      "difficulty": { "name": "Medel", "multiplier": 1 },
       "question": "Vad är huvudstaden i Australien?",
       "correctAnswer": "Canberra",
       "incorrectAnswers": ["Sydney", "Melbourne", "Brisbane"]
     },
     {
-      "category": "Geografi",
-      "difficulty": "Medel",
+      "category": { "name": "Geografi" },
+      "difficulty": { "name": "Medel", "multiplier": 1 },
       "question": "Vilket land ligger längst söderut?",
       "correctAnswer": "Chile",
       "incorrectAnswers": ["Argentina", "Nya Zeeland", "Sydafrika"]
     },
     {
-      "category": "Geografi",
-      "difficulty": "Svår",
+      "category": { "name": "Geografi" },
+      "difficulty": { "name": "Svår", "multiplier": 1 },
       "question": "Vad är det minsta landet i världen till ytan?",
       "correctAnswer": "Vatikanstaten",
       "incorrectAnswers": ["Monaco", "Nauru", "Tuvalu"]
     },
     {
-      "category": "Geografi",
-      "difficulty": "Svår",
+      "category": { "name": "Geografi" },
+      "difficulty": { "name": "Svår", "multiplier": 1 },
       "question": "Vad heter havet som ligger mellan Europa och Afrika?",
       "correctAnswer": "Medelhavet",
       "incorrectAnswers": ["Atlanten", "Stilla havet", "Indiska oceanen"]
     },
     {
-      "category": "Geografi",
-      "difficulty": "Svår",
+      "category": { "name": "Geografi" },
+      "difficulty": { "name": "Svår", "multiplier": 1 },
       "question": "Vad är det högsta berget i Afrika?",
       "correctAnswer": "Kilimanjaro",
       "incorrectAnswers": ["Mount Everest", "Mount McKinley", "Mont Blanc"]
     },
     {
-      "category": "Geografi",
-      "difficulty": "Svår",
+      "category": { "name": "Geografi" },
+      "difficulty": { "name": "Svår", "multiplier": 1 },
       "question": "Vilken stad ligger på båda sidor om Donaufloden?",
       "correctAnswer": "Budapest",
       "incorrectAnswers": ["Belgrad", "Wien", "Prag"]
     },
     {
-      "category": "Geografi",
-      "difficulty": "Svår",
+      "category": { "name": "Geografi" },
+      "difficulty": { "name": "Svår", "multiplier": 1 },
       "question": "Vad är det största landet i Afrika till ytan?",
       "correctAnswer": "Algeriet",
       "incorrectAnswers": ["Kongo-Kinshasa", "Sudan", "Libyen"]
     },
     {
-      "category": "Geografi",
-      "difficulty": "Svår",
+      "category": { "name": "Geografi" },
+      "difficulty": { "name": "Svår", "multiplier": 1 },
       "question": "Vad är det största landet i världen till ytan?",
       "correctAnswer": "Ryssland",
       "incorrectAnswers": ["Kanada", "Kina", "USA"]
     },
     {
-      "category": "Geografi",
-      "difficulty": "Svår",
+      "category": { "name": "Geografi" },
+      "difficulty": { "name": "Svår", "multiplier": 1 },
       "question": "Vad heter världens djupaste sjö?",
       "correctAnswer": "Baikalsjön",
       "incorrectAnswers": ["Kaspiska havet", "Döda havet", "Aralsjön"]
     },
     {
-      "category": "Geografi",
-      "difficulty": "Svår",
+      "category": { "name": "Geografi" },
+      "difficulty": { "name": "Svår", "multiplier": 1 },
       "question": "Vad heter ögruppen i Atlanten som tillhör Portugal?",
       "correctAnswer": "Azorerna",
       "incorrectAnswers": ["Kanarieöarna", "Madeira", "Balearerna"]
     },
     {
-      "category": "Geografi",
-      "difficulty": "Svår",
+      "category": { "name": "Geografi" },
+      "difficulty": { "name": "Svår", "multiplier": 1 },
       "question": "Vad är det högsta berget i Europa?",
       "correctAnswer": "Mount Elbrus",
       "incorrectAnswers": ["Mont Blanc", "Kilimanjaro", "Mount Everest"]
     },
     {
-      "category": "Programmering",
-      "difficulty": "Lätt",
+      "category": { "name": "Programmering" },
+      "difficulty": { "name": "Lätt", "multiplier": 1 },
       "question": "Vad står CSS för?",
       "correctAnswer": "Cascading Style Sheets",
       "incorrectAnswers": [
@@ -179,8 +179,8 @@
       ]
     },
     {
-      "category": "Programmering",
-      "difficulty": "Lätt",
+      "category": { "name": "Programmering" },
+      "difficulty": { "name": "Lätt", "multiplier": 1 },
       "question": "Vad står SQL för?",
       "correctAnswer": "Structured Query Language",
       "incorrectAnswers": [
@@ -190,15 +190,15 @@
       ]
     },
     {
-      "category": "Programmering",
-      "difficulty": "Lätt",
+      "category": { "name": "Programmering" },
+      "difficulty": { "name": "Lätt", "multiplier": 1 },
       "question": "Vilket år skapades programmeringsspråket Python?",
       "correctAnswer": "1991",
       "incorrectAnswers": ["1985", "1995", "2001"]
     },
     {
-      "category": "Programmering",
-      "difficulty": "Lätt",
+      "category": { "name": "Programmering" },
+      "difficulty": { "name": "Lätt", "multiplier": 1 },
       "question": "Vad står JVM för?",
       "correctAnswer": "Java Virtual Machine",
       "incorrectAnswers": [
@@ -208,15 +208,15 @@
       ]
     },
     {
-      "category": "Programmering",
-      "difficulty": "Lätt",
+      "category": { "name": "Programmering" },
+      "difficulty": { "name": "Lätt", "multiplier": 1 },
       "question": "Vilken symbol används för att skapa en kommentar i programmeringsspråket Python?",
       "correctAnswer": "#",
       "incorrectAnswers": ["//", "<!-- -->", ";"]
     },
     {
-      "category": "Programmering",
-      "difficulty": "Lätt",
+      "category": { "name": "Programmering" },
+      "difficulty": { "name": "Lätt", "multiplier": 1 },
       "question": "Vad står JSON för?",
       "correctAnswer": "JavaScript Object Notation",
       "incorrectAnswers": [
@@ -226,8 +226,8 @@
       ]
     },
     {
-      "category": "Programmering",
-      "difficulty": "Lätt",
+      "category": { "name": "Programmering" },
+      "difficulty": { "name": "Lätt", "multiplier": 1 },
       "question": "Vad är en loop i programmering?",
       "correctAnswer": "En upprepning av en kodsekvens",
       "incorrectAnswers": [
@@ -237,15 +237,15 @@
       ]
     },
     {
-      "category": "Programmering",
-      "difficulty": "Lätt",
+      "category": { "name": "Programmering" },
+      "difficulty": { "name": "Lätt", "multiplier": 1 },
       "question": "Vilket programmeringsspråk används främst för utveckling av Android-appar?",
       "correctAnswer": "Java",
       "incorrectAnswers": ["Python", "JavaScript", "C#"]
     },
     {
-      "category": "Programmering",
-      "difficulty": "Lätt",
+      "category": { "name": "Programmering" },
+      "difficulty": { "name": "Lätt", "multiplier": 1 },
       "question": "Vad står API för?",
       "correctAnswer": "Application Programming Interface",
       "incorrectAnswers": [
@@ -255,8 +255,8 @@
       ]
     },
     {
-      "category": "Programmering",
-      "difficulty": "Svår",
+      "category": { "name": "Programmering" },
+      "difficulty": { "name": "Svår", "multiplier": 1 },
       "question": "Vad är skillnaden mellan kompilerad och tolkad kod?",
       "correctAnswer": "Kompilerad kod översätts till maskinkod vid kompileringstid medan tolkad kod översätts till maskinkod vid exekveringstid.",
       "incorrectAnswers": [
@@ -266,8 +266,8 @@
       ]
     },
     {
-      "category": "Programmering",
-      "difficulty": "Svår",
+      "category": { "name": "Programmering" },
+      "difficulty": { "name": "Svår", "multiplier": 1 },
       "question": "Vad är en lambda-funktion i programmering?",
       "correctAnswer": "En anonym funktion som kan definieras på en enda rad.",
       "incorrectAnswers": [
@@ -277,8 +277,8 @@
       ]
     },
     {
-      "category": "Programmering",
-      "difficulty": "Svår",
+      "category": { "name": "Programmering" },
+      "difficulty": { "name": "Svår", "multiplier": 1 },
       "question": "Vad är en rekursiv funktion i programmering?",
       "correctAnswer": "En funktion som kallar sig själv för att lösa ett problem.",
       "incorrectAnswers": [
@@ -288,8 +288,8 @@
       ]
     },
     {
-      "category": "Programmering",
-      "difficulty": "Medel",
+      "category": { "name": "Programmering" },
+      "difficulty": { "name": "Medel", "multiplier": 1 },
       "question": "Vad är en databasindex i programmering?",
       "correctAnswer": "En datastruktur som ökar sökhastigheten i en databas.",
       "incorrectAnswers": [
@@ -299,8 +299,8 @@
       ]
     },
     {
-      "category": "Programmering",
-      "difficulty": "Medel",
+      "category": { "name": "Programmering" },
+      "difficulty": { "name": "Medel", "multiplier": 1 },
       "question": "Vad är skillnaden mellan en dynamisk och en statisk variabel i programmering?",
       "correctAnswer": "En dynamisk variabel allokeras under programmets körning medan en statisk variabel allokeras vid kompileringstid.",
       "incorrectAnswers": [
