@@ -1,6 +1,5 @@
-import { ISafeQuestion, StageType } from "../@types/QuizServer";
-import GameManager from "./gameManager";
-import User from "./user";
+import { ISafeQuestion, IUser, StageType } from "../@types/QuizServer";
+import GameManager from "./GameManager";
 
 const DEFAULT_TIME: number = 30;
 const TIMEOUT_TIME: number = 10;
@@ -16,7 +15,7 @@ export default class Game {
   gameOn: boolean = false;
   stage: StageType;
 
-  users: User[] = [];
+  users: IUser[] = [];
   lastPing: { [username: string]: number } = {};
   answers: { [username: string]: string } = {};
 
@@ -25,7 +24,7 @@ export default class Game {
   questions: ISafeQuestion[] = null;
   correctAnswers: string[] = null;
 
-  constructor(manager: GameManager, id: string, creator: User, time?: number) {
+  constructor(manager: GameManager, id: string, creator: IUser, time?: number) {
     this.manager = manager;
 
     this.id = id;
@@ -35,8 +34,8 @@ export default class Game {
     this.updatedAt = Date.now();
   }
 
-  public ping(user: User): number {
-    this.lastPing[user.getName()] = Date.now();
+  public ping(user: IUser): number {
+    this.lastPing[user.name] = Date.now();
     return this.updatedAt;
   }
 
@@ -51,7 +50,7 @@ export default class Game {
     return null;
   }
 
-  public addUser(user: User): void {
+  public addUser(user: IUser): void {
     this.users.push(user);
     this.ping(user);
     this.updatedAt = Date.now();
@@ -59,7 +58,7 @@ export default class Game {
 
   public removeUser(username: string): void {
     console.log(`Game[${this.id}]: Removing ${username}`);
-    this.users = this.users.filter((user: User) => user.getName() !== username);
+    this.users = this.users.filter((user: IUser) => user.name !== username);
     delete this.lastPing[username];
     delete this.answers[username];
     this.updatedAt = Date.now();
@@ -69,25 +68,23 @@ export default class Game {
     }
   }
 
-  public isOwner(user: User): boolean {
-    return this.getOwner() === user;
+  public isOwner(user: IUser): boolean {
+    return this.getOwner().name === user.name;
   }
 
-  public findUserByName(name: string): User | undefined {
-    return this.users.find((user) => user.getName() === name);
+  public findUserByName(name: string): IUser | undefined {
+    return this.users.find((user) => user.name === name);
   }
 
   public getPlayers(): { [username: string]: number } {
     const players: { [username: string]: number } = {};
 
-    this.users.forEach(
-      (user: User) => (players[user.getName()] = user.getScore())
-    );
+    this.users.forEach((user: IUser) => (players[user.name] = user.score));
 
     return players;
   }
 
-  public getOwner(): User {
+  public getOwner(): IUser {
     return this.users[this.owner];
   }
 
@@ -143,7 +140,7 @@ export default class Game {
         if (
           this.answers[username] === this.correctAnswers[this.currentQuestion]
         ) {
-          this.findUserByName(username).addScore(BASE_SCORE);
+          this.findUserByName(username).score += BASE_SCORE;
         }
         delete this.answers[username];
       });

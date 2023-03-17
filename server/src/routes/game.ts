@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 
-import Game from "../game/game";
+import Game from "../game/Game";
 import User from "../game/user";
 import { IGameInfo, ISession } from "../@types/QuizServer";
 import { quizServer } from "../index";

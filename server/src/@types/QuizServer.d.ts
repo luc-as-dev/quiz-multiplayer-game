@@ -45,3 +45,8 @@ interface ILibrary {
   difficulties: string[];
   questions: number;
 }
+
+interface IUser {
+  name: string;
+  score: number;
+}

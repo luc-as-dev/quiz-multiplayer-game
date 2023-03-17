@@ -4,7 +4,7 @@ import {
   ILibrary,
   IQuestion,
 } from "../@types/QuizServer";
-import QuestionLibrary from "./questionLibrary";
+import QuestionLibrary from "./QuestionLibrary";
 
 type LibraryType = {
   categories: ICategory[];

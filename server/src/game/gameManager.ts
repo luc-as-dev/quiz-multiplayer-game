@@ -1,7 +1,6 @@
-import QuestionLibrary from "../questionLibraries/questionLibrary";
-import { IGameInfo } from "../@types/QuizServer";
-import Game from "./game";
-import User from "./user";
+import QuestionLibrary from "../questionLibraries/QuestionLibrary";
+import { IGameInfo, IUser } from "../@types/QuizServer";
+import Game from "./Game";
 
 export default class GameManager {
   public libraries: QuestionLibrary[];
@@ -15,7 +14,7 @@ export default class GameManager {
     this.updateTime = updateMS;
   }
 
-  public addGame(gameId: string, creator: User, time?: number): Game | null {
+  public addGame(gameId: string, creator: IUser, time?: number): Game | null {
     if (!this.games[gameId]) {
       const game = new Game(this, gameId, creator, time);
       console.log(`GameManager: Added game ${game.id}`);
@@ -56,7 +55,7 @@ export default class GameManager {
       gameInfos.push({
         gameId: game.id,
         players: Object.keys(game.getPlayers()),
-        owner: game.getOwner().getName(),
+        owner: game.getOwner().name,
       });
     });
     return gameInfos;
