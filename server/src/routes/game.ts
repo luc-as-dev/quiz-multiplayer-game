@@ -1,8 +1,7 @@
 import { Router, Request, Response } from "express";
 
 import Game from "../game/Game";
-import User from "../game/user";
-import { IGameInfo, ISession } from "../@types/QuizServer";
+import { IGameInfo, ISession, IUser } from "../@types/QuizServer";
 import { quizServer } from "../index";
 export const router = Router();
 
@@ -19,11 +18,11 @@ router.post("/game/create", (req: Request, res: Response) => {
   const { id, username } = req.body;
 
   if (id && username) {
-    const user: User = new User(username);
+    const user: IUser = { name: username, score: 0 };
     const game: Game = quizServer.manager.addGame(id, user);
     const session: ISession = {
       id: game.id,
-      username: user.getName(),
+      username: user.name,
       isOwner: game.isOwner(user),
       players: game.getPlayers(),
       question: game.getQuestion(),
@@ -50,13 +49,13 @@ router.post("/game/join", (req: Request, res: Response) => {
     const game: Game = quizServer.manager.findGameById(id);
 
     if (game && !game.findUserByName(username)) {
-      const user: User = new User(username);
+      const user: IUser = { name: username, score: 0 };
 
       game.addUser(user);
 
       const session: ISession = {
         id: game.id,
-        username: user.getName(),
+        username: user.name,
         isOwner: game.isOwner(user),
         players: game.getPlayers(),
         question: game.getQuestion(),
@@ -124,7 +123,7 @@ router.post("/game/update", (req: Request, res: Response) => {
 
       const session: ISession = {
         id: game.id,
-        username: user.getName(),
+        username: user.name,
         isOwner: game.isOwner(user),
         players: game.getPlayers(),
         question: game.getQuestion(),
