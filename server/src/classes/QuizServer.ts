@@ -1,5 +1,5 @@
-import GameManager from "../game/gameManager";
-import QuestionLibrary from "../questionLibraries/questionLibrary";
+import GameManager from "./GameManager";
+import QuestionLibrary from "./QuestionLibrary";
 
 const DEFAULT_UPDATE_TIME = 1000;
 

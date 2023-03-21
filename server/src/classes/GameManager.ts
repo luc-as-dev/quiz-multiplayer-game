@@ -1,6 +1,6 @@
-import QuestionLibrary from "../questionLibraries/questionLibrary";
+import QuestionLibrary from "../question-libraries/QuestionLibrary";
 import { IGameInfo, IUser } from "../@types/QuizServer";
-import Game from "./game";
+import Game from "./Game";
 
 export default class GameManager {
   public libraries: QuestionLibrary[];
