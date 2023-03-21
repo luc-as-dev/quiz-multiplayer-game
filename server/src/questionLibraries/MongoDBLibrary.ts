@@ -1,10 +1,5 @@
 import mongoose, { Connection, Model } from "mongoose";
-import {
-  ICategory,
-  IDifficulty,
-  ILibrary,
-  IQuestion,
-} from "../@types/QuizServer";
+import { ICategory, IDifficulty, IQuestion } from "../@types/QuizServer";
 import QuestionLibrary from "./QuestionLibrary";
 
 const categorySchema = new mongoose.Schema<ICategory>({
@@ -60,9 +55,19 @@ export default class MongoDBLibrary extends QuestionLibrary {
     super(name);
     this.connection = mongoose.createConnection(uri);
     console.log(`Library: [${this.name}] - Connected to MongoDB`);
-    this.Category = this.connection.model("Category", categorySchema);
-    this.Difficulty = this.connection.model("Difficulty", difficultySchema);
-    this.Question = this.connection.model("Question", questionSchema);
+
+    this.Category = this.connection.model<ICategory>(
+      "Category",
+      categorySchema
+    );
+    this.Difficulty = this.connection.model<IDifficulty>(
+      "Difficulty",
+      difficultySchema
+    );
+    this.Question = this.connection.model<IQuestion>(
+      "Question",
+      questionSchema
+    );
   }
 
   public async addCategory(category: ICategory): Promise<boolean> {
