@@ -1,5 +1,5 @@
 import { ISafeQuestion, IUser, StageType } from "../@types/QuizServer";
-import GameManager from "./GameManager";
+import GameManager from "./gameManager";
 
 const DEFAULT_TIME: number = 30;
 const TIMEOUT_TIME: number = 10;

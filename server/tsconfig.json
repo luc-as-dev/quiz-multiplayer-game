@@ -13,5 +13,5 @@
  "*": ["node_modules/*"]
  }
  },
- "include": ["src/**/*", "src/quiz/QuizServer.ts"]
+ "include": ["src/**/*"]
 }

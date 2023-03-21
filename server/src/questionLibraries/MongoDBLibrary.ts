@@ -1,6 +1,6 @@
 import mongoose, { Connection, Model } from "mongoose";
 import { ICategory, IDifficulty, IQuestion } from "../@types/QuizServer";
-import QuestionLibrary from "./QuestionLibrary";
+import QuestionLibrary from "./questionLibrary";
 
 const categorySchema = new mongoose.Schema<ICategory>({
   name: {

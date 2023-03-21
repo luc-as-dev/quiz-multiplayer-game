@@ -1,6 +1,6 @@
 import { Router, Request, Response } from "express";
 
-import Game from "../game/Game";
+import Game from "../game/game";
 import { IGameInfo, ISession, IUser } from "../@types/QuizServer";
 import { quizServer } from "../index";
 export const router = Router();
