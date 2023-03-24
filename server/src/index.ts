@@ -1,24 +1,26 @@
-import express, { Express } from "express";
 import { config } from "dotenv";
+import express, { Express } from "express";
+import { createServer } from "http";
 import cors from "cors";
 
-import { router as gameRouter } from "./routes/game";
-import { router as librariesRouter } from "./routes/libraries";
-import QuizServer from "./classes/QuizServer";
 import { memoryLibraryFromJSON } from "./classes/MemoryLibrary";
 import MongoDBLibrary from "./classes/MongoDBLibrary";
 
 import JSONLibrary from "./assets/JSONLibrary.json";
+import QuizSocketServer from "./classes/QuizSocketServer";
 
 config();
 
 const PORT: number = +process.env.PORT || 3000;
 const ORIGIN: string = process.env.ORIGIN || "*";
-const UPDATE_INTERVAL = +process.env.UPDATE_INTERVAL || 1000;
 
 const app: Express = express();
+const server = createServer(app);
 
-export const quizServer: QuizServer = new QuizServer(UPDATE_INTERVAL);
+export const quizServer: QuizSocketServer = new QuizSocketServer(server, {
+  origin: "*",
+});
+
 quizServer.addLibrary(memoryLibraryFromJSON("JSONLibrary", JSONLibrary));
 
 if (process.env.MONGO_URI) {
@@ -26,15 +28,17 @@ if (process.env.MONGO_URI) {
     "MongoDBLibrary",
     process.env.MONGO_URI
   );
+  mongoDBLibrary
+    .getSafeQuestions(10)
+    .then((data) => console.log(data.questions[0]));
+
+  // TODO: Check success?
   quizServer.addLibrary(mongoDBLibrary);
 }
 
 app.use(cors({ origin: ORIGIN }));
 app.use(express.json());
 
-app.use(gameRouter);
-app.use(librariesRouter);
-
-app.listen(PORT, () => {
-  console.log(`Express: Started server on port ${PORT}`);
+server.listen(PORT, () => {
+  console.log(`Server : Listening on port ${PORT}`);
 });
