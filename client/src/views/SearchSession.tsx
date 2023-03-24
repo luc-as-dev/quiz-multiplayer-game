@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { SessionContextType } from "../@types/Session";
 import { ViewContextType } from "../@types/View";
 import Card from "../components/UI/Card/Card";
-import SessionsList from "../components/UI/SessionsList/SessionsList";
+import SessionsList from "../components/SessionsList/SessionsList";
 import { useViewContext } from "../context/ViewContext";
 import useSession from "../hooks/useSession";
 import JoinSession from "./JoinSession";

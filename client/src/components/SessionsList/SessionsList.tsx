@@ -1,5 +1,5 @@
 import React from "react";
-import { ISessionInfo } from "../../../@types/QuizClient";
+import { ISessionInfo } from "../../@types/QuizClient";
 import "./SessionsList.scss";
 
 type Props = {
