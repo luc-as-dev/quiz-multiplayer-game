@@ -28,9 +28,6 @@ if (process.env.MONGO_URI) {
     "MongoDBLibrary",
     process.env.MONGO_URI
   );
-  mongoDBLibrary
-    .getSafeQuestions(10)
-    .then((data) => console.log(data.questions[0]));
 
   // TODO: Check success?
   quizServer.addLibrary(mongoDBLibrary);
