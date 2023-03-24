@@ -9,6 +9,7 @@ import {
 
 const DEFAULT_NSP = "/quiz-mp";
 const SESSION_NSP_PREFIX = "/quiz-mp-session-";
+const TIME_UPDATE_MS = 1000;
 
 const LOCAL_STORAGE_KEY = "quiz";
 type LOCAL_STORAGE_TYPE = { id: string; username: string };
@@ -25,6 +26,8 @@ export class QuizSocketClient {
   private defaultSocket: DefaultSocket;
   private sessionNSPPrefix: string;
   private sessionSocket: SessionSocket | null = null;
+
+  private timeInterval: number | null = null;
 
   private session: ISession | null = null;
   private setSessionCallback: Function | null;
@@ -87,7 +90,7 @@ export class QuizSocketClient {
 
       this.sessionSocket!.once("session", (session: ISession) => {
         console.log("Received session", session);
-        this.setSession(session);
+        this.setSession({ ...session, local: { currentTime: null } });
 
         if (session.isOwner) {
           this.sessionSocket!.emit("get-owner-info");
@@ -147,7 +150,28 @@ export class QuizSocketClient {
 
       this.sessionSocket!.on("set-stage", (stage, question) => {
         console.log("Setting stage", stage, question);
-        this.updateSession({ stage, question });
+        const local = { ...this.session!.local };
+        if (stage === "question") {
+          if (this.timeInterval) clearInterval(this.timeInterval);
+          local.currentTime = this.session!.maxTime;
+          this.timeInterval = setInterval(() => {
+            this.updateSession({
+              local: {
+                ...this.session!.local,
+                currentTime: this.session!.local.currentTime! - 1,
+              },
+            });
+          }, TIME_UPDATE_MS);
+        } else if (stage === "end") {
+          if (this.timeInterval) clearInterval(this.timeInterval);
+          this.updateSession({
+            local: {
+              ...this.session!.local,
+              currentTime: null,
+            },
+          });
+        }
+        this.updateSession({ stage, question, local });
       });
     });
   }

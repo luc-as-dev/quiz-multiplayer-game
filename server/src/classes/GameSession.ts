@@ -11,10 +11,11 @@ import {
 } from "../@types/QuizServer";
 import QuestionLibrary from "./QuestionLibrary";
 
-const TIME_OUT = 5000;
+const TIME_OUT_S = 5000;
 const OWNER_ROOM = "owner";
 const LIMIT = 3;
 const QUESTION_POINT = 100;
+const QUESTION_TIME_S = 5;
 
 type Params = {
   io: Server;
@@ -36,16 +37,19 @@ export default class GameSession {
   public stage: StageType = "lobby";
 
   private libraries: QuestionLibrary[];
-  private selectedLibrary: number | undefined;
-  private categories: ICategory[] = undefined;
-  private selectedCategory: number | undefined;
-  private difficulties: IDifficulty[] = undefined;
-  private selectedDifficulty: number | undefined;
+  private selectedLibrary: number = null;
+  private categories: ICategory[] = null;
+  private selectedCategory: number = null;
+  private difficulties: IDifficulty[] = null;
+  private selectedDifficulty: number = null;
 
   private questions: ISafeQuestion[];
   private currentQuestion: number;
   private correctAnswers: string[];
   private answers: { [username: string]: string };
+
+  private questionTimeS: number = QUESTION_TIME_S;
+  private questionTimeout: NodeJS.Timeout = null;
 
   private onDelete: () => void;
 
@@ -85,6 +89,7 @@ export default class GameSession {
       question: null,
       updatedAt: Date.now(), // to be removed
       stage: this.stage,
+      maxTime: this.questionTimeS,
       library: this.libraries[this.selectedLibrary].name,
       category: this.categories
         ? this.categories[this.selectedCategory].name
@@ -220,6 +225,11 @@ export default class GameSession {
       "question",
       this.questions[this.currentQuestion]
     );
+
+    this.questionTimeout = setTimeout(
+      () => this.questionTimeOut(),
+      this.questionTimeS * 1000
+    );
   }
 
   private endSession(): void {
@@ -227,16 +237,25 @@ export default class GameSession {
     this.sessionNSP.emit("set-stage", "end", null);
   }
 
+  private nextStage(): void {
+    clearTimeout(this.questionTimeout);
+    this.checkAnswers();
+    this.currentQuestion++;
+    if (this.currentQuestion === this.questions.length) {
+      this.endSession();
+    } else {
+      this.sendQuestion();
+    }
+  }
+
+  private questionTimeOut(): void {
+    this.nextStage();
+  }
+
   private answer(username: string, answer: string): void {
     this.answers[username] = answer;
     if (Object.keys(this.answers).length === Object.keys(this.users).length) {
-      this.checkAnswers();
-      this.currentQuestion++;
-      if (this.currentQuestion === this.questions.length) {
-        this.endSession();
-      } else {
-        this.sendQuestion();
-      }
+      this.nextStage();
     }
   }
 
@@ -284,7 +303,7 @@ export default class GameSession {
           console.log("Client " + socket.id + " disconnected");
           this.timeouts[username] = setTimeout(() => {
             this.leaveSession(socket, username);
-          }, TIME_OUT);
+          }, TIME_OUT_S * 1000);
         });
       });
     });

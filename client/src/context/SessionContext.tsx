@@ -56,6 +56,16 @@ function useProvideSession(serverURL: string): SessionContextType {
     return undefined;
   }
 
+  function getCurrentTime(): number | null {
+    if (session) return session.local.currentTime;
+    return null;
+  }
+
+  function getMaxTime(): number | undefined {
+    if (session) return session.maxTime;
+    return undefined;
+  }
+
   function getLibrary(): string | undefined {
     if (session) return session.library;
     return undefined;
@@ -166,6 +176,8 @@ function useProvideSession(serverURL: string): SessionContextType {
     getScores,
     getQuestion,
     getStage,
+    getCurrentTime,
+    getMaxTime,
     getLibrary,
     getCategory,
     getDifficulty,

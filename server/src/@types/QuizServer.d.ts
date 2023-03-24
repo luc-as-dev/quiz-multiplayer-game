@@ -46,6 +46,7 @@ export interface ISession {
   question: ISafeQuestion | null;
   updatedAt: number;
   stage: StageType;
+  maxTime: number;
   library: string;
   category?: string;
   difficulty?: string;

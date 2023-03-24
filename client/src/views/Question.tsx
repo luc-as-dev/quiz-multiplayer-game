@@ -4,6 +4,7 @@ import { SessionContextType } from "../@types/Session";
 import Answers from "../components/Answers";
 import FlipCard from "../components/UI/FlipCard";
 import useSession from "../hooks/useSession";
+import TimeBar from "../components/TimeBar/TimeBar";
 
 const QUESTION_WAIT = 500;
 
@@ -12,7 +13,8 @@ type Props = {
 };
 
 export default function Question({}: Props) {
-  const { getQuestion }: SessionContextType = useSession();
+  const { getQuestion, getCurrentTime, getMaxTime }: SessionContextType =
+    useSession();
   const [showQuestion, setShowQuestion] = useState<boolean>(false);
 
   useEffect(() => {
@@ -29,7 +31,10 @@ export default function Question({}: Props) {
     <div className="view">
       <FlipCard className="medium-text logo-card" flipped={showQuestion}>
         <img src={logo}></img>
-        <>{getQuestion()?.question}</>
+        <>
+          {getQuestion()?.question}
+          <TimeBar currentTime={getCurrentTime()!} maxTime={getMaxTime()!} />
+        </>
       </FlipCard>
       {getQuestion() && (
         <Answers

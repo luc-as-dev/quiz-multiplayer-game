@@ -1,0 +1,16 @@
+
+.time-bar {
+  background-color: #ddd;
+  
+  width: 100%;
+  height: 15%;
+  padding: 4px; 
+  border-radius: 4px;
+  
+  &-fill {
+    background-color: var(--color-green);
+
+    height: 100%;
+    border-radius: 4px;
+  }
+}
