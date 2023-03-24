@@ -32,7 +32,11 @@ export default function Question({}: Props) {
         <>{getQuestion()?.question}</>
       </FlipCard>
       {getQuestion() && (
-        <Answers onAnswer={onAnswerHandler} answers={getQuestion()!.answers} />
+        <Answers
+          onAnswer={onAnswerHandler}
+          answers={getQuestion()!.answers}
+          show={showQuestion}
+        />
       )}
     </div>
   );

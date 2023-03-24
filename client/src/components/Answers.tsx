@@ -6,18 +6,24 @@ import Card from "./UI/Card";
 type Props = {
   answers: string[];
   onAnswer: Function;
+  show: boolean;
 };
 
-export default function Answers({ answers, onAnswer }: Props) {
+export default function Answers({ answers, onAnswer, show }: Props) {
   const { sendAnswer }: SessionContextType = useSession();
 
   function answerHandler(answer: string) {
-    onAnswer(answer);
-    sendAnswer(answer);
+    if (show) {
+      onAnswer(answer);
+      sendAnswer(answer);
+    }
   }
 
   return (
-    <div className="two-column grow-1">
+    <div
+      className="answer two-column grow-1"
+      style={show ? {} : { opacity: 0 }}
+    >
       {answers.map((answer: string, index: number) => (
         <Card
           key={index}
