@@ -1,5 +1,6 @@
 .drop-down {
   position: relative;
+  cursor: pointer;
   
   width: 100%;
   
@@ -53,6 +54,7 @@
 }
 
 .drop-down.readonly {
+  cursor: initial;
   &-head{
     background-color: var(--color-2);
   }
