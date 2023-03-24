@@ -1,32 +1,32 @@
 import React from "react";
-import { IGameInfo } from "../@types/QuizClient";
+import { ISessionInfo } from "../@types/QuizClient";
 
 type Props = {
   className?: string | undefined;
-  gameInfos: IGameInfo[];
+  sessionInfos: ISessionInfo[];
   selectedId: string | null;
   setSelectedId: Function;
 };
 
 export default function SessionsList({
   className,
-  gameInfos,
+  sessionInfos,
   selectedId,
   setSelectedId,
 }: Props) {
   return (
     <div className={`list ${className || ""}`}>
-      {gameInfos.length > 0
-        ? gameInfos.map((gameInfo: IGameInfo) => (
+      {sessionInfos.length > 0
+        ? sessionInfos.map((sessionInfo: ISessionInfo) => (
             <div
               className={`item ${
-                selectedId === gameInfo.gameId ? "selected" : ""
+                selectedId === sessionInfo.id ? "selected" : ""
               }`}
-              onClick={() => setSelectedId(gameInfo.gameId)}
-              key={gameInfo.gameId}
+              onClick={() => setSelectedId(sessionInfo.id)}
+              key={sessionInfo.id}
             >
-              <div>{gameInfo.gameId}</div>
-              <div>{gameInfo.owner}</div>
+              <div>{sessionInfo.id}</div>
+              <div>{sessionInfo.owner}</div>
             </div>
           ))
         : "Det finns inga öppna sessioner"}

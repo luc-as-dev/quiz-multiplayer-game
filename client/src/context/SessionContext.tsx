@@ -1,18 +1,20 @@
 import React, { createContext, ReactNode, useEffect, useState } from "react";
-import { IGameInfo, ILibrary, IQuestion, ISession } from "../@types/QuizClient";
+import {
+  IQuestion,
+  ISession,
+  ISessionInfo,
+  ISessionInfos,
+} from "../@types/QuizClient";
 import { SessionContextType } from "../@types/Session";
-import { QuizClient } from "../classes/QuizClient";
+import { QuizSocketClient } from "../classes/QuizSocketClient";
 
 export const sessionContext = createContext<SessionContextType | null>(null);
 
-function useProvideSession(
-  serverURL: string,
-  updateMS: number | undefined
-): SessionContextType {
+function useProvideSession(serverURL: string): SessionContextType {
   const [session, setSession] = useState<ISession | null>(null);
-  const [searchSessions, setSearchSessions] = useState<IGameInfo[]>([]);
-  const [quizClient] = useState<QuizClient>(
-    new QuizClient(serverURL, setSession, setSearchSessions, updateMS)
+  const [searchSessions, setSearchSessions] = useState<ISessionInfos>({});
+  const [quizClient] = useState<QuizSocketClient>(
+    new QuizSocketClient({ serverURL, setSession, setSearchSessions })
   );
 
   useEffect(() => {
@@ -35,12 +37,12 @@ function useProvideSession(
   }
 
   function getPlayers(): string[] | undefined {
-    if (session) return Object.keys(session.players);
+    if (session) return Object.keys(session.users);
     return undefined;
   }
 
   function getScores(): { [username: string]: number } | undefined {
-    if (session) return session.players;
+    if (session) return session.users;
     return undefined;
   }
 
@@ -49,13 +51,63 @@ function useProvideSession(
     return undefined;
   }
 
-  function getStage(): "lobby" | number | "end" | undefined {
+  function getStage(): "lobby" | "question" | "end" | undefined {
     if (session) return session.stage;
     return undefined;
   }
 
-  function getSearchSessions(): IGameInfo[] {
-    return searchSessions;
+  function getLibrary(): string | undefined {
+    if (session) return session.library;
+    return undefined;
+  }
+
+  function getCategory(): string | undefined {
+    if (session) return session.category;
+    return undefined;
+  }
+
+  function getDifficulty(): string | undefined {
+    if (session) return session.difficulty;
+    return undefined;
+  }
+
+  function getLibraries(): string[] {
+    if (session && session.libraries) return session.libraries;
+    return [];
+  }
+
+  function getCategories(): string[] {
+    if (session && session.categories) return session.categories;
+    return [];
+  }
+
+  function getDifficulties(): string[] {
+    if (session && session.difficulties) return session.difficulties;
+    return [];
+  }
+
+  function getSearchSessions(): ISessionInfo[] {
+    const sessionInfoList: ISessionInfo[] = [];
+    Object.keys(searchSessions).forEach((id) => {
+      sessionInfoList.push({
+        id: id,
+        owner: searchSessions[id].owner,
+        users: searchSessions[id].users,
+      });
+    });
+    return sessionInfoList;
+  }
+
+  function setLibrary(name: string) {
+    quizClient.setLibrary(name);
+  }
+
+  function setCategory(name: string) {
+    quizClient.setCategory(name);
+  }
+
+  function setDifficulty(name: string) {
+    quizClient.setDifficulty(name);
   }
 
   function sendAnswer(answer: string): void {
@@ -65,53 +117,45 @@ function useProvideSession(
   }
 
   function startSessionSearch(): boolean {
-    return quizClient.startSessionSearch();
+    // TODO: Add functionality to start session search
+    quizClient.startSessionSearch();
+    return true;
   }
 
   function stopSessionSearch(): boolean {
-    return quizClient.stopSessionSearch();
+    // TODO: Add functionality to stop session search
+    quizClient.stopSessionSearch();
+    return true;
   }
 
   function hasSession(): boolean {
-    return quizClient.getSession() !== null;
+    return quizClient.hasSession();
   }
 
-  async function startSession(
-    library: string,
-    category: string,
-    difficulty: string
-  ): Promise<boolean> {
-    const session = quizClient.getSession();
-    if (session && session.isOwner) {
-      return await quizClient.startSession(library, category, difficulty);
-    }
-    return false;
+  async function startSession(): Promise<boolean> {
+    quizClient.startSession();
+    return true;
   }
 
   async function createSession(
     sessionId: string,
     username: string
   ): Promise<boolean> {
-    return await quizClient.createSession(sessionId, username);
+    quizClient.createSession(sessionId, username);
+    return true;
   }
 
   async function joinSession(
     sessionId: string,
     username: string
   ): Promise<boolean> {
-    return await quizClient.joinSession(sessionId, username);
+    quizClient.joinSession(sessionId, username);
+    return true;
   }
 
   async function leaveSession(): Promise<boolean> {
-    return await quizClient.leaveSession();
-  }
-
-  async function getLibraries(): Promise<string[]> {
-    return await quizClient.getLibraries();
-  }
-
-  async function getLibrary(name: string): Promise<ILibrary | null> {
-    return await quizClient.getLibrary(name);
+    quizClient.leaveSession();
+    return true;
   }
 
   return {
@@ -122,7 +166,16 @@ function useProvideSession(
     getScores,
     getQuestion,
     getStage,
+    getLibrary,
+    getCategory,
+    getDifficulty,
+    getLibraries,
+    getCategories,
+    getDifficulties,
     getSearchSessions,
+    setLibrary,
+    setCategory,
+    setDifficulty,
     sendAnswer,
     startSessionSearch,
     stopSessionSearch,
@@ -131,23 +184,16 @@ function useProvideSession(
     createSession,
     joinSession,
     leaveSession,
-    getLibraries,
-    getLibrary,
   };
 }
 
 type Props = {
   children: ReactNode;
   serverURL: string;
-  updateMS?: number;
 };
 
-export default function SessionProvider({
-  children,
-  serverURL,
-  updateMS,
-}: Props) {
-  const session: SessionContextType = useProvideSession(serverURL, updateMS);
+export default function SessionProvider({ children, serverURL }: Props) {
+  const session: SessionContextType = useProvideSession(serverURL);
   return (
     <sessionContext.Provider value={session}>
       {children}

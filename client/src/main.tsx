@@ -6,14 +6,12 @@ import ViewProvider from "./context/ViewContext";
 import "./index.scss";
 
 ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <React.StrictMode>
-    <SessionProvider
-      serverURL={import.meta.env.VITE_SOME_SERVER_URL}
-      updateMS={import.meta.env.VITE_SOME_UPDATE_INTERVAL}
-    >
+  <>
+    <SessionProvider serverURL={import.meta.env.VITE_SOME_SERVER_URL}>
       <ViewProvider>
         <App />
       </ViewProvider>
     </SessionProvider>
-  </React.StrictMode>
+    <React.StrictMode></React.StrictMode>
+  </>
 );

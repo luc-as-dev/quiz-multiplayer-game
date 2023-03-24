@@ -8,6 +8,7 @@ import useSession from "../hooks/useSession";
 import JoinSession from "./JoinSession";
 
 type Props = {};
+let i = 0;
 
 export default function SearchSession({}: Props) {
   const { setView }: ViewContextType = useViewContext();
@@ -15,6 +16,7 @@ export default function SearchSession({}: Props) {
   const [selectedId, setSelectedId] = useState<string | null>(null);
 
   useEffect(() => {
+    console.log((i++, i));
     session.startSessionSearch();
     return () => {
       session.stopSessionSearch();
@@ -35,7 +37,7 @@ export default function SearchSession({}: Props) {
         <h3>Sök sessioner</h3>
         <SessionsList
           className="grow-10"
-          gameInfos={session.getSearchSessions()}
+          sessionInfos={session.getSearchSessions()}
           selectedId={selectedId}
           setSelectedId={setSelectedId}
         />

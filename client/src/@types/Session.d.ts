@@ -1,4 +1,4 @@
-import { IGameInfo, ILibrary } from "./QuizClient";
+import { ILibrary, ISessionInfo, ISessionInfos } from "./QuizClient";
 
 export type SessionContextType = {
   getId: () => string | undefined;
@@ -8,7 +8,17 @@ export type SessionContextType = {
   getScores: () => { [username: string]: number } | undefined;
   getQuestion: () => IQuestion | null | undefined;
   getStage: () => string | number | undefined;
-  getSearchSessions: () => IGameInfo[];
+  getLibrary: () => string | undefined;
+  getCategory: () => string | undefined;
+  getDifficulty: () => string | undefined;
+  getLibraries: () => string[];
+  getCategories: () => string[];
+  getDifficulties: () => string[];
+  getSearchSessions: () => ISessionInfo[];
+
+  setLibrary: (name: string) => void;
+  setCategory: (name: string) => void;
+  setDifficulty: (name: string) => void;
 
   sendAnswer: (answer: string) => void | null;
 
@@ -16,11 +26,7 @@ export type SessionContextType = {
   stopSessionSearch: () => boolean;
 
   hasSession: () => boolean;
-  startSession: (
-    library: string,
-    category: string,
-    difficulty: string
-  ) => Promise<boolean> | undefined;
+  startSession: () => Promise<boolean> | undefined;
   createSession: (name: string, username: string) => Promise<boolean>;
   joinSession: (name: string, username: string) => Promise<boolean>;
   leaveSession: () => Promise<boolean>;

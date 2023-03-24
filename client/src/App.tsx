@@ -18,11 +18,11 @@ export default function App() {
     if (session.hasSession()) {
       const stage = session.getStage()!;
       console.log("Set view:", stage);
-      if (stage.toString() === "lobby") {
+      if (stage === "lobby") {
         setView(<SessionLobby />);
-      } else if (stage.toString() === "end") {
+      } else if (stage === "end") {
         setView(<SessionEnd />);
-      } else {
+      } else if (stage === "question") {
         setView(<Question />);
       }
     } else {
