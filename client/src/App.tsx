@@ -8,6 +8,7 @@ import Home from "./views/Home";
 import Question from "./views/Question";
 import SessionEnd from "./views/SessionEnd";
 import SessionLobby from "./views/SessionLobby";
+import Middle from "./views/Middle";
 
 export default function App() {
   const { view, isEntering, isExiting, setView }: ViewContextType =
@@ -23,7 +24,7 @@ export default function App() {
       } else if (stage === "question") {
         setView(<Question />);
       } else if (stage === "middle") {
-        setView(<div>Middle</div>);
+        setView(<Middle />);
       } else if (stage === "end") {
         setView(<SessionEnd />);
       }

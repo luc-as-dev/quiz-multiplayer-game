@@ -16,7 +16,8 @@ const OWNER_ROOM = "owner";
 const LIMIT = 3;
 const QUESTION_POINT = 100;
 const QUESTION_TIME_S = 15;
-const MIDDLE_TIME_S = 5;
+const MIDDLE_TIME_S = 3;
+const QUESTION_DELAY_MS = 500;
 
 type Params = {
   io: Server;
@@ -218,7 +219,6 @@ export default class GameSession {
         this.users[username] += QUESTION_POINT * multiplier;
       }
     });
-
     this.answers = {};
   }
 
@@ -263,13 +263,15 @@ export default class GameSession {
 
   private nextStage(): void {
     clearTimeout(this.stageTimeout);
-    this.checkAnswers();
-    if (this.currentQuestion === this.questions.length - 1) {
-      this.toEndStage();
-    } else if (this.stage === "question") {
-      this.toMiddleStage();
-    } else {
+    if (this.stage === "question") {
+      this.checkAnswers();
       this.currentQuestion++;
+      if (this.currentQuestion === this.questions.length) {
+        setTimeout(() => this.toEndStage(), QUESTION_DELAY_MS);
+      } else {
+        setTimeout(() => this.toMiddleStage(), QUESTION_DELAY_MS);
+      }
+    } else {
       this.toQuestionStage();
     }
   }
@@ -296,7 +298,7 @@ export default class GameSession {
     this.answers = {};
     this.correctAnswers = correctAnswers;
 
-    this.toQuestionStage();
+    this.toMiddleStage();
   }
 
   private setupOwner(socket: SessionSocket): void {
