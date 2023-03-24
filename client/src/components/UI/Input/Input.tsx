@@ -1,4 +1,5 @@
 import React from "react";
+import "./Input.scss";
 
 type Props = {
   className?: string | undefined;

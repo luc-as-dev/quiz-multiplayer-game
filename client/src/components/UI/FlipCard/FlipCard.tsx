@@ -1,5 +1,6 @@
 import { ReactNode, useState } from "react";
-import Card from "./Card";
+import Card from "../Card/Card";
+import "./FlipCard.scss";
 
 type Props = {
   children: [ReactNode, ReactNode];
@@ -28,9 +29,9 @@ export default function FlipCard({
       onClick={interactable ? flip : undefined}
       style={interactable ? { cursor: "pointer" } : {}}
     >
-      <div className="inner">
-        <Card className="front">{front}</Card>
-        <Card className="back">{back}</Card>
+      <div className="flip-card-inner">
+        <Card className="flip-card-inner-front">{front}</Card>
+        <Card className="flip-card-inner-back">{back}</Card>
       </div>
     </div>
   );

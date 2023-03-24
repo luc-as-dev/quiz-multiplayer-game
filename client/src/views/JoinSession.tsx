@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import { SessionContextType } from "../@types/Session";
 import { ViewContextType } from "../@types/View";
-import Button from "../components/UI/Button";
-import Card from "../components/UI/Card";
-import Input from "../components/UI/Input";
-import Divider from "../components/UI/Divider";
+import Button from "../components/UI/Button/Button";
+import Card from "../components/UI/Card/Card";
+import Input from "../components/UI/Input/Input";
+import Divider from "../components/UI/Divider/Divider";
 import { useViewContext } from "../context/ViewContext";
 import useSession from "../hooks/useSession";
 import Home from "./Home";

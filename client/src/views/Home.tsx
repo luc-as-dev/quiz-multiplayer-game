@@ -1,7 +1,7 @@
 import logo from "../assets/logo.png";
 import React from "react";
-import Card from "../components/UI/Card";
-import FlipCard from "../components/UI/FlipCard";
+import Card from "../components/UI/Card/Card";
+import FlipCard from "../components/UI/FlipCard/FlipCard";
 import NewSession from "./NewSession";
 import { useViewContext } from "../context/ViewContext";
 import { ViewContextType } from "../@types/View";

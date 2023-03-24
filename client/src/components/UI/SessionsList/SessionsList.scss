@@ -1,0 +1,41 @@
+.session-list {
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
+
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
+
+  background-color: var(--color-3);
+  color: var(--color-1);
+  border: 10px solid var(--color-3);
+
+  width: 100%;
+  max-height: 200px;
+  border-radius: 10px;
+  
+  gap: 8px;
+
+  &-item {
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+    
+    background-color: var(--color-2);
+    color: var(--color-1);
+    border: 3px solid var(--color-2);
+
+    padding: 4px 10px;
+    border-radius: 5px;
+  }
+
+  &-item.selected {
+    background-color: var(--color-2);
+    color: var(--color-1);
+    border: 3px solid var(--color-1);
+  }
+
+  &::-webkit-scrollbar { 
+    display: none;  /* Safari and Chrome */
+}
+}

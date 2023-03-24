@@ -1,4 +1,5 @@
-import React, { MouseEventHandler, ReactNode, useState } from "react";
+import React, { MouseEventHandler, ReactNode } from "react";
+import "./Card.scss";
 
 type Props = {
   className?: string | undefined;

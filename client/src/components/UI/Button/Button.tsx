@@ -1,4 +1,5 @@
 import React, { MouseEventHandler, ReactNode } from "react";
+import "./Button.scss";
 
 type Props = {
   children: ReactNode;

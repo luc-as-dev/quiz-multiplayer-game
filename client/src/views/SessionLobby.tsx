@@ -1,7 +1,7 @@
 import React from "react";
 import { SessionContextType } from "../@types/Session";
-import Card from "../components/UI/Card";
-import DropDown from "../components/UI/DropDown";
+import Card from "../components/UI/Card/Card";
+import DropDown from "../components/UI/DrowDown/DropDown";
 import useSession from "../hooks/useSession";
 
 type Props = {};

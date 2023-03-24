@@ -2,10 +2,10 @@
 @import "./utilities/variables.scss";
 
 :root {
-  --color1: #1647a3;
-  --color2: #f2fcfc;
-  --color3: #ddd;
-  --color4: #eaeaea;
+  --color-1: #1647a3;
+  --color-2: #f2fcfc;
+  --color-3: #ddd;
+  --color-4: #eaeaea;
 
   --color-green: #238823;
   --color-yellow: #ffbf00;
@@ -22,5 +22,5 @@
 }
 
 body {
-  background-color: $bg;
+  background-color: var(--color-1);
 }

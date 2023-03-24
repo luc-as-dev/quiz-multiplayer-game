@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./DropDown.scss";
 
 type Props = {
   selected: string;
@@ -28,11 +29,13 @@ export default function DropDown({
       className={`drop-down ${isOpen ? "open" : readonly ? "readonly" : ""}`}
       onClick={openHandler}
     >
-      <div className="d-head">{selected}</div>
-      <div className={"d-list"}>
+      <div className="drop-down-head">{selected}</div>
+      <div className={"drop-down-list"}>
         {alternatives.map((name) => (
           <div
-            className={`d-item ${name === selected ? "selected" : ""}`}
+            className={`drop-down-list-item ${
+              name === selected ? "selected" : ""
+            }`}
             onClick={() => selectHandler(name)}
             key={name}
           >

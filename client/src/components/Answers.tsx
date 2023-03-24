@@ -1,7 +1,7 @@
 import React from "react";
 import { SessionContextType } from "../@types/Session";
 import useSession from "../hooks/useSession";
-import Card from "./UI/Card";
+import Card from "./UI/Card/Card";
 
 type Props = {
   answers: string[];

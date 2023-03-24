@@ -1,5 +1,6 @@
 import React from "react";
-import { ISessionInfo } from "../@types/QuizClient";
+import { ISessionInfo } from "../../../@types/QuizClient";
+import "./SessionsList.scss";
 
 type Props = {
   className?: string | undefined;
@@ -15,11 +16,11 @@ export default function SessionsList({
   setSelectedId,
 }: Props) {
   return (
-    <div className={`list ${className || ""}`}>
+    <div className={`session-list ${className || ""}`}>
       {sessionInfos.length > 0
         ? sessionInfos.map((sessionInfo: ISessionInfo) => (
             <div
-              className={`item ${
+              className={`session-list-item ${
                 selectedId === sessionInfo.id ? "selected" : ""
               }`}
               onClick={() => setSelectedId(sessionInfo.id)}

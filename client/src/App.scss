@@ -38,222 +38,40 @@
   gap: 20px;
 }
 
-.card {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  text-align: center;
-
-  width: 100%;
-  padding: 20px;
-  gap: 10px;
-
-  color: $bg;
-  background-color: $cardFrontBg;
-  box-shadow: rgba(0, 0, 0, 0.25) 0px 3px 8px;
-  
-  border: $cardBorder;
-  border-radius: $cardBorderRadius;
-  
-  img {
-    object-fit: cover;
-    border-radius: $cardBorderRadius;
-    width: 100%;
-    height: 100%;
-  }
-
-  .button,
-  .divider,
-  .drop-down,
-  .input,
-  .list,
-  p {
-    max-width: 300px;
-  }
+.logo-card {
+  aspect-ratio: 6/4;
 }
 
-.flip-card {
-  background-color: transparent;
-  perspective: 1000px;
-
-  .inner {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    transition: transform 500ms;
-    transform-style: preserve-3d;
-
-    .front,
-    .back {
-      width: 100%;
-      height: 100%;
-      position: absolute;
-      -webkit-backface-visibility: hidden; /* Safari */
-      backface-visibility: hidden;
-    }
-    
-    .back{
-      transform: rotateY(180deg);
-    }
-  }
-
-  &.flipped {
-    .inner {
-      transform: rotateY(180deg);
-    }
-  }
+.answer {
+  transition: 500ms ease-in-out;
 }
 
-.button {
-  cursor: pointer;
-  
-  background-color: $buttonBg;
-  color: $buttonText;
-  border: $buttonBorder;
-
-  font-size: 1.1rem;
+.medium-text {
+  font-size: 1.5rem;
   font-weight: 500;
-  border-radius: 5px;
-
-  width: 100%;
-  padding: 8px 16px;
 }
 
-.divider {
-  background-color:  $borderColor;
-  width: 100%;
-  height: 1px;
+.big-text {
+  font-size: 2.25rem;
+  font-weight: 500;
 }
 
-.drop-down {
-  position: relative;
-  
-  width: 100%;
-  
-  .d-head {
-    font-size: 1rem;
-    font-weight: 500;
-
-    background-color: $dropDownBg;
-    color: $dropDownText;
-    border: $dropDownBorder;
-    
-    width: 100%;
-    padding: 12px 16px;
-    border-radius: 5px;
-  }
-
-  .d-list {
-    position: absolute;
-    display: none;
-    z-index: 1;
-    overflow-y: scroll;
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
-    
-    background-color: $dropDownListBg;
-    color: $dropDownText;
-    border: $dropDownOpenBorder;
-    
-    font-size: 1rem;
-    font-weight: 300;
-
-    top: 100%;
-    left: 0;
-    width: 100%;
-    max-height: 200px;
-    padding: inherit;
-
-    .d-item{
-      padding: 12px 16px;
-      border-bottom: $dropDownOpenBorder;
-    }
-
-    :last-child{
-      border-bottom: none;
-    }
-  }
+.two-column {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px
 }
 
-.drop-down .d-list::-webkit-scrollbar{
-  display: none; /* Safari and Chrome */
-}
-
-.drop-down.readonly {
-  .d-head{
-    background-color: $dropDownReadonlyBg;
-  }
-}
-
-.drop-down.open{
-  .d-head {
-    border: $dropDownOpenBorder;
-    border-bottom: $dropDownBorder;
-    border-bottom-left-radius: 0;
-    border-bottom-right-radius: 0;
-  }
-
-  .d-list {
-    display: initial;
-
-    border-bottom-left-radius: 5px;
-    border-bottom-right-radius: 5px;
-  }
-}
-
-.input {
-  text-align: center;
-  background-color: $inputBg;
-  color: $inputText;
-  border: none;
-  outline: none;
-
-  font-size: 1.25rem;
-  border-radius: 5px;
-
-  width: 100%;
-  padding: 8px 16px;
-}
-
-.list {
+.flex-wrap {
   display: flex;
-  flex-direction: column;
-  overflow-y: scroll;
-
-  -ms-overflow-style: none;  /* IE and Edge */
-  scrollbar-width: none;  /* Firefox */
-
-  background-color: $listBg;
-  color: $listText;
-  border: $listBorder;
-
-  width: 100%;
-  max-height: 200px;
-  border-radius: 10px;
-  
-  gap: 8px;
-
-  .item {
-    display: flex;
-    justify-content: space-between;
-    cursor: pointer;
-    
-    background-color: $listItemBg;
-    color: $listItemText;
-    border: $listItemBorder;
-
-    padding: 4px 10px;
-    border-radius: 5px;
-  }
-
-  .item.selected {
-    background-color: $listItemSelectedBg;
-    color: $listItemSelectedText;
-    border: $listItemSelectedBorder;
-  }
+  flex-wrap: wrap;
+  gap: 5px;
 }
 
-.list::-webkit-scrollbar { 
-    display: none;  /* Safari and Chrome */
+.grow-1 {
+  flex-grow: 1;
+}
+
+.grow-10 {
+  flex-grow: 10;
 }
