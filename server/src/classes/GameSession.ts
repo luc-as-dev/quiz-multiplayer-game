@@ -191,7 +191,7 @@ export default class GameSession {
     console.log("Removing user " + username + " from " + this.id);
     socket.removeAllListeners();
 
-    if (this.answers[username]) delete this.answers[username];
+    if (this.answers && this.answers[username]) delete this.answers[username];
     delete this.users[username];
 
     if (Object.keys(this.users).length === 0) {
