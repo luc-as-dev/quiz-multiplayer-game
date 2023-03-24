@@ -14,6 +14,7 @@ import QuestionLibrary from "./QuestionLibrary";
 const TIME_OUT = 5000;
 const OWNER_ROOM = "owner";
 const LIMIT = 3;
+const QUESTION_POINT = 100;
 
 type Params = {
   io: Server;
@@ -119,6 +120,7 @@ export default class GameSession {
     this.libraries.find((l, i) => ((index = i), l.name) === name);
     if (index !== -1) {
       const library = this.libraries[index];
+
       this.selectedLibrary = index;
       this.categories = await library.getCategories();
       this.difficulties = await library.getDifficulties();
@@ -187,7 +189,11 @@ export default class GameSession {
 
   private leaveSession(socket: SessionSocket, username: string) {
     console.log("Removing user " + username + " from " + this.id);
+    socket.removeAllListeners();
+
+    if (this.answers[username]) delete this.answers[username];
     delete this.users[username];
+
     if (Object.keys(this.users).length === 0) {
       this.deleteSession();
     } else {
@@ -197,7 +203,14 @@ export default class GameSession {
   }
 
   private checkAnswers(): void {
-    // TODO: check answers
+    const multiplier = this.difficulties[this.selectedDifficulty].multiplier;
+    const correctAnswer = this.correctAnswers[this.currentQuestion];
+    Object.keys(this.users).forEach((username) => {
+      if (this.answers[username] === correctAnswer) {
+        this.users[username] += QUESTION_POINT * multiplier;
+      }
+    });
+
     this.answers = {};
   }
 
@@ -210,15 +223,15 @@ export default class GameSession {
   }
 
   private endSession(): void {
-    // TODO: Calculate score, send score data.
+    this.sessionNSP.emit("set-users", this.users);
     this.sessionNSP.emit("set-stage", "end", null);
   }
 
   private answer(username: string, answer: string): void {
     this.answers[username] = answer;
     if (Object.keys(this.answers).length === Object.keys(this.users).length) {
-      this.currentQuestion++;
       this.checkAnswers();
+      this.currentQuestion++;
       if (this.currentQuestion === this.questions.length) {
         this.endSession();
       } else {

@@ -106,6 +106,7 @@ interface SessionToClientEvents {
   "set-category": (category: string) => void;
   "set-difficulty": (difficulty: string) => void;
   "set-stage": (stage: StageType, question: ISafeQuestion | null) => void;
+  "set-users": (users: { [username: string]: number }) => void;
   libraries: (libraries: string[]) => void;
   categories: (categories: string[]) => void;
   difficulties: (difficulties: string[]) => void;

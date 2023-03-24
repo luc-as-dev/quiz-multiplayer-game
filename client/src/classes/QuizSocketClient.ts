@@ -125,6 +125,11 @@ export class QuizSocketClient {
         }
       });
 
+      this.sessionSocket!.on("set-users", (users) => {
+        console.log("Setting users in session", users);
+        this.updateSession({ users });
+      });
+
       this.sessionSocket!.on("set-library", (name: string) => {
         console.log("Setting library", name);
         this.updateSession({ library: [name] });
