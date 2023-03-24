@@ -13,7 +13,7 @@ type Props = {
 };
 
 export default function Question({}: Props) {
-  const { getQuestion, getCurrentTime, getMaxTime }: SessionContextType =
+  const { getQuestion, getCurrentTime, getQuestionTimeS }: SessionContextType =
     useSession();
   const [showQuestion, setShowQuestion] = useState<boolean>(false);
 
@@ -33,7 +33,10 @@ export default function Question({}: Props) {
         <img src={logo}></img>
         <>
           {getQuestion()?.question}
-          <TimeBar currentTime={getCurrentTime()!} maxTime={getMaxTime()!} />
+          <TimeBar
+            currentTime={getCurrentTime()!}
+            maxTime={getQuestionTimeS()!}
+          />
         </>
       </FlipCard>
       {getQuestion() && (

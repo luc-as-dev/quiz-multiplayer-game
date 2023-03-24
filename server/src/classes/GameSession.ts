@@ -15,7 +15,8 @@ const TIME_OUT_S = 5000;
 const OWNER_ROOM = "owner";
 const LIMIT = 3;
 const QUESTION_POINT = 100;
-const QUESTION_TIME_S = 5;
+const QUESTION_TIME_S = 15;
+const MIDDLE_TIME_S = 5;
 
 type Params = {
   io: Server;
@@ -49,7 +50,8 @@ export default class GameSession {
   private answers: { [username: string]: string };
 
   private questionTimeS: number = QUESTION_TIME_S;
-  private questionTimeout: NodeJS.Timeout = null;
+  private middleTimeS: number = MIDDLE_TIME_S;
+  private stageTimeout: NodeJS.Timeout = null;
 
   private onDelete: () => void;
 
@@ -89,7 +91,8 @@ export default class GameSession {
       question: null,
       updatedAt: Date.now(), // to be removed
       stage: this.stage,
-      maxTime: this.questionTimeS,
+      questionTime: this.questionTimeS,
+      middleTime: this.middleTimeS,
       library: this.libraries[this.selectedLibrary].name,
       category: this.categories
         ? this.categories[this.selectedCategory].name
@@ -219,37 +222,56 @@ export default class GameSession {
     this.answers = {};
   }
 
-  private sendQuestion(): void {
+  private toLobbyStage(): void {
+    this.stage = "lobby";
+
     this.sessionNSP.emit(
-      "set-stage",
-      "question",
+      "set-stage-question",
+      this.questions[this.currentQuestion]
+    );
+  }
+
+  private toQuestionStage(): void {
+    this.stage = "question";
+    this.questions[this.currentQuestion];
+
+    this.sessionNSP.emit(
+      "set-stage-question",
       this.questions[this.currentQuestion]
     );
 
-    this.questionTimeout = setTimeout(
-      () => this.questionTimeOut(),
+    this.stageTimeout = setTimeout(
+      () => this.nextStage(),
       this.questionTimeS * 1000
     );
   }
 
-  private endSession(): void {
-    this.sessionNSP.emit("set-users", this.users);
-    this.sessionNSP.emit("set-stage", "end", null);
+  private toMiddleStage(): void {
+    this.stage = "middle";
+    this.sessionNSP.emit("set-stage-middle", this.users);
+
+    this.stageTimeout = setTimeout(
+      () => this.nextStage(),
+      this.middleTimeS * 1000
+    );
+  }
+
+  private toEndStage(): void {
+    this.stage = "end";
+    this.sessionNSP.emit("set-stage-end", this.users);
   }
 
   private nextStage(): void {
-    clearTimeout(this.questionTimeout);
+    clearTimeout(this.stageTimeout);
     this.checkAnswers();
-    this.currentQuestion++;
-    if (this.currentQuestion === this.questions.length) {
-      this.endSession();
+    if (this.currentQuestion === this.questions.length - 1) {
+      this.toEndStage();
+    } else if (this.stage === "question") {
+      this.toMiddleStage();
     } else {
-      this.sendQuestion();
+      this.currentQuestion++;
+      this.toQuestionStage();
     }
-  }
-
-  private questionTimeOut(): void {
-    this.nextStage();
   }
 
   private answer(username: string, answer: string): void {
@@ -274,7 +296,7 @@ export default class GameSession {
     this.answers = {};
     this.correctAnswers = correctAnswers;
 
-    this.sendQuestion();
+    this.toQuestionStage();
   }
 
   private setupOwner(socket: SessionSocket): void {

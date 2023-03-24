@@ -20,10 +20,12 @@ export default function App() {
       console.log("Set view:", stage);
       if (stage === "lobby") {
         setView(<SessionLobby />);
-      } else if (stage === "end") {
-        setView(<SessionEnd />);
       } else if (stage === "question") {
         setView(<Question />);
+      } else if (stage === "middle") {
+        setView(<div>Middle</div>);
+      } else if (stage === "end") {
+        setView(<SessionEnd />);
       }
     } else {
       setView(<Home />);

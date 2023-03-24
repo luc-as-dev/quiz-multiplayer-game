@@ -72,6 +72,8 @@ export default class QuizSocketServer {
 
   private setupEventListeners(): void {
     this.defaultNS.on("connection", (socket: DefaultSocket) => {
+      console.log("Client connected");
+
       socket.on("create-session", (data) => this.createSession(socket, data));
 
       socket.on("search-sessions", () => this.searchSession(socket));

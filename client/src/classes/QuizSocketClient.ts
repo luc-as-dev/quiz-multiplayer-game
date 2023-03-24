@@ -1,10 +1,11 @@
 import { io } from "socket.io-client";
 import {
   DefaultSocket,
-  SessionSocket,
+  ILocals,
   ISession,
   ISessionInfo,
   ISessionInfos,
+  SessionSocket,
 } from "../@types/QuizClient";
 
 const DEFAULT_NSP = "/quiz-mp";
@@ -16,39 +17,44 @@ type LOCAL_STORAGE_TYPE = { id: string; username: string };
 
 type Params = {
   serverURL: string;
-  setSession?: (session: ISession) => void;
+  setLocals?: (locals: ILocals) => void;
+  setSession?: (session: ISession | null) => void;
   setSearchSessions?: (sessionInfos: ISessionInfos) => void;
   defaultNSP?: string;
   sessionNSP?: string;
 };
 
 export class QuizSocketClient {
-  private defaultSocket: DefaultSocket;
-  private sessionNSPPrefix: string;
+  private defaultSocket?: DefaultSocket;
+  private sessionNSPPrefix?: string;
   private sessionSocket: SessionSocket | null = null;
 
   private timeInterval: number | null = null;
 
-  private session: ISession | null = null;
-  private setSessionCallback: Function | null;
+  private locals: ILocals = {} as ILocals;
+  private setLocalsCallback?: (locals: ILocals) => void;
 
-  private setAvailableSessionCallback: Function | null;
+  private session: ISession | null = null;
+  private setSessionCallback?: (session: ISession | null) => void;
+
   private availableSessions: ISessionInfos = {};
+  private setAvailableSessionCallback?: (sessionsInfos: ISessionInfos) => void;
 
   public getSession = () => ({ ...this.session });
   public getSessionSearch = () => ({ ...this.availableSessions });
 
   public hasSession = () => !!this.session;
 
-  constructor(params: Params) {
+  connect(params: Params) {
     this.sessionNSPPrefix =
       params.serverURL + (params.sessionNSP || SESSION_NSP_PREFIX);
     this.defaultSocket = io(
       params.serverURL + (params.defaultNSP || DEFAULT_NSP)
     );
 
-    this.setSessionCallback = params.setSession || null;
-    this.setAvailableSessionCallback = params.setSearchSessions || null;
+    this.setLocalsCallback = params.setLocals;
+    this.setSessionCallback = params.setSession;
+    this.setAvailableSessionCallback = params.setSearchSessions;
 
     this.setupEventListeners();
   }
@@ -74,6 +80,7 @@ export class QuizSocketClient {
   }
 
   public createSession(id: string, username: string): void {
+    if (!this.defaultSocket) return;
     console.log("Creating new session");
     this.defaultSocket.emit("create-session", { id, username });
     this.defaultSocket.once("session-created", () => {
@@ -90,7 +97,7 @@ export class QuizSocketClient {
 
       this.sessionSocket!.once("session", (session: ISession) => {
         console.log("Received session", session);
-        this.setSession({ ...session, local: { currentTime: null } });
+        this.setSession({ ...session });
 
         if (session.isOwner) {
           this.sessionSocket!.emit("get-owner-info");
@@ -128,11 +135,6 @@ export class QuizSocketClient {
         }
       });
 
-      this.sessionSocket!.on("set-users", (users) => {
-        console.log("Setting users in session", users);
-        this.updateSession({ users });
-      });
-
       this.sessionSocket!.on("set-library", (name: string) => {
         console.log("Setting library", name);
         this.updateSession({ library: [name] });
@@ -148,30 +150,23 @@ export class QuizSocketClient {
         this.updateSession({ difficulty: [name] });
       });
 
-      this.sessionSocket!.on("set-stage", (stage, question) => {
-        console.log("Setting stage", stage, question);
-        const local = { ...this.session!.local };
-        if (stage === "question") {
-          if (this.timeInterval) clearInterval(this.timeInterval);
-          local.currentTime = this.session!.maxTime;
-          this.timeInterval = setInterval(() => {
-            this.updateSession({
-              local: {
-                ...this.session!.local,
-                currentTime: this.session!.local.currentTime! - 1,
-              },
-            });
-          }, TIME_UPDATE_MS);
-        } else if (stage === "end") {
-          if (this.timeInterval) clearInterval(this.timeInterval);
-          this.updateSession({
-            local: {
-              ...this.session!.local,
-              currentTime: null,
-            },
-          });
-        }
-        this.updateSession({ stage, question, local });
+      this.sessionSocket?.on("set-stage-end", () => {});
+
+      this.sessionSocket!.on("set-stage-question", (question) => {
+        console.log("Setting stage to question", question);
+        this.startTimeInterval(this.session!.questionTime);
+        this.updateSession({ stage: "question", question });
+      });
+
+      this.sessionSocket?.on("set-stage-middle", (users) => {
+        console.log("Setting stage to middle", users);
+        this.startTimeInterval(this.session!.middleTime);
+        this.updateSession({ stage: "middle", users });
+      });
+
+      this.sessionSocket?.on("set-stage-end", (users) => {
+        this.clearTimeInterval();
+        this.updateSession({ stage: "end", users });
       });
     });
   }
@@ -187,20 +182,24 @@ export class QuizSocketClient {
   }
 
   public startSessionSearch(): void {
+    if (!this.defaultSocket) return;
     this.defaultSocket.emit("search-sessions");
     this.defaultSocket.once("sessions-info", (sessionInfos: ISessionInfos) => {
       console.log("Session Info", sessionInfos);
       this.setAvailableSessions(sessionInfos);
 
-      this.defaultSocket.on("add-session-info", (sessionInfo: ISessionInfo) => {
-        console.log("add-session-info", sessionInfo);
-        this.setAvailableSessions({
-          ...this.availableSessions,
-          [sessionInfo.id]: sessionInfo,
-        });
-      });
+      this.defaultSocket!.on(
+        "add-session-info",
+        (sessionInfo: ISessionInfo) => {
+          console.log("add-session-info", sessionInfo);
+          this.setAvailableSessions({
+            ...this.availableSessions,
+            [sessionInfo.id]: sessionInfo,
+          });
+        }
+      );
 
-      this.defaultSocket.on("remove-session-info", (id: string) => {
+      this.defaultSocket!.on("remove-session-info", (id: string) => {
         console.log("remove-session-info", id);
         const { [id]: toBeRemoved, ...availableSessions } =
           this.availableSessions;
@@ -210,6 +209,7 @@ export class QuizSocketClient {
   }
 
   public stopSessionSearch(): void {
+    if (!this.defaultSocket) return;
     this.defaultSocket.emit("search-sessions-stop");
     this.defaultSocket.off("add-session-info");
     this.defaultSocket.off("remove-session-info");
@@ -219,10 +219,11 @@ export class QuizSocketClient {
     this.sessionSocket!.emit("send-answer", answer);
   }
 
-  private setupEventListeners(): void {
-    this.defaultSocket.on("connect", () => {
-      console.log("Connected to server");
-    });
+  private setLocals(locals: ILocals): void {
+    this.locals = locals;
+    if (this.setLocalsCallback) {
+      this.setLocalsCallback(locals);
+    }
   }
 
   private setSession(session: ISession | null): void {
@@ -232,17 +233,56 @@ export class QuizSocketClient {
     }
   }
 
-  // TODO Check ts-type for param
-  private updateSession(update: {}) {
-    if (this.session) this.setSession({ ...this.session, ...update });
-  }
-
   private setAvailableSessions(sessionInfos: ISessionInfos): void {
     console.log("availableSessions", sessionInfos);
     this.availableSessions = sessionInfos;
     if (this.setAvailableSessionCallback) {
       this.setAvailableSessionCallback(this.availableSessions);
     }
+  }
+
+  // TODO Check ts-type for param
+  private updateSession(updates: {}) {
+    if (this.session) this.setSession({ ...this.session, ...updates });
+  }
+
+  // TODO Check ts-type for param
+  private updateLocals(updates: {}) {
+    console.log("Update locals", updates);
+    this.setLocals({ ...this.locals, ...updates });
+  }
+
+  private clearTimeInterval(): void {
+    this.locals.currentTime = undefined;
+    if (this.timeInterval) {
+      clearInterval(this.timeInterval);
+      this.timeInterval = null;
+    }
+  }
+
+  private decreaseTime(): void {
+    this.updateLocals({
+      ...this.locals,
+      currentTime: this.locals.currentTime! - TIME_UPDATE_MS / 1000,
+    });
+  }
+
+  private startTimeInterval(time: number): void {
+    console.log("Starting time interval", time);
+    this.clearTimeInterval();
+    this.updateLocals({ currentTime: time });
+    this.timeInterval = setInterval(() => this.decreaseTime(), TIME_UPDATE_MS);
+  }
+
+  private setupEventListeners(): void {
+    if (!this.defaultSocket) return;
+    this.defaultSocket.on("connect", () => {
+      console.log("Connected to Default Namespace");
+
+      this.defaultSocket!.on("disconnect", () => {
+        console.log("Disconnected from Default Namespace");
+      });
+    });
   }
 
   private localClear(): void {

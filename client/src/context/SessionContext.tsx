@@ -1,23 +1,26 @@
 import React, { createContext, ReactNode, useEffect, useState } from "react";
 import {
+  ILocals,
   IQuestion,
   ISession,
   ISessionInfo,
   ISessionInfos,
+  StageType,
 } from "../@types/QuizClient";
 import { SessionContextType } from "../@types/Session";
 import { QuizSocketClient } from "../classes/QuizSocketClient";
 
 export const sessionContext = createContext<SessionContextType | null>(null);
 
+const quizClient: QuizSocketClient = new QuizSocketClient();
+
 function useProvideSession(serverURL: string): SessionContextType {
+  const [locals, setLocals] = useState<ILocals>();
   const [session, setSession] = useState<ISession | null>(null);
   const [searchSessions, setSearchSessions] = useState<ISessionInfos>({});
-  const [quizClient] = useState<QuizSocketClient>(
-    new QuizSocketClient({ serverURL, setSession, setSearchSessions })
-  );
 
   useEffect(() => {
+    quizClient.connect({ serverURL, setLocals, setSession, setSearchSessions });
     quizClient.localLoad();
   }, []);
 
@@ -51,18 +54,24 @@ function useProvideSession(serverURL: string): SessionContextType {
     return undefined;
   }
 
-  function getStage(): "lobby" | "question" | "end" | undefined {
+  function getStage(): StageType | undefined {
     if (session) return session.stage;
     return undefined;
   }
 
   function getCurrentTime(): number | null {
-    if (session) return session.local.currentTime;
+    if (locals && locals.currentTime) return locals.currentTime;
+    console.log(locals?.currentTime);
     return null;
   }
 
-  function getMaxTime(): number | undefined {
-    if (session) return session.maxTime;
+  function getQuestionTimeS(): number | undefined {
+    if (session) return session.questionTime;
+    return undefined;
+  }
+
+  function getMiddleTimeS(): number | undefined {
+    if (session) return session.questionTime;
     return undefined;
   }
 
@@ -177,7 +186,8 @@ function useProvideSession(serverURL: string): SessionContextType {
     getQuestion,
     getStage,
     getCurrentTime,
-    getMaxTime,
+    getQuestionTimeS,
+    getMiddleTimeS,
     getLibrary,
     getCategory,
     getDifficulty,

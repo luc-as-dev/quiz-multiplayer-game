@@ -7,7 +7,6 @@ type Props = {
 };
 
 export default function TimeBar({ currentTime, maxTime }: Props) {
-  console.log(currentTime);
   return (
     <div className="time-bar">
       <div

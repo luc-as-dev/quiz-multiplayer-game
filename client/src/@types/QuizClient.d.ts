@@ -13,31 +13,32 @@ interface ILibrary {
   questions: number;
 }
 
-interface IUser {
-  name: string;
-  score: number;
+interface IUsers {
+  [username: string]: number;
 }
 
-export type StageType = "lobby" | "question" | "end";
+interface ILocals {
+  currentTime: number | undefined;
+}
+
+export type StageType = "lobby" | "question" | "middle" | "end";
 
 export interface ISession {
   id: string;
   username: string;
   isOwner: boolean;
-  users: { [username: string]: number };
+  users: IUsers;
   question: ISafeQuestion | null;
   updatedAt: number;
   stage: StageType;
-  maxTime: number;
+  questionTime: number;
+  middleTime: number;
   library: string;
-  category?: string;
-  difficulty?: string;
-  libraries?: string[];
-  categories?: string[];
-  difficulties?: string[];
-  local: {
-    currentTime: number | null;
-  };
+  category: string | undefined;
+  difficulty: string | undefined;
+  libraries: string[] | undefined;
+  categories: string[] | undefined;
+  difficulties: string[] | undefined;
 }
 
 interface ISessionInfo {
@@ -90,8 +91,10 @@ interface SessionToClientEvents {
   "set-library": (library: string) => void;
   "set-category": (category: string) => void;
   "set-difficulty": (difficulty: string) => void;
-  "set-stage": (stage: StageType, question: IQuestion | null) => void;
-  "set-users": (users: { [username: string]: number }) => void;
+  "set-stage-lobby": () => void;
+  "set-stage-end": (users: IUsers) => void;
+  "set-stage-middle": (users: IUsers | null) => void;
+  "set-stage-question": (question: IQuestion | null) => void;
   libraries: (libraries: string[]) => void;
   categories: (categories: string[]) => void;
   difficulties: (difficulties: string[]) => void;
