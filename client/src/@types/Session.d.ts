@@ -5,6 +5,7 @@ export type SessionContextType = {
   getUsername: () => string | undefined;
   getIsOwner: () => boolean | undefined;
   getPlayers: () => string[] | undefined;
+  getScoreboard: () => ScoreboardType | undefined;
   getScores: () => { [username: string]: number } | undefined;
   getQuestion: () => IQuestion | null | undefined;
   getStage: () => string | number | undefined;
@@ -30,6 +31,7 @@ export type SessionContextType = {
 
   hasSession: () => boolean;
   startSession: () => Promise<boolean> | undefined;
+  resetSession: () => Promise<boolean> | undefined;
   createSession: (name: string, username: string) => Promise<boolean>;
   joinSession: (name: string, username: string) => Promise<boolean>;
   leaveSession: () => Promise<boolean>;

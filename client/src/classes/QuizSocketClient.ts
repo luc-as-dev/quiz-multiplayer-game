@@ -150,7 +150,9 @@ export class QuizSocketClient {
         this.updateSession({ difficulty: [name] });
       });
 
-      this.sessionSocket?.on("set-stage-end", () => {});
+      this.sessionSocket?.on("set-stage-lobby", () => {
+        this.updateSession({ stage: "lobby" });
+      });
 
       this.sessionSocket!.on("set-stage-question", (question) => {
         console.log("Setting stage to question", question);
@@ -164,9 +166,9 @@ export class QuizSocketClient {
         this.updateSession({ stage: "middle", users });
       });
 
-      this.sessionSocket?.on("set-stage-end", (users) => {
+      this.sessionSocket?.on("set-stage-end", (scoreboard) => {
         this.clearTimeInterval();
-        this.updateSession({ stage: "end", users });
+        this.updateSession({ stage: "end", scoreboard });
       });
     });
   }
@@ -179,6 +181,10 @@ export class QuizSocketClient {
 
   public startSession(): void {
     this.sessionSocket!.emit("start-session");
+  }
+
+  public resetSession(): void {
+    this.sessionSocket!.emit("reset-session");
   }
 
   public startSessionSearch(): void {

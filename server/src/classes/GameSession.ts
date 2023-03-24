@@ -5,6 +5,7 @@ import {
   ISafeQuestion,
   ISession,
   ISessionInfo,
+  ScoreboardType,
   SessionNamespace,
   SessionSocket,
   StageType,
@@ -34,6 +35,7 @@ export default class GameSession {
 
   public owner: string = undefined;
   public users: { [username: string]: number } = {}; // user id -> score
+  public scoreboard?: ScoreboardType;
   public timeouts: { [username: string]: NodeJS.Timeout } = {};
 
   public stage: StageType = "lobby";
@@ -101,6 +103,7 @@ export default class GameSession {
       difficulty: this.difficulties
         ? this.difficulties[this.selectedDifficulty].name
         : undefined,
+      scoreboard: this.scoreboard,
     };
   }
 
@@ -225,10 +228,7 @@ export default class GameSession {
   private toLobbyStage(): void {
     this.stage = "lobby";
 
-    this.sessionNSP.emit(
-      "set-stage-question",
-      this.questions[this.currentQuestion]
-    );
+    this.sessionNSP.emit("set-stage-lobby");
   }
 
   private toQuestionStage(): void {
@@ -258,7 +258,18 @@ export default class GameSession {
 
   private toEndStage(): void {
     this.stage = "end";
-    this.sessionNSP.emit("set-stage-end", this.users);
+
+    const scoreboard: ScoreboardType = [];
+
+    Object.keys(this.users).forEach((username) => {
+      scoreboard.push({
+        username: username,
+        score: this.users[username],
+      });
+    });
+
+    this.scoreboard = scoreboard.sort((a, b) => b.score - a.score);
+    this.sessionNSP.emit("set-stage-end", this.scoreboard);
   }
 
   private nextStage(): void {
@@ -301,6 +312,15 @@ export default class GameSession {
     this.toMiddleStage();
   }
 
+  private resetSession(): void {
+    this.currentQuestion = undefined;
+    this.questions = undefined;
+    this.answers = undefined;
+    this.correctAnswers = undefined;
+
+    this.toLobbyStage();
+  }
+
   private setupOwner(socket: SessionSocket): void {
     socket.join(OWNER_ROOM);
     socket.on("get-owner-info", () => this.sendOwnerInfo());
@@ -308,6 +328,7 @@ export default class GameSession {
     socket.on("set-category", (name: string) => this.setCategory(name));
     socket.on("set-difficulty", (name: string) => this.setDifficulty(name));
     socket.on("start-session", () => this.startSession());
+    socket.on("reset-session", () => this.resetSession());
   }
 
   private setupNSP() {

@@ -35,6 +35,11 @@ interface IUsers {
   [username: string]: number;
 }
 
+type ScoreboardType = {
+  username: string;
+  score: number;
+}[];
+
 export type StageType = "lobby" | "question" | "middle" | "end";
 
 export interface ISession {
@@ -42,6 +47,7 @@ export interface ISession {
   username: string;
   isOwner: boolean;
   users: IUsers;
+  scoreboard?: ScoreboardType;
   question: ISafeQuestion | null;
   updatedAt: number;
   stage: StageType;
@@ -97,6 +103,7 @@ interface SocketToSessionsEvents {
   "set-category": (name: string) => void;
   "set-difficulty": (name: string) => void;
   "start-session": () => void;
+  "reset-session": () => void;
   "send-answer": (answer: string) => void; // TODO add
 }
 
@@ -107,7 +114,7 @@ interface SessionToClientEvents {
   "set-category": (category: string) => void;
   "set-difficulty": (difficulty: string) => void;
   "set-stage-lobby": () => void;
-  "set-stage-end": (users: IUsers) => void;
+  "set-stage-end": (scoreboard: ScoreboardType) => void;
   "set-stage-middle": (users: IUsers | null) => void;
   "set-stage-question": (question: ISafeQuestion | null) => void;
   libraries: (libraries: string[]) => void;

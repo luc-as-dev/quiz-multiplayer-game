@@ -5,6 +5,7 @@ import {
   ISession,
   ISessionInfo,
   ISessionInfos,
+  ScoreboardType,
   StageType,
 } from "../@types/QuizClient";
 import { SessionContextType } from "../@types/Session";
@@ -41,6 +42,11 @@ function useProvideSession(serverURL: string): SessionContextType {
 
   function getPlayers(): string[] | undefined {
     if (session) return Object.keys(session.users);
+    return undefined;
+  }
+
+  function getScoreboard(): ScoreboardType | undefined {
+    if (session) return session.scoreboard;
     return undefined;
   }
 
@@ -136,13 +142,11 @@ function useProvideSession(serverURL: string): SessionContextType {
   }
 
   function startSessionSearch(): boolean {
-    // TODO: Add functionality to start session search
     quizClient.startSessionSearch();
     return true;
   }
 
   function stopSessionSearch(): boolean {
-    // TODO: Add functionality to stop session search
     quizClient.stopSessionSearch();
     return true;
   }
@@ -151,11 +155,19 @@ function useProvideSession(serverURL: string): SessionContextType {
     return quizClient.hasSession();
   }
 
+  // TODO remove async
   async function startSession(): Promise<boolean> {
     quizClient.startSession();
     return true;
   }
 
+  // TODO remove async
+  async function resetSession(): Promise<boolean> {
+    quizClient.resetSession();
+    return true;
+  }
+
+  // TODO remove async
   async function createSession(
     sessionId: string,
     username: string
@@ -164,6 +176,7 @@ function useProvideSession(serverURL: string): SessionContextType {
     return true;
   }
 
+  // TODO remove async
   async function joinSession(
     sessionId: string,
     username: string
@@ -172,6 +185,7 @@ function useProvideSession(serverURL: string): SessionContextType {
     return true;
   }
 
+  // TODO remove async
   async function leaveSession(): Promise<boolean> {
     quizClient.leaveSession();
     return true;
@@ -182,6 +196,7 @@ function useProvideSession(serverURL: string): SessionContextType {
     getUsername,
     getIsOwner,
     getPlayers,
+    getScoreboard,
     getScores,
     getQuestion,
     getStage,
@@ -202,6 +217,7 @@ function useProvideSession(serverURL: string): SessionContextType {
     startSessionSearch,
     stopSessionSearch,
     startSession,
+    resetSession,
     hasSession,
     createSession,
     joinSession,
