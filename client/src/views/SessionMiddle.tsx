@@ -4,7 +4,7 @@ import useSession from "../hooks/useSession";
 
 type Props = {};
 
-export default function Middle({}: Props) {
+export default function SessionMiddle({}: Props) {
   const session = useSession();
 
   return (

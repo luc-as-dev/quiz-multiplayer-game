@@ -5,10 +5,10 @@ import { ViewContextType } from "./@types/View";
 import { useViewContext } from "./context/ViewContext";
 import useSession from "./hooks/useSession";
 import Home from "./views/Home";
-import Question from "./views/Question";
 import SessionEnd from "./views/SessionEnd";
 import SessionLobby from "./views/SessionLobby";
-import Middle from "./views/Middle";
+import SessionQuestion from "./views/SessionQuestion";
+import SessionMiddle from "./views/SessionMiddle";
 
 export default function App() {
   const { view, isEntering, isExiting, setView }: ViewContextType =
@@ -22,9 +22,9 @@ export default function App() {
       if (stage === "lobby") {
         setView(<SessionLobby />);
       } else if (stage === "question") {
-        setView(<Question />);
+        setView(<SessionQuestion />);
       } else if (stage === "middle") {
-        setView(<Middle />);
+        setView(<SessionMiddle />);
       } else if (stage === "end") {
         setView(<SessionEnd />);
       }

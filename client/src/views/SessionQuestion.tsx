@@ -12,7 +12,7 @@ type Props = {
   children?: ReactNode;
 };
 
-export default function Question({}: Props) {
+export default function SessionQuestion({}: Props) {
   const { getQuestion, getCurrentTime, getQuestionTimeS }: SessionContextType =
     useSession();
   const [showQuestion, setShowQuestion] = useState<boolean>(false);
