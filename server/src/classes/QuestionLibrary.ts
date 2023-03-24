@@ -57,14 +57,13 @@ export default class QuestionLibrary {
     const questions = await this.getQuestions(limit, category, difficulty);
 
     questions.forEach((q) => {
-      const { category, difficulty, correctAnswer, incorrectAnswers, ...rest } =
-        q;
+      const { category, difficulty, correctAnswer, incorrectAnswers } = q;
       const answers = [correctAnswer, ...incorrectAnswers];
       answers.sort(() => (Math.random() > 0.5 ? 1 : -1));
       safeQuestions.push({
-        ...rest,
-        category: category.name,
-        difficulty: difficulty.name,
+        question: q.question,
+        category: category,
+        difficulty: difficulty,
         answers,
       });
       correctAnswers.push(correctAnswer);

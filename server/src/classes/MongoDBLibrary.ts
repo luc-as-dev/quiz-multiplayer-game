@@ -22,13 +22,11 @@ const difficultySchema = new mongoose.Schema<IDifficulty>({
 
 const questionSchema = new mongoose.Schema<IQuestion>({
   category: {
-    type: mongoose.Types.ObjectId,
-    ref: "Category",
+    type: String,
     required: true,
   },
   difficulty: {
-    type: mongoose.Types.ObjectId,
-    ref: "Difficulty",
+    type: String,
     required: true,
   },
   question: {
@@ -92,31 +90,7 @@ export default class MongoDBLibrary extends QuestionLibrary {
 
   public async addQuestion(question: IQuestion): Promise<boolean> {
     try {
-      const categoryId = (
-        await this.Category.findOne({ name: question.category.name })
-      )._id;
-      if (!categoryId) {
-        console.log(
-          `Category "${question.category}" does not exist in ${this.name}`
-        );
-        return false;
-      }
-
-      const difficultyId = (
-        await this.Difficulty.findOne({ name: question.difficulty.name })
-      )._id;
-      if (!difficultyId) {
-        console.log(
-          `Difficulty "${question.difficulty}" does not exist in ${this.name}`
-        );
-        return false;
-      }
-
-      await this.Question.create({
-        ...question,
-        category: categoryId,
-        difficulty: difficultyId,
-      });
+      await this.Question.create(question);
       return true;
     } catch (err) {
       console.log(err);
@@ -126,7 +100,6 @@ export default class MongoDBLibrary extends QuestionLibrary {
 
   public async getCategories(): Promise<ICategory[]> {
     const categories = await this.Category.find();
-    console.log(categories);
     return categories;
   }
 
@@ -140,7 +113,20 @@ export default class MongoDBLibrary extends QuestionLibrary {
     difficulty?: string
   ): Promise<IQuestion[]> {
     console.log("Getting Questions");
-    return await this.Question.find({ category, difficulty }).limit(limit);
+
+    const filter = { category: category, difficulty: difficulty };
+    if (!category) delete filter.category;
+    if (!difficulty) delete filter.difficulty;
+
+    const questionsRaw = await this.Question.find(filter).limit(limit).lean();
+
+    return questionsRaw.map((q) => ({
+      category: q.category,
+      difficulty: q.difficulty,
+      question: q.question,
+      correctAnswer: q.correctAnswer,
+      incorrectAnswers: q.incorrectAnswers,
+    }));
   }
 
   public async getQuestionLength(): Promise<number> {
