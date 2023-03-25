@@ -21,8 +21,7 @@ function useProvideSession(serverURL: string): SessionContextType {
   const [searchSessions, setSearchSessions] = useState<ISessionInfos>({});
 
   useEffect(() => {
-    quizClient.connect({ serverURL, setLocals, setSession, setSearchSessions });
-    quizClient.localLoad();
+    quizClient.start({ serverURL, setLocals, setSession, setSearchSessions });
   }, []);
 
   function getId(): string | undefined {

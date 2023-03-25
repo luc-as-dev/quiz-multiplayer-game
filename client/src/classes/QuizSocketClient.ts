@@ -45,19 +45,27 @@ export class QuizSocketClient {
 
   public hasSession = () => !!this.session;
 
-  connect(params: Params) {
+  public start(params: Params) {
     this.sessionNSPPrefix =
       params.serverURL + (params.sessionNSP || SESSION_NSP_PREFIX);
-    this.defaultSocket = io(
-      params.serverURL + (params.defaultNSP || DEFAULT_NSP)
-    );
 
     this.setLocalsCallback = params.setLocals;
     this.setSessionCallback = params.setSession;
     this.setAvailableSessionCallback = params.setSearchSessions;
 
+    this.defaultSocket = io(
+      params.serverURL + (params.defaultNSP || DEFAULT_NSP)
+    );
     this.setupEventListeners();
+
+    const localStorage = this.getLocalStorage();
+    if (localStorage) {
+      this.joinSession(localStorage.id, localStorage.username);
+      // TODO check success, else clear local storage
+    }
   }
+
+  private connectDefault(serverURL: string, defaultNSP: string) {}
 
   public setLibrary(name: string): void {
     this.sessionSocket!.emit("set-library", name);
@@ -69,14 +77,6 @@ export class QuizSocketClient {
 
   public setDifficulty(name: string): void {
     this.sessionSocket!.emit("set-difficulty", name);
-  }
-
-  public async localLoad(): Promise<void> {
-    const localItem = localStorage.getItem(LOCAL_STORAGE_KEY);
-    if (localItem) {
-      const { id, username }: LOCAL_STORAGE_TYPE = JSON.parse(localItem);
-      // TODO fix auto-connect to session
-    }
   }
 
   public createSession(id: string, username: string): void {
@@ -98,6 +98,8 @@ export class QuizSocketClient {
       this.sessionSocket!.once("session", (session: ISession) => {
         console.log("Received session", session);
         this.setSession({ ...session });
+
+        this.saveLocalStorage();
 
         if (session.isOwner) {
           this.sessionSocket!.emit("get-owner-info");
@@ -131,7 +133,7 @@ export class QuizSocketClient {
         console.log("Removing user from session", username);
         if (this.session) {
           const { [username]: user, ...users } = this.session.users;
-          this.updateSession({ players: users });
+          this.updateSession({ users: users });
         }
       });
 
@@ -177,6 +179,7 @@ export class QuizSocketClient {
     this.sessionSocket!.emit("leave-session");
     this.sessionSocket = null;
     this.setSession(null);
+    this.clearLocalStorage();
   }
 
   public startSession(): void {
@@ -291,14 +294,27 @@ export class QuizSocketClient {
     });
   }
 
-  private localClear(): void {
+  private clearLocalStorage(): void {
     localStorage.removeItem(LOCAL_STORAGE_KEY);
   }
 
-  private localSave(): void {
+  private saveLocalStorage(): void {
     if (this.session) {
-      const { id, username } = this.session!;
-      localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify({ id, username }));
+      const { id, username } = this.session;
+      console.log("Saving Local Storage", id, username);
+      localStorage.setItem(
+        LOCAL_STORAGE_KEY,
+        JSON.stringify({ id: id, username })
+      );
     }
+  }
+
+  public getLocalStorage(): LOCAL_STORAGE_TYPE | null {
+    const localItem = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (localItem) {
+      const data: LOCAL_STORAGE_TYPE = JSON.parse(localItem);
+      return data;
+    }
+    return null;
   }
 }
