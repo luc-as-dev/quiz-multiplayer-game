@@ -79,3 +79,30 @@
 .grow-10 {
   flex-grow: 10;
 }
+
+@media (max-width: 400px) {
+  .logo-card {
+    h2 {
+      font-size: 1.2rem;
+    }
+
+    p {
+      font-size: 0.9rem;
+    }
+  }
+
+  .small-text {
+    font-size: 0.9rem;
+    font-weight: 400;
+  }
+
+  .medium-text {
+    font-size: 1rem;
+    font-weight: 500;
+  }
+
+  .big-text {
+    font-size: 1.8rem;
+    font-weight: 500;
+  }
+}
