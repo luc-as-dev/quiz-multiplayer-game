@@ -41,5 +41,5 @@ export default function ViewProvider({ children }: Props) {
   );
 }
 
-export const useViewContext: Function = (): ViewContextType =>
+export const useViewContext: () => ViewContextType = (): ViewContextType =>
   useContext<ViewContextType>(ViewContext);

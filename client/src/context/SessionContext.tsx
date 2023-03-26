@@ -15,13 +15,22 @@ export const sessionContext = createContext<SessionContextType | null>(null);
 
 const quizClient: QuizSocketClient = new QuizSocketClient();
 
-function useProvideSession(serverURL: string): SessionContextType {
+function useProvideSession(
+  serverURL: string,
+  localStorageKey?: string
+): SessionContextType {
   const [locals, setLocals] = useState<ILocals>();
   const [session, setSession] = useState<ISession | null>(null);
   const [searchSessions, setSearchSessions] = useState<ISessionInfos>({});
 
   useEffect(() => {
-    quizClient.start({ serverURL, setLocals, setSession, setSearchSessions });
+    quizClient.start({
+      serverURL,
+      setLocals,
+      setSession,
+      setSearchSessions,
+      localStorageKey,
+    });
   }, []);
 
   function getId(): string | undefined {
@@ -227,10 +236,18 @@ function useProvideSession(serverURL: string): SessionContextType {
 type Props = {
   children: ReactNode;
   serverURL: string;
+  localStorageKey?: string;
 };
 
-export default function SessionProvider({ children, serverURL }: Props) {
-  const session: SessionContextType = useProvideSession(serverURL);
+export default function SessionProvider({
+  children,
+  serverURL,
+  localStorageKey,
+}: Props) {
+  const session: SessionContextType = useProvideSession(
+    serverURL,
+    localStorageKey
+  );
   return (
     <sessionContext.Provider value={session}>
       {children}

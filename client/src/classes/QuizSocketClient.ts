@@ -20,6 +20,7 @@ type Params = {
   setLocals?: (locals: ILocals) => void;
   setSession?: (session: ISession | null) => void;
   setSearchSessions?: (sessionInfos: ISessionInfos) => void;
+  localStorageKey?: string;
   defaultNSP?: string;
   sessionNSP?: string;
 };
@@ -28,6 +29,7 @@ export class QuizSocketClient {
   private defaultSocket?: DefaultSocket;
   private sessionNSPPrefix?: string;
   private sessionSocket: SessionSocket | null = null;
+  private localStorageKey: string = LOCAL_STORAGE_KEY;
 
   private timeInterval: number | null = null;
 
@@ -58,14 +60,14 @@ export class QuizSocketClient {
     );
     this.setupEventListeners();
 
+    if (params.localStorageKey) this.localStorageKey = params.localStorageKey;
+
     const localStorage = this.getLocalStorage();
     if (localStorage) {
       this.joinSession(localStorage.id, localStorage.username);
       // TODO check success, else clear local storage
     }
   }
-
-  private connectDefault(serverURL: string, defaultNSP: string) {}
 
   public setLibrary(name: string): void {
     this.sessionSocket!.emit("set-library", name);
@@ -295,7 +297,7 @@ export class QuizSocketClient {
   }
 
   private clearLocalStorage(): void {
-    localStorage.removeItem(LOCAL_STORAGE_KEY);
+    localStorage.removeItem(this.localStorageKey);
   }
 
   private saveLocalStorage(): void {
@@ -303,14 +305,14 @@ export class QuizSocketClient {
       const { id, username } = this.session;
       console.log("Saving Local Storage", id, username);
       localStorage.setItem(
-        LOCAL_STORAGE_KEY,
+        this.localStorageKey,
         JSON.stringify({ id: id, username })
       );
     }
   }
 
   public getLocalStorage(): LOCAL_STORAGE_TYPE | null {
-    const localItem = localStorage.getItem(LOCAL_STORAGE_KEY);
+    const localItem = localStorage.getItem(this.localStorageKey);
     if (localItem) {
       const data: LOCAL_STORAGE_TYPE = JSON.parse(localItem);
       return data;
